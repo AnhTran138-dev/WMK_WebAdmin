@@ -2,5 +2,6 @@ export const QueryKey = {
   // user
   USER: "USER",
 
-  //Product
+  // recipe
+  RECIPE: "RECIPE",
 };

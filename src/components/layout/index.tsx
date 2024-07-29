@@ -5,9 +5,9 @@ import SiderBar from "./siderbar";
 
 const DashboardLayout = () => {
   return (
-    <div className="flex flex-col w-full min-h-screen">
+    <div className="flex flex-col justify-between w-full min-h-screen">
       <Header />
-      <div className="flex flex-1 w-full gap-4">
+      <div className="flex flex-1 w-full gap-4 h-fit ">
         <SiderBar />
         <div className="w-full h-fit">
           <main>
