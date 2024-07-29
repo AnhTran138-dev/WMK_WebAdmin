@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 export * from "./alert-dialog";
 export * from "./avatar";
+export * from "./badge";
 export * from "./button";
 export * from "./card";
 export * from "./checkbox";
@@ -16,4 +17,3 @@ export * from "./textarea";
 export * from "./toast";
 export * from "./toaster";
 export * from "./use-toast";
-export * from "./badge";

@@ -9,9 +9,17 @@ import { createBrowserRouter } from "react-router-dom";
 /*eslint-disable*/
 const HomePage = lazy(() => import("@/views/homepage/home_page"));
 const UserPage = lazy(() => import("@/views/userpage/user_page"));
-const ReceiptPage = lazy(() => import("@/views/receiptpage/receipt_page"));
+const ReceiptPage = lazy(
+  () => import("@/views/receiptpage/receiptlist/receipt_page")
+);
+const ReceipCategoryPage = lazy(
+  () => import("@/views/receiptpage/categorypage/categories_page")
+);
 const IngredientPage = lazy(
-  () => import("@/views/ingredientpage/ingredient_page")
+  () => import("@/views/ingredientpage/ingredientlist/ingredient_page")
+);
+const IngredientCategoryPage = lazy(
+  () => import("@/views/ingredientpage/categorypage/categories_page")
 );
 const OrderPage = lazy(() => import("@/views/orderpage/order_page"));
 const WeeklyPlanPage = lazy(
@@ -49,10 +57,18 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: "receipt",
+        path: "recipe",
         element: (
           <Suspense fallback={<Loading />}>
             <ReceiptPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "recipe-categories",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ReceipCategoryPage />
           </Suspense>
         ),
       },
@@ -61,6 +77,14 @@ const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Loading />}>
             <IngredientPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "ingredient-categories",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <IngredientCategoryPage />
           </Suspense>
         ),
       },

@@ -18,7 +18,7 @@ const Header = () => {
 
   return (
     <div className="flex justify-end gap-4 px-8 py-5 bg-primary">
-      <Button variant="outline" onClick={toggleTheme}>
+      <Button onClick={toggleTheme}>
         {theme === "dark" ? <Sun /> : <Moon />}
       </Button>
       <Popover>
