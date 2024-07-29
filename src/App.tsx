@@ -12,6 +12,7 @@ function App() {
   useEffect(() => {
     document.documentElement.className = theme;
   }, [theme]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={routes} />
