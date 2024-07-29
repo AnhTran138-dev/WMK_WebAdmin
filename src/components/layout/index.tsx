@@ -7,9 +7,9 @@ const DashboardLayout = () => {
   return (
     <div className="flex flex-col justify-between w-full min-h-screen">
       <Header />
-      <div className="flex flex-1 w-full gap-4 h-fit ">
+      <div className="flex flex-1 w-full h-fit ">
         <SiderBar />
-        <div className="w-full h-fit">
+        <div className="w-full px-3 h-fit">
           <main>
             <Outlet />
           </main>

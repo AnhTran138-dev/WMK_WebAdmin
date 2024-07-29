@@ -56,9 +56,9 @@
     --popover: 20, 14.3%, 4.1%;
     --popover-foreground: 60, 9.1%, 97.8%;
 
-    --primary: 53, 81%, 90%;
-    --primary-darker: 31, 32%, 48%;
-    --primary-foreground: 20, 14.3%, 4.1%;
+    --primary: 20, 14.3%, 15%;
+    --primary-darker: 20, 14.3%, 4.1%;
+    --primary-foreground: 60, 9.1%, 97.8%;
 
     --secondary: 0, 0%, 20%;
     --secondary-foreground: 60, 9.1%, 97.8%;

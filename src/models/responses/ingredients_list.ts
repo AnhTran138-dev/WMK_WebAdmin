@@ -1,4 +1,6 @@
-export interface Ingredients {
+import { Status } from "./recipe_list";
+
+export interface IngredientsList {
   id: string;
   ingredientCategoryId: string;
   name: string;
@@ -27,10 +29,6 @@ export interface IngredientCategory {
   name: string;
   description: string;
   status: Status;
-}
-
-export enum Status {
-  Available = "Available",
 }
 
 export interface IngredientNutrient {

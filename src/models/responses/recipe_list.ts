@@ -44,7 +44,7 @@ export interface Category {
 
 export enum Status {
   Available = "Available",
-  UnAvailable = "UnAvailable",
+  Unavailable = "UnAvailable",
 }
 
 export enum Type {

@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { RecipeList } from "../../models/responses/recipe_list";
-import { formatFromISOString, FormatType } from "../../lib";
+import { RecipeList } from "../../../models/responses/recipe_list";
+import { formatFromISOString, FormatType } from "../../../lib";
 import {
   Badge,
   Button,
@@ -10,10 +10,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../components/ui";
+} from "../../../components/ui";
 import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
 
-const RecipeColumn = (): ColumnDef<RecipeList>[] => [
+const RecipeColumn = (
+  refetch: () => void,
+  handleEdit: (id: string) => void
+): ColumnDef<RecipeList>[] => [
   {
     header: "No.",
     cell: (info) => info.row.index + 1,
@@ -62,18 +65,18 @@ const RecipeColumn = (): ColumnDef<RecipeList>[] => [
       const status = row.original.processStatus.toLowerCase();
 
       if (status === "approved") {
-        return <Badge className="success">Approved</Badge>;
+        return <Badge variant="success">Approved</Badge>;
       }
 
       if (status === "processing") {
-        return <Badge>Processing</Badge>;
+        return <Badge className="text-white bg-blue-400">Processing</Badge>;
       }
 
       if (status === "denied") {
-        return <Badge>Denied</Badge>;
+        return <Badge className="text-white bg-slate-600">Denied</Badge>;
       }
       if (status === "customer") {
-        return <Badge>Customer</Badge>;
+        return <Badge className="text-white bg-violet-400">Customer</Badge>;
       }
 
       if (status === "cancel") {
@@ -160,7 +163,8 @@ const RecipeColumn = (): ColumnDef<RecipeList>[] => [
   },
   {
     id: "actions",
-    cell: () => {
+    cell: ({ row }) => {
+      const id = row.original.id;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -172,7 +176,11 @@ const RecipeColumn = (): ColumnDef<RecipeList>[] => [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleEdit(id);
+              }}
+            >
               <PencilLine className="w-4 h-4 mr-2" />
               Edit
             </DropdownMenuItem>
