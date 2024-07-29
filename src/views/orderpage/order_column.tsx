@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { UserList } from "../../models/responses/user_list";
+import { OrderList } from "../../models/responses/order_list";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,40 +10,51 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { Button } from "../../components/ui";
 import { MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
+import { formatFromISOString, FormatType } from "../../lib";
 
-const UserColumn = (): ColumnDef<UserList>[] => [
+const OrderColum = (): ColumnDef<OrderList>[] => [
   {
     header: "No.",
     cell: (info) => info.row.index + 1,
   },
   {
-    accessorKey: "userName",
-    header: "UserName",
+    accessorKey: "orderCode",
+    header: "Order Code",
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "orderDate",
+    header: "Date Order",
+    cell: ({ row }) => {
+      if (
+        row.original.orderDate ||
+        typeof row.original.orderDate === "string"
+      ) {
+        return formatFromISOString(row.original.orderDate, FormatType.DATETIME);
+      }
+      return null;
+    },
   },
   {
-    accessorKey: "emailConfirm",
-    header: "Confirm Email",
+    accessorKey: "shipDate",
+    header: "Date Ship",
+    cell: ({ row }) => {
+      if (row.original.shipDate || typeof row.original.shipDate === "string") {
+        return formatFromISOString(row.original.shipDate, FormatType.DATETIME);
+      }
+      return null;
+    },
   },
   {
-    accessorKey: "firstName",
-    header: "FullName",
-    cell: ({ row }) => (
-      <span>
-        {row.original.firstName} {row.original.lastName}
-      </span>
-    ),
+    accessorKey: "totalPrice",
+    header: "Price",
   },
   {
-    accessorKey: "gender",
-    header: "Gender",
+    accessorKey: "address",
+    header: "Address",
   },
   {
-    accessorKey: "role",
-    header: "Role",
+    accessorKey: "userId",
+    header: "Customer",
   },
   {
     accessorKey: "status",
@@ -78,4 +89,4 @@ const UserColumn = (): ColumnDef<UserList>[] => [
   },
 ];
 
-export default UserColumn;
+export default OrderColum;
