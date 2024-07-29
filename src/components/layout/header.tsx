@@ -30,9 +30,8 @@ const Header = () => {
             </Avatar>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="flex flex-col mr-12 w-fit">
+        <PopoverContent className="flex flex-col mr-12 w-fit bg-primary">
           <Button
-            variant="ghost"
             className="gap-5 w-fit"
             onClick={() => {
               removeItem("token");

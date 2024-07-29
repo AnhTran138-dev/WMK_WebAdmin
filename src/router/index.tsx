@@ -8,6 +8,19 @@ import { createBrowserRouter } from "react-router-dom";
 
 /*eslint-disable*/
 const HomePage = lazy(() => import("@/views/homepage/home_page"));
+const UserPage = lazy(() => import("@/views/userpage/user_page"));
+const ReceiptPage = lazy(() => import("@/views/receiptpage/receipt_page"));
+const IngredientPage = lazy(
+  () => import("@/views/ingredientpage/ingredient_page")
+);
+const OrderPage = lazy(() => import("@/views/orderpage/order_page"));
+const WeeklyPlanPage = lazy(
+  () => import("@/views/weeklyplanpage/weekly_plan_page")
+);
+const NotificationPage = lazy(
+  () => import("@/views/notificationpage/notification_page")
+);
+const SettingPage = lazy(() => import("@/views/settingpage/setting_page"));
 /*eslint-enable*/
 const routes = createBrowserRouter([
   {
@@ -24,6 +37,62 @@ const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Loading />}>
             <HomePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "user",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <UserPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "receipt",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ReceiptPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "ingredient",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <IngredientPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "weekly-plan",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <WeeklyPlanPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "order",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <OrderPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "notification",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <NotificationPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "setting",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <SettingPage />
           </Suspense>
         ),
       },
