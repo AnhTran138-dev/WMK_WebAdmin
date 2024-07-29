@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 const menuItems = [
   { name: "Home", icon: Home, link: "/" },
   { name: "User", icon: LucideUser, link: "/user" },
-  { name: "Receipt", icon: LucideReceipt, link: "/receipt" },
+  { name: "Recipe", icon: LucideReceipt, link: "/recipe" },
   { name: "Ingredient", icon: LucideClipboardList, link: "/ingredient" },
   { name: "Order", icon: LucideBox, link: "/order" },
   { name: "Weekly Plan", icon: LucideCalendar, link: "/weekly-plan" },

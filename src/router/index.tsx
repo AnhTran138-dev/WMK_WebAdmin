@@ -49,7 +49,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: "receipt",
+        path: "recipe",
         element: (
           <Suspense fallback={<Loading />}>
             <ReceiptPage />
