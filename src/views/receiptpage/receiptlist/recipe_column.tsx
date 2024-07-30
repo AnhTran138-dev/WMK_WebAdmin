@@ -160,7 +160,7 @@ const RecipeColumn = (
   {
     accessorKey: "price",
     header: "Price",
-  },
+  }, 
   {
     id: "actions",
     cell: ({ row }) => {
@@ -176,6 +176,10 @@ const RecipeColumn = (
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <PencilLine className="w-4 h-4 mr-2" />
+              Accept
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 handleEdit(id);
