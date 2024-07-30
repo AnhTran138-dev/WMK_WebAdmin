@@ -7,6 +7,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  useToast,
 } from "@/components/ui";
 import { authApi } from "@/features";
 import { setItem } from "@/lib";
@@ -18,9 +19,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { UserRole } from "../../models/requests";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setData } = useUserState();
 
@@ -33,16 +36,45 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
-    try {
-      const response = await authApi.login(values);
+    await authApi
+      .login(values)
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          setData(response.data.data);
+          if (
+            response.data.data?.role === UserRole.Shipper ||
+            response.data.data?.role === UserRole.Customer
+          ) {
+            navigate("/sign-in");
+            toast({
+              title: "Error",
+              description: "You are not allowed to access this page",
+            });
+          } else {
+            setItem("token", response.data.message);
 
-      setData(response.data.data);
-
-      setItem("token", response.data.message);
-      navigate("/");
-    } catch (error) {
-      console.log("Login failed", error);
-    }
+            navigate("/");
+            toast({
+              title: "Success",
+              description: "Login successfully",
+              duration: 5000,
+            });
+          }
+        } else {
+          toast({
+            title: "Error",
+            description: response.data.message,
+            duration: 5000,
+          });
+        }
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.response.data.message,
+          duration: 5000,
+        });
+      });
   };
 
   const togglePasswordVisibility = () => {

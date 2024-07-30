@@ -12,7 +12,8 @@ const ProtectRoute = ({ children }: PrivateRouteProps) => {
   const token = getItem("token");
   const location = useLocation();
 
-  if (!user && !token) {
+  // Kiểm tra nếu người dùng chưa đăng nhập hoặc không có quyền truy cập
+  if (!user || !token) {
     return <Navigate to="/sign-in" state={{ from: location }} replace />;
   }
 

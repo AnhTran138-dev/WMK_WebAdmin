@@ -5,18 +5,10 @@ export interface UserList {
   emailConfirm: string;
   firstName: string;
   lastName: string;
-  gender: Gender;
+  gender: string;
   phone: string;
   address: null;
   role: string;
   accessFailedCount: number;
-  status: Status;
-}
-
-export enum Gender {
-  Male = "Male",
-}
-
-export enum Status {
-  Available = "Available",
+  status: string;
 }

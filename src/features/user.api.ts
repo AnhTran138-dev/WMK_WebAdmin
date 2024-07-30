@@ -1,26 +1,36 @@
+import { AxiosResponse } from "axios";
 import { axiosInstance } from "../configs";
-import {
-  UpdateUserRequest,
-  UserRequest,
-} from "../models/requests/user_request";
+import { UserRequest } from "../models/requests/user_request";
+import { Response, User } from "../models/responses";
 
 export const UserApi = {
-  getUserList: () => axiosInstance.get("/api/users/get-all"),
+  getUserList: () => axiosInstance.get("/api/user/get-all"),
 
   createUser: (data: UserRequest) =>
-    axiosInstance.post("/api/users/create-new", data),
+    axiosInstance.post("/api/user/create", data),
 
-  updateUser: (id: string, data: UpdateUserRequest) =>
-    axiosInstance.put(`/api/users/update/${id}`, data),
+  updateUser: (id: string, data: UserRequest) =>
+    axiosInstance.put(`/api/user/update/${id}`, data),
 
-  changeUserRoles: (id: string, newRole: number) =>
-    axiosInstance.put(`/api/users/change-roles`, { id, newRole }),
+  changeUserRoles: (
+    id: string,
+    newRole: number
+  ): Promise<AxiosResponse<Response<User>>> =>
+    axiosInstance.put(`/api/user/change-role/${id}`, { newRole }),
 
   changeUserStatus: (id: string) =>
-    axiosInstance.put(`/api/users/change-status`, { id }),
+    axiosInstance.put(`/api/user/change-status/${id}`),
 
   changeUserEmailConfirmed: (id: string) =>
-    axiosInstance.put(`/api/users/change-email-confirmed/${id}`),
+    axiosInstance.put(`/api/user/change-emailconfirm/${id}`),
 
-  deleteUser: (id: string) => axiosInstance.delete(`/api/users/delete/${id}`),
+  deleteUser: async (id: string): Promise<boolean> => {
+    try {
+      await axiosInstance.delete(`/api/user/delete/${id}`);
+      return true;
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+      return false;
+    }
+  },
 };
