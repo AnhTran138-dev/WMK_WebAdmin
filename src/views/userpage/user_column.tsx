@@ -137,15 +137,19 @@ const UserColumn = (
                 </Show.Else>
               </Show>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={async () => {
-                await UserApi.changeUserEmailConfirmed(user.id);
-                onToast(true, "Change email confirm");
-              }}
-            >
-              <MailCheck className="mr-2 size-4" />
-              Confirm
-            </DropdownMenuItem>
+            <Show>
+              <Show.When isTrue={user.emailConfirm !== "Confirm"}>
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await UserApi.changeUserEmailConfirmed(user.id);
+                    onToast(true, "Change email confirm");
+                  }}
+                >
+                  <MailCheck className="mr-2 size-4" />
+                  Confirm
+                </DropdownMenuItem>
+              </Show.When>
+            </Show>
             <DropdownMenuGroup>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
@@ -179,7 +183,9 @@ const UserColumn = (
             <DropdownMenuItem
               onClick={() => {
                 handleEdit({
+                  id: user.id,
                   email: user.email,
+                  userName: user.userName,
                   firstName: user.firstName,
                   lastName: user.lastName,
                   gender: user.gender === "Male" ? 1 : 0,

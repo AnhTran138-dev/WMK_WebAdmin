@@ -6,6 +6,9 @@ import { Response, User } from "../models/responses";
 export const UserApi = {
   getUserList: () => axiosInstance.get("/api/user/get-all"),
 
+  getUserByToken: (token: string): Promise<AxiosResponse<Response<User>>> =>
+    axiosInstance.get(`/api/user/get-user-token/${token}`),
+
   createUser: (data: UserRequest) =>
     axiosInstance.post("/api/user/create", data),
 

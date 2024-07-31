@@ -4,6 +4,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^[0-9]{10,15}$/;
 
 export const userSchema = z.object({
+  userName: z.string().optional(),
   email: z
     .string()
     .email("Invalid email address")

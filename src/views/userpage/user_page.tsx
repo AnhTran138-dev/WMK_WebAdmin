@@ -24,6 +24,7 @@ const UserPage = () => {
 
   const handleCreate = () => {
     setIsDialogOpen(true);
+    setUserEdit(null);
   };
 
   const handleEdit = (user: UserRequest) => {
@@ -63,7 +64,13 @@ const UserPage = () => {
       <DialogCustom
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
-        children={<UserForm reFresh={refetch} onClose={handleCloseDialog} user={userEdit} />}
+        children={
+          <UserForm
+            reFresh={refetch}
+            onClose={handleCloseDialog}
+            user={userEdit}
+          />
+        }
       />
     </div>
   );

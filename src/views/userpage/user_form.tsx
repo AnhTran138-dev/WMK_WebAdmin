@@ -1,6 +1,7 @@
-import React from "react";
 import {
+  AlertDialogCancel,
   AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
@@ -11,26 +12,25 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Switch,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  AlertDialogFooter,
-  AlertDialogCancel,
+  Switch,
   useToast,
-} from "../../components/ui";
+} from "@/components/ui";
+import { UserApi } from "@/features";
+import { UserRequest } from "@/models/requests/user_request";
+import { userSchema } from "@/schemas/user";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { userSchema } from "../../schemas/user";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { UserRequest } from "../../models/requests/user_request";
-import { UserApi } from "../../features";
 
 interface UserFormProps {
   reFresh: () => void;
-  user: UserRequest;
+  user: UserRequest | null;
   onClose: () => void;
 }
 
@@ -48,23 +48,24 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      email: "",
-      firstName: "",
-      lastName: "",
-      address: "",
-      gender: 0,
+      userName: "" || user?.userName,
+      email: "" || user?.email,
+      firstName: "" || user?.firstName,
+      lastName: "" || user?.lastName,
+      address: "" || user?.address,
+      gender: 0 || user?.gender,
       role: "",
-      phone: "",
+      phone: "" || user?.phone,
     },
   });
 
   const onSubmit = async (values: z.infer<typeof userSchema>) => {
     const newUser: UserRequest = {
+      userName: values.userName,
       email: values.email,
       firstName: values.firstName,
       lastName: values.lastName,
       address: values.address,
-      role: parseInt(values.role),
       phone: values.phone,
       gender: values.gender,
     };
@@ -73,7 +74,10 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
       if (user) {
         await UserApi.updateUser(user.id ?? "", newUser);
       } else {
-        await UserApi.createUser(newUser);
+        await UserApi.createUser({
+          ...values,
+          role: parseInt(values.role),
+        });
       }
       reFresh();
       onClose();
@@ -88,7 +92,6 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
         description: "Something went wrong",
         duration: 5000,
       });
-      console.log(error);
     }
   };
 
@@ -101,7 +104,24 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
           </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogDescription>
-          <div className="mt-5">
+          {user && (
+            <div className="grid gap-5 mt-5">
+              <FormField
+                control={form.control}
+                name="userName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+          <div className="grid gap-5 mt-5">
             <FormField
               control={form.control}
               name="email"
@@ -116,12 +136,12 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
               )}
             />
           </div>
-          <div className="flex mt-5 space-x-4">
+          <div className="grid grid-cols-1 gap-5 mt-5 md:grid-cols-2">
             <FormField
               control={form.control}
               name="firstName"
               render={({ field }) => (
-                <FormItem className="flex-1">
+                <FormItem>
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
                     <Input placeholder="First Name" {...field} />
@@ -134,7 +154,7 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
               control={form.control}
               name="lastName"
               render={({ field }) => (
-                <FormItem className="flex-1">
+                <FormItem>
                   <FormLabel>Last Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Last Name" {...field} />
@@ -144,39 +164,44 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
               )}
             />
           </div>
-          <div className="flex mt-5 space-x-4">
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>Role</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value.toString()}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {roleList.map((role) => (
-                          <SelectItem key={role.id} value={role.id.toString()}>
-                            {role.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <div className="grid grid-cols-1 gap-5 mt-5 md:grid-cols-2">
+            {!user && (
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value.toString()}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {roleList.map((role) => (
+                            <SelectItem
+                              key={role.id}
+                              value={role.id.toString()}
+                            >
+                              {role.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="gender"
               render={({ field }) => (
-                <FormItem className="flex flex-col flex-1">
+                <FormItem className="flex flex-col">
                   <FormLabel className="mb-3">Gender</FormLabel>
                   <FormControl>
                     <Switch
@@ -191,7 +216,7 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
               )}
             />
           </div>
-          <div className="mt-5">
+          <div className="grid gap-5 mt-5">
             <FormField
               control={form.control}
               name="address"
@@ -206,7 +231,7 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
               )}
             />
           </div>
-          <div className="mt-5">
+          <div className="grid gap-5 mt-5">
             <FormField
               control={form.control}
               name="phone"
