@@ -1,14 +1,3 @@
-import { ColumnDef } from "@tanstack/react-table";
-import {
-  ArrowUpDown,
-  MailCheck,
-  MoreHorizontal,
-  PencilLine,
-  ShieldCheck,
-  ShieldX,
-  Trash2,
-  UserPen,
-} from "lucide-react";
 import {
   Button,
   DropdownMenu,
@@ -22,11 +11,22 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "../../components/ui";
-import { UserApi } from "../../features";
-import { UserList } from "../../models/responses/user_list";
-import { UserRequest } from "../../models/requests/user_request";
-import Show from "../../lib/show";
+} from "@/components/ui";
+import { UserApi } from "@/features";
+import Show from "@/lib/show";
+import { UserRequest } from "@/models/requests/user_request";
+import { UserList } from "@/models/responses/user_list";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  ArrowUpDown,
+  MailCheck,
+  MoreHorizontal,
+  PencilLine,
+  ShieldCheck,
+  ShieldX,
+  Trash2,
+  UserPen,
+} from "lucide-react";
 
 const roleList = [
   { id: 0, name: "Admin" },

@@ -1,5 +1,7 @@
 export interface CategoryRequest {
-  type: string;
+  id?: string;
+  type?: string;
   name: string;
   description: string;
+  status?: number;
 }

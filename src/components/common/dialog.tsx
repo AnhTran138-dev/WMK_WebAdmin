@@ -3,12 +3,14 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from "@/components/ui";
+import { cn } from "../../lib";
 
 interface DialogCustomProps {
   children: React.ReactNode;
   isOpen: boolean;
   onClose: () => void;
   title?: React.ReactNode;
+  className?: string;
 }
 
 const DialogCustom: React.FC<DialogCustomProps> = ({
@@ -16,12 +18,17 @@ const DialogCustom: React.FC<DialogCustomProps> = ({
   isOpen,
   onClose,
   title,
+  className,
 }) => {
   return (
-    <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogTrigger asChild>{title}</AlertDialogTrigger>
-      <AlertDialogContent>{children}</AlertDialogContent>
-    </AlertDialog>
+    <div className={cn(className)}>
+      <AlertDialog open={isOpen} onOpenChange={onClose}>
+        <AlertDialogTrigger asChild>{title}</AlertDialogTrigger>
+        <AlertDialogContent className={cn(className)}>
+          {children}
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 };
 

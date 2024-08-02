@@ -1,5 +1,3 @@
-import { Status } from "./recipe_list";
-
 export interface IngredientsList {
   id: string;
   ingredientCategoryId: string;
@@ -9,26 +7,20 @@ export interface IngredientsList {
   price: number;
   packagingMethod: string;
   preservationMethod: string;
-  status: Status;
+  status: string;
   createdAt: Date;
-  createdBy: CreatedBy;
+  createdBy: string;
   updatedAt: Date;
-  updatedBy: UpdatedBy;
+  updatedBy: string;
   ingredientNutrient: IngredientNutrient;
   ingredientCategory: IngredientCategory;
-}
-
-export enum CreatedBy {
-  Ba21D44E75Ff40398AdaC494C0A90Fc9 = "BA21D44E-75FF-4039-8ADA-C494C0A90FC9",
-  System = "system",
-  The4854880257C247AE9E7EA9904E1C7F24 = " 48548802-57c2-47ae-9e7e-a9904e1c7f24",
 }
 
 export interface IngredientCategory {
   id: string;
   name: string;
   description: string;
-  status: Status;
+  status: string;
 }
 
 export interface IngredientNutrient {
@@ -42,10 +34,4 @@ export interface IngredientNutrient {
   dietaryFiber: number;
   protein: number;
   sodium: number;
-}
-
-export enum UpdatedBy {
-  Ba21D44E75Ff40398AdaC494C0A90Fc9 = "BA21D44E-75FF-4039-8ADA-C494C0A90FC9",
-  String = "string",
-  The4854880257C247AE9E7EA9904E1C7F24 = " 48548802-57c2-47ae-9e7e-a9904e1c7f24",
 }

@@ -1,4 +1,5 @@
 export interface RecipeRequest {
+  id?: string;
   name: string;
   servingSize: number;
   cookingTime: number;
@@ -17,6 +18,7 @@ export interface RecipeIngredientsList {
 }
 
 export interface Step {
+  id?: string;
   index: number;
   name: string;
   mediaURL: string;

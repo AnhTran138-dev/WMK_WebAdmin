@@ -22,6 +22,9 @@ const IngredientCategoryPage = lazy(
   () => import("@/views/ingredientpage/categorypage/categories_page")
 );
 const OrderPage = lazy(() => import("@/views/orderpage/order_page"));
+const OrderGroupPage = lazy(
+  () => import("@/views/ordergrouppage/order_group_page")
+);
 const WeeklyPlanPage = lazy(
   () => import("@/views/weeklyplanpage/weekly_plan_page")
 );
@@ -101,6 +104,14 @@ const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Loading />}>
             <OrderPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "order-group",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <OrderGroupPage />
           </Suspense>
         ),
       },

@@ -1,21 +1,37 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { RecipeList } from "../../../models/responses/recipe_list";
-import { formatFromISOString, FormatType } from "../../../lib";
 import {
   Badge,
   Button,
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "../../../components/ui";
+} from "@/components/ui";
+import { recipeApi } from "@/features";
+import { formatFromISOString, FormatType } from "@/lib";
+import { RecipeRequest } from "@/models/requests";
+import { RecipeList } from "@/models/responses/recipe_list";
+import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
+
+const statusList = [
+  { id: 0, name: "Processing" },
+  // { id: 1, name: "Approved" },
+  // { id: 2, name: "Denied" },
+  // { id: 3, name: "Customer" },
+  { id: 4, name: "Cancel" },
+];
 
 const RecipeColumn = (
   refetch: () => void,
-  handleEdit: (id: string) => void
+  handleEdit: (recipe: RecipeRequest) => void,
+  handleToast: (success: boolean, description: string) => void
 ): ColumnDef<RecipeList>[] => [
   {
     header: "No.",
@@ -69,18 +85,37 @@ const RecipeColumn = (
       }
 
       if (status === "processing") {
-        return <Badge className="text-white bg-blue-400">Processing</Badge>;
+        return (
+          <Badge className="text-white bg-blue-400 hover:bg-blue-400 hover:text-white">
+            Processing
+          </Badge>
+        );
       }
 
       if (status === "denied") {
-        return <Badge className="text-white bg-slate-600">Denied</Badge>;
+        return (
+          <Badge className="text-white bg-slate-600 hover:bg-slate-600 hover:text-white">
+            Denied
+          </Badge>
+        );
       }
       if (status === "customer") {
-        return <Badge className="text-white bg-violet-400">Customer</Badge>;
+        return (
+          <Badge className="text-white bg-violet-400 hover:bg-violet-400 hover:text-white">
+            Customer
+          </Badge>
+        );
       }
 
       if (status === "cancel") {
-        return <Badge variant="destructive">Cancel</Badge>;
+        return (
+          <Badge
+            variant="destructive"
+            className="hover:bg-destructive hover:text-white"
+          >
+            Cancel
+          </Badge>
+        );
       }
     },
   },
@@ -160,11 +195,15 @@ const RecipeColumn = (
   {
     accessorKey: "price",
     header: "Price",
-  }, 
+  },
+  {
+    accessorKey: "notice",
+    header: "Notice",
+  },
   {
     id: "actions",
     cell: ({ row }) => {
-      const id = row.original.id;
+      const recipe: RecipeList = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -176,19 +215,92 @@ const RecipeColumn = (
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <PencilLine className="w-4 h-4 mr-2" />
-              Accept
-            </DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <PencilLine className="w-4 h-4 mr-2" />
+                  Status
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    {statusList.map((status) => (
+                      <DropdownMenuItem
+                        key={status.id}
+                        onClick={async () => {
+                          console.log(status.name);
+
+                          const result = await recipeApi.changeStatusRecipe(
+                            recipe.id,
+                            status.id,
+                            "123"
+                          );
+
+                          if (!result) {
+                            handleToast(false, "Change status failed");
+                            refetch();
+                          } else {
+                            handleToast(true, "Change status successfully");
+                            refetch();
+                          }
+                        }}
+                      >
+                        {status.name}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+            </DropdownMenuGroup>
             <DropdownMenuItem
               onClick={() => {
-                handleEdit(id);
+                handleEdit({
+                  id: recipe.id,
+                  name: recipe.name,
+                  description: recipe.description,
+                  recipeIngredientsList: recipe.recipeIngredients.map(
+                    (ingredient) => {
+                      return {
+                        ingredientId: ingredient.ingredientId,
+                        amount: ingredient.amount,
+                      };
+                    }
+                  ),
+                  img: recipe.img,
+                  servingSize: recipe.servingSize,
+                  cookingTime: recipe.cookingTime,
+                  createdBy: recipe.createdBy,
+                  difficulty: recipe.difficulty,
+                  categoryIds: recipe.recipeCategories.map(
+                    (category) => category.categoryId
+                  ),
+                  steps: recipe.recipeSteps.map((step) => {
+                    return {
+                      id: step.id,
+                      index: step.index,
+                      name: step.name,
+                      mediaURL: step.imageLink,
+                      description: step.description,
+                      imageLink: step.imageLink,
+                    };
+                  }),
+                });
               }}
             >
               <PencilLine className="w-4 h-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={async () => {
+                const result = await recipeApi.deleteRecipe(recipe.id);
+
+                if (!result) {
+                  handleToast(false, "Delete recipe failed");
+                  refetch();
+                }
+                handleToast(true, "Delete recipe successfully");
+                refetch();
+              }}
+            >
               <Trash2 className="w-4 h-4 mr-2" />
               Detele
             </DropdownMenuItem>

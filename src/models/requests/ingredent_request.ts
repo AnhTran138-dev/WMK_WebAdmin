@@ -1,5 +1,5 @@
-export interface IngredentRequest {
-  id: string;
+export interface IngredientRequest {
+  id?: string;
   ingredientCategoryId: string;
   name: string;
   img: string;
@@ -8,12 +8,11 @@ export interface IngredentRequest {
   packagingMethod: string;
   preservationMethod: string;
   status: number;
-  updatedAt: Date;
-  updatedBy: string;
-  updateIngredientNutrientRequest: UpdateIngredientNutrientRequest;
+  createdBy: string;
+  nutrientInfo: NutrientInfo;
 }
 
-export interface UpdateIngredientNutrientRequest {
+export interface NutrientInfo {
   calories: number;
   fat: number;
   saturatedFat: number;
@@ -23,5 +22,3 @@ export interface UpdateIngredientNutrientRequest {
   protein: number;
   sodium: number;
 }
-
-

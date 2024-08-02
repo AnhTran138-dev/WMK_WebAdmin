@@ -34,6 +34,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchColumn?: string;
   handleCreate?: () => void;
+  handleCluster?: () => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -41,6 +42,7 @@ export function DataTable<TData, TValue>({
   data,
   searchColumn,
   handleCreate,
+  handleCluster,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -79,7 +81,8 @@ export function DataTable<TData, TValue>({
           />
         )}
         <div className="ml-auto space-x-3">
-          <Button onClick={handleCreate}>Create New</Button>
+          {handleCluster && <Button onClick={handleCluster}>Cluster</Button>}
+          {handleCreate && <Button onClick={handleCreate}>Create New</Button>}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">

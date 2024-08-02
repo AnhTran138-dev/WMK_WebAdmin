@@ -1,18 +1,23 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { WeeklyPlanList } from "../../models/responses/weekly_plan";
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import { Button } from "../../components/ui";
+} from "@/components/ui";
+import { formatFromISOString, FormatType } from "@/lib";
+import { WeeklyPlanList } from "@/models/responses/weekly_plan";
+import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
-import { formatFromISOString, FormatType } from "../../lib";
+// import { UpdateWeeklyPlan } from "../../models/requests/weekly_plan_request";
 
-const WeeklyPlanColumn = (): ColumnDef<WeeklyPlanList>[] => [
+const WeeklyPlanColumn = (
+  // refresh: () => void,
+  // onEdit: (weeklyplan: UpdateWeeklyPlan) => void,
+  // onToast: (success: boolean, description: string) => void
+): ColumnDef<WeeklyPlanList>[] => [
   {
     header: "No.",
     cell: (info) => info.row.index + 1,
@@ -116,6 +121,10 @@ const WeeklyPlanColumn = (): ColumnDef<WeeklyPlanList>[] => [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <PencilLine className="w-4 h-4 mr-2" />
+              Edit Full
+            </DropdownMenuItem>
             <DropdownMenuItem>
               <PencilLine className="w-4 h-4 mr-2" />
               Edit

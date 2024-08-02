@@ -11,12 +11,8 @@ export interface WeeklyPlanList {
   approvedBy: null;
   updatedAt: null;
   updatedBy: string;
-  processStatus: ProcessStatus;
+  processStatus: string;
   recipePLans: RecipePLAN[];
-}
-
-export enum ProcessStatus {
-  Approved = "Approved",
 }
 
 export interface RecipePLAN {
@@ -41,7 +37,7 @@ export interface Recipe {
   img: string;
   price: number;
   popularity: number;
-  processStatus: ProcessStatus;
+  processStatus: string;
   baseStatus: number;
   createdAt: Date;
   createdBy: string;
@@ -64,21 +60,10 @@ export interface RecipeCategory {
 
 export interface Category {
   id: string;
-  type?: Type;
+  type?: string;
   name: string;
   description: string;
-  status: Status;
-}
-
-export enum Status {
-  Available = "Available",
-}
-
-export enum Type {
-  Classify = "Classify",
-  CookingMethod = "Cooking Method",
-  MealInDay = "Meal in day",
-  Nation = "Nation",
+  status: string;
 }
 
 export interface RecipeIngredient {
@@ -94,21 +79,17 @@ export interface Ingredient {
   ingredientCategoryId: string;
   name: string;
   img: string;
-  unit: Unit;
+  unit: string;
   price: number;
   packagingMethod: string;
   preservationMethod: string;
-  status: Status;
+  status: string;
   createdAt: Date;
-  createdBy: AtedBy;
+  createdBy: string;
   updatedAt: Date;
-  updatedBy: AtedBy;
+  updatedBy: string;
   ingredientNutrient: Nutrient;
   ingredientCategory: Category;
-}
-
-export enum AtedBy {
-  Ba21D44E75Ff40398AdaC494C0A90Fc9 = "BA21D44E-75FF-4039-8ADA-C494C0A90FC9",
 }
 
 export interface Nutrient {
@@ -125,23 +106,12 @@ export interface Nutrient {
   recipeID?: string;
 }
 
-export enum Unit {
-  Cái = "cái",
-  Kg = "kg",
-  Lít = "lít",
-  Quả = "quả",
-}
-
 export interface RecipeStep {
   id: string;
   recipeId: string;
   index: number;
   name: string;
-  mediaURL: MediaURL;
+  mediaURL: string;
   imageLink: string;
   description: string;
-}
-
-export enum MediaURL {
-  String = "string",
 }

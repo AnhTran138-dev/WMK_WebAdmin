@@ -36,7 +36,15 @@ const menuItems = [
       { name: "Category Ingredient", link: "/ingredient-categories" },
     ],
   },
-  { name: "Order", icon: LucideBox, link: "/order" },
+  {
+    name: "Order",
+    icon: LucideBox,
+    hasSubmenu: true,
+    submenu: [
+      { name: "All Orders", link: "/order" },
+      { name: "Order Group", link: "/order-group" },
+    ],
+  },
   { name: "Weekly Plan", icon: LucideCalendar, link: "/weekly-plan" },
   { name: "Notification", icon: LucideBell, link: "/notification" },
   { name: "Settings", icon: Settings, link: "/setting" },

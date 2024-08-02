@@ -1,16 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { OrderList } from "../../models/responses/order_list";
+import { MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import { Button } from "../../components/ui";
-import { MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
-import { formatFromISOString, FormatType } from "../../lib";
+} from "@/components/ui";
+import { formatFromISOString, FormatType } from "@/lib";
+import { OrderList } from "@/models/responses/order_list";
 
 const OrderColum = (): ColumnDef<OrderList>[] => [
   {
@@ -80,7 +80,7 @@ const OrderColum = (): ColumnDef<OrderList>[] => [
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Trash2 className="w-4 h-4 mr-2" />
-              Detele
+              Change status
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

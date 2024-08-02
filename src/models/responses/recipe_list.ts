@@ -1,3 +1,5 @@
+import { IngredientsList } from "./ingredients_list";
+
 export interface RecipeList {
   id: string;
   name: string; //recipe name
@@ -9,7 +11,7 @@ export interface RecipeList {
   img: string;
   price: number; //price per serving
   popularity: number; //number of views
-  processStatus: ProcessStatus; //approved
+  processStatus: string; //approved
   baseStatus: number;
   createdAt: Date; //created date
   createdBy: string; //created by
@@ -23,10 +25,6 @@ export interface RecipeList {
   recipeSteps: RecipeStep[];
 }
 
-export enum ProcessStatus {
-  Approved = "Approved",
-}
-
 export interface RecipeCategory {
   id: string;
   categoryId: string;
@@ -36,18 +34,13 @@ export interface RecipeCategory {
 
 export interface Category {
   id: string;
-  type?: Type;
+  type?: string;
   name: string;
   description: string;
-  status: Status;
+  status: string;
 }
 
-export enum Status {
-  Available = "Available",
-  Unavailable = "UnAvailable",
-}
-
-export enum Type {
+export enum TypeOfRecipe {
   Classify = "Classify",
   CookingMethod = "Cooking Method",
   MealInDay = "Meal in day",
@@ -59,31 +52,7 @@ export interface RecipeIngredient {
   recipeId: string;
   ingredientId: string;
   amount: number;
-  ingredient: Ingredient;
-}
-
-export interface Ingredient {
-  id: string;
-  ingredientCategoryId: string;
-  name: string;
-  img: string;
-  unit: Unit;
-  price: number;
-  packagingMethod: string;
-  preservationMethod: string;
-  status: Status;
-  createdAt: Date;
-  createdBy: MediaURL;
-  updatedAt: Date;
-  updatedBy: MediaURL;
-  ingredientNutrient: Nutrient;
-  ingredientCategory: Category;
-}
-
-export enum MediaURL {
-  Ba21D44E75Ff40398AdaC494C0A90Fc9 = "BA21D44E-75FF-4039-8ADA-C494C0A90FC9",
-  String = "string",
-  System = "system",
+  ingredient: IngredientsList;
 }
 
 export interface Nutrient {
@@ -100,22 +69,12 @@ export interface Nutrient {
   recipeID?: string;
 }
 
-export enum Unit {
-  Cái = "cái",
-  Cây = "cây",
-  Gram = "gram",
-  Kg = "kg",
-  Lít = "lít",
-  Ml = "ml",
-  Quả = "quả",
-}
-
 export interface RecipeStep {
   id: string;
   recipeId: string;
   index: number;
   name: string;
-  mediaURL: MediaURL;
+  mediaURL: string;
   imageLink: string;
   description: string;
 }
