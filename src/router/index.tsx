@@ -33,11 +33,12 @@ const NotificationPage = lazy(
 );
 const SettingPage = lazy(() => import("@/views/settingpage/setting_page"));
 /*eslint-enable*/
+
 const routes = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectRoute>
+      <ProtectRoute roles={["Admin", "Staff", "Manager"]}>
         <DashboardLayout />
       </ProtectRoute>
     ),
@@ -54,9 +55,11 @@ const routes = createBrowserRouter([
       {
         path: "user",
         element: (
-          <Suspense fallback={<Loading />}>
-            <UserPage />
-          </Suspense>
+          <ProtectRoute roles={["Admin", "Manager"]}>
+            <Suspense fallback={<Loading />}>
+              <UserPage />
+            </Suspense>
+          </ProtectRoute>
         ),
       },
       {
@@ -70,9 +73,11 @@ const routes = createBrowserRouter([
       {
         path: "recipe-categories",
         element: (
-          <Suspense fallback={<Loading />}>
-            <ReceipCategoryPage />
-          </Suspense>
+          <ProtectRoute roles={["Admin", "Manager"]}>
+            <Suspense fallback={<Loading />}>
+              <ReceipCategoryPage />
+            </Suspense>
+          </ProtectRoute>
         ),
       },
       {
@@ -86,9 +91,11 @@ const routes = createBrowserRouter([
       {
         path: "ingredient-categories",
         element: (
-          <Suspense fallback={<Loading />}>
-            <IngredientCategoryPage />
-          </Suspense>
+          <ProtectRoute roles={["Admin", "Manager"]}>
+            <Suspense fallback={<Loading />}>
+              <IngredientCategoryPage />
+            </Suspense>
+          </ProtectRoute>
         ),
       },
       {
@@ -118,9 +125,11 @@ const routes = createBrowserRouter([
       {
         path: "notification",
         element: (
-          <Suspense fallback={<Loading />}>
-            <NotificationPage />
-          </Suspense>
+          <ProtectRoute roles={["Admin", "Manager"]}>
+            <Suspense fallback={<Loading />}>
+              <NotificationPage />
+            </Suspense>
+          </ProtectRoute>
         ),
       },
       {
