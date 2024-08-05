@@ -11,6 +11,7 @@ import DetailOrderForm from "./dialog/DetailOrderForm";
 import OrderGroupForm from "./dialog/OrderGroupForm";
 import Show from "../../lib/show";
 import ClusterForm from "./dialog/ClusterForm";
+import { log } from "console";
 
 const OrderGroupPage = () => {
   const { toast } = useToast();
@@ -24,6 +25,8 @@ const OrderGroupPage = () => {
     error,
     refetch,
   } = useFetch<Response<OrderGroupList[]>>("/api/order-group/get-all");
+
+  console.log("orderGroup", orderGroup);
 
   const handleCluster = () => {
     setType("cluster");
