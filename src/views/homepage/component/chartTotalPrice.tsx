@@ -1,0 +1,239 @@
+import React, { useState, useEffect } from "react";
+import useFetch from "../../../hooks/useFetch";
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+import { Response, Order } from "../../../models/responses";
+import DataRender from "../../../components/data_render";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  Area,
+} from "recharts";
+import { Button } from "@/components/ui";
+import ChartAlertDialog from "./ChartModal";
+import ChangeDisplay from "./ChangeDisplay";
+
+dayjs.extend(isBetween);
+
+interface ChartData {
+  xAxis: string[];
+  series: { data: number[]; area: boolean }[];
+}
+
+const ChartTotalPrice = () => {
+  const [chartData, setChartData] = useState<ChartData>({
+    xAxis: [],
+    series: [],
+  });
+
+  const [currentWeekTotal, setCurrentWeekTotal] = useState(0);
+  const [previousWeekData, setPreviousWeekData] = useState<
+    { day: string; value: number }[]
+  >([]);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+
+  const {
+    data: ordersResponse,
+    loading,
+    error,
+    refetch,
+  } = useFetch<Response<Order[]>>("/api/order/get-all");
+
+  console.log("ordersResponse", ordersResponse);
+
+  useEffect(() => {
+    // debugger;
+    if (!ordersResponse?.data) return;
+    if (ordersResponse.data.length === 0) return;
+    if (ordersResponse === null || ordersResponse === undefined) return;
+    // Lọc đơn hàng có trạng thái là "Shipped" hoặc "Delivered"
+
+    if (ordersResponse) {
+      const filteredOrders = ordersResponse?.data.filter(
+        (order) =>
+          order.status === "Shipped" ||
+          order.status === "Delivered" ||
+          order.status === "Processing"
+      );
+
+      console.log("filteredOrders", filteredOrders);
+      // debugger;
+      const currentWeekStart = dayjs().startOf("week").add(1, "day"); // Thứ Hai
+      const currentWeekEnd = dayjs().endOf("week").subtract(1, "day"); // Chủ Nhật
+
+      const previousWeekStart = currentWeekStart.subtract(1, "week");
+      const previousWeekEnd = currentWeekEnd.subtract(1, "week");
+
+      // Tạo một đối tượng để lưu tổng giá trị của mỗi ngày trong tuần
+      const totalPerDay = Array(7).fill(0);
+      const totalPerDayPrevWeek = Array(7).fill(0);
+
+      let currentWeekTotalValue = 0;
+      let previousWeekTotalValue = 0;
+
+      filteredOrders.forEach((order) => {
+        const orderDate = dayjs(order.orderDate);
+
+        if (
+          orderDate.isBetween(currentWeekStart, currentWeekEnd, "day", "[]")
+        ) {
+          const dayIndex = orderDate.day() - 1;
+          totalPerDay[dayIndex] += order.totalPrice;
+          currentWeekTotalValue += order.totalPrice;
+        }
+
+        if (
+          orderDate.isBetween(previousWeekStart, previousWeekEnd, "day", "[]")
+        ) {
+          const dayIndex = orderDate.day() - 1;
+          totalPerDayPrevWeek[dayIndex] += order.totalPrice;
+          previousWeekTotalValue += order.totalPrice;
+        }
+      });
+
+      setChartData({
+        xAxis: Array(7)
+          .fill(0)
+          .map((_, index) =>
+            dayjs().startOf("week").add(index, "day").format("ddd\nMMM D")
+          ),
+        series: [
+          {
+            data: totalPerDay,
+            area: true,
+          },
+        ],
+      });
+
+      setCurrentWeekTotal(currentWeekTotalValue);
+      setPreviousWeekData(
+        totalPerDayPrevWeek.map((value, index) => ({
+          day: dayjs()
+            .startOf("week")
+            .subtract(1, "week")
+            .add(index, "day")
+            .format("ddd, MMM D"),
+          value,
+        }))
+      );
+    }
+  }, [ordersResponse]);
+
+  const chartSeries = chartData.series[0];
+
+  const previousWeekTotal = previousWeekData.reduce(
+    (sum, entry) => sum + entry.value,
+    0
+  );
+
+  console.log("chartData", chartData);
+
+  console.log("chartSeries", chartSeries);
+
+  const percentChange =
+    previousWeekTotal === 0
+      ? 100
+      : ((currentWeekTotal - previousWeekTotal) / previousWeekTotal) * 100;
+
+  const xAxisData = Array(7)
+    .fill(0)
+    .map((_, index) =>
+      dayjs().startOf("week").add(index, "day").format("ddd, MMM D")
+    );
+
+  console.log("xAxisData", xAxisData); // Kiểm tra dữ liệu xAxisData
+
+  return (
+    <DataRender isLoading={loading} error={error}>
+      <div className="container mx-auto p-4 flex flex-wrap">
+        <div className="w-[40%] p-2 mx-auto ">
+          <div className="p-4 shadow-md rounded-md">
+            <h2 className="text-lg font-semibold mb-2 uppercase">
+              Revenue Summary:
+            </h2>
+            <p>
+              <strong className="mr-4"> All Total Revenue:</strong>{" "}
+              {ordersResponse?.data
+                ?.reduce((sum, order) => sum + order.totalPrice, 0)
+                .toFixed(2)}
+            </p>
+            <p>
+              <strong className="mr-4">Current Week Total:</strong>{" "}
+              {currentWeekTotal?.toFixed(2)}
+            </p>
+            <p>
+              <strong className="mr-4">Previous Week Total:</strong>
+              {previousWeekTotal.toFixed(2)}
+              <Button
+                onClick={() => setIsAlertDialogOpen(true)}
+                className="ml-4"
+              >
+                View Chart
+              </Button>
+            </p>
+            <ChangeDisplay
+              previousWeekTotal={previousWeekTotal}
+              percentChange={percentChange}
+            />
+          </div>
+        </div>
+        <div className="w-[60%] flex justify-center mx-auto">
+          <div>
+            <h1 className="text-xl font-semibold mb-6 text-center uppercase">
+              Total income chart for the current week
+            </h1>
+            <LineChart
+              width={550}
+              height={300}
+              data={chartSeries?.data?.map((value, index) => ({
+                day: chartData.xAxis[index],
+                value,
+              }))}
+              //   className="!h-[120%]"
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="day"
+                tickFormatter={(tickItem) =>
+                  dayjs(tickItem).format("ddd, MMM D")
+                }
+                tick={{ fontSize: 11 }} // Kích thước chữ
+                angle={-20} // Góc nghiêng chữ
+                textAnchor="end" // Căn chỉnh chữ
+              />
+              <YAxis tick={{ fontSize: 11 }} />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="value" stroke="#8884d8" />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="#8884d8"
+                fill="url(#gradientColor)"
+                fillOpacity={0.3} // Adjust the opacity for transparency
+              />
+              <defs>
+                <linearGradient id="gradientColor" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+            </LineChart>
+          </div>
+        </div>
+      </div>
+      <ChartAlertDialog
+        open={isAlertDialogOpen}
+        onClose={() => setIsAlertDialogOpen(false)}
+        data={previousWeekData}
+      />
+    </DataRender>
+  );
+};
+
+export default ChartTotalPrice;
