@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
   SelectContent,
-  Switch,
+  // Switch,
 } from "@/components/ui";
 import { useFormContext } from "react-hook-form";
 import useFetch from "../../../../hooks/useFetch";
@@ -21,8 +21,6 @@ const GeneralInfoForm: React.FC = () => {
   const { register, setValue, watch } = useFormContext();
   const ingredientCategoryId = watch("ingredientCategoryId");
   const [imagePreview, setImagePreview] = useState<string | null>(watch("img"));
-
-  console.log("ingredientCategoryId", ingredientCategoryId);
 
   const { data: categories } = useFetch<Response<CategoriesIngredient[]>>(
     "/api/ingredientcategories/get-all"
@@ -131,23 +129,25 @@ const GeneralInfoForm: React.FC = () => {
               </FormItem>
             )}
           />
-          <FormField
-            name="status"
-            render={() => (
-              <FormItem className="flex flex-col">
-                <FormLabel className="mb-3">Status</FormLabel>
-                <FormControl>
-                  <Switch
-                    checked={Boolean(watch("status"))}
-                    onCheckedChange={(checked) =>
-                      setValue("status", checked ? 1 : 0)
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* {!status && (
+            <FormField
+              name="status"
+              render={() => (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="mb-3">Status</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={Boolean(watch("status"))}
+                      onCheckedChange={(checked) =>
+                        setValue("status", checked ? 1 : 0)
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )} */}
         </div>
         <FormField
           name="unit"
@@ -193,7 +193,7 @@ const GeneralInfoForm: React.FC = () => {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           name="createdBy"
           render={() => (
             <FormItem>
@@ -208,7 +208,7 @@ const GeneralInfoForm: React.FC = () => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export interface RecipeList {
   price: number; //price per serving
   popularity: number; //number of views
   processStatus: string; //approved
-  baseStatus: number;
+  baseStatus: string;
   createdAt: Date; //created date
   createdBy: string; //created by
   approvedAt: Date | null;
@@ -38,13 +38,6 @@ export interface Category {
   name: string;
   description: string;
   status: string;
-}
-
-export enum TypeOfRecipe {
-  Classify = "Classify",
-  CookingMethod = "Cooking Method",
-  MealInDay = "Meal in day",
-  Nation = "Nation",
 }
 
 export interface RecipeIngredient {

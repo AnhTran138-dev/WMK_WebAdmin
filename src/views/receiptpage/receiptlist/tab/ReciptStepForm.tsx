@@ -18,7 +18,7 @@ const ReciptStepForm: React.FC = () => {
   const { control, register } = useFormContext<z.infer<typeof recipeSchema>>();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "step",
+    name: "steps",
   });
 
   // Ensure there is always at least one step initially
@@ -51,15 +51,15 @@ const ReciptStepForm: React.FC = () => {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Column 1: Step Name */}
               <FormField
-                name={`step.${index}.name`}
+                name={`steps.${index}.name`}
                 render={() => (
                   <FormItem>
                     <FormLabel>Step Name</FormLabel>
                     <FormControl>
                       <Input
-                        id={`step.${index}.name`}
+                        id={`steps.${index}.name`}
                         placeholder="Step Name"
-                        {...register(`step.${index}.name`)}
+                        {...register(`steps.${index}.name`)}
                       />
                     </FormControl>
                   </FormItem>
@@ -69,15 +69,15 @@ const ReciptStepForm: React.FC = () => {
               {/* Column 2: Media URL and Image Link */}
               <div className="space-y-4">
                 <FormField
-                  name={`step.${index}.mediaURL`}
+                  name={`steps.${index}.mediaURL`}
                   render={() => (
                     <FormItem>
                       <FormLabel>Media URL</FormLabel>
                       <FormControl>
                         <Input
-                          id={`step.${index}.mediaURL`}
+                          id={`steps.${index}.mediaURL`}
                           placeholder="Media URL"
-                          {...register(`step.${index}.mediaURL`)}
+                          {...register(`steps.${index}.mediaURL`)}
                         />
                       </FormControl>
                     </FormItem>
@@ -85,15 +85,15 @@ const ReciptStepForm: React.FC = () => {
                 />
 
                 <FormField
-                  name={`step.${index}.imageLink`}
+                  name={`steps.${index}.imageLink`}
                   render={() => (
                     <FormItem>
                       <FormLabel>Image Link</FormLabel>
                       <FormControl>
                         <Input
-                          id={`step.${index}.imageLink`}
+                          id={`steps.${index}.imageLink`}
                           placeholder="Image Link"
-                          {...register(`step.${index}.imageLink`)}
+                          {...register(`steps.${index}.imageLink`)}
                         />
                       </FormControl>
                     </FormItem>
@@ -103,16 +103,16 @@ const ReciptStepForm: React.FC = () => {
 
               {/* Full-width Description */}
               <FormField
-                name={`step.${index}.description`}
+                name={`steps.${index}.description`}
                 render={() => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        id={`step.${index}.description`}
+                        id={`steps.${index}.description`}
                         placeholder="Description"
                         rows={4} // Adjust the height as needed
-                        {...register(`step.${index}.description`)}
+                        {...register(`steps.${index}.description`)}
                       />
                     </FormControl>
                   </FormItem>

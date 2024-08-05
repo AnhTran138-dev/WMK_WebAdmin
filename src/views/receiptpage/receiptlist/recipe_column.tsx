@@ -14,11 +14,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui";
 import { recipeApi } from "@/features";
-import { formatFromISOString, FormatType } from "@/lib";
 import { RecipeRequest } from "@/models/requests";
 import { RecipeList } from "@/models/responses/recipe_list";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
+import {
+  ArrowUpDown,
+  MoreHorizontal,
+  NotebookTabs,
+  PencilLine,
+  Trash2,
+} from "lucide-react";
 
 const statusList = [
   { id: 0, name: "Processing" },
@@ -31,7 +36,8 @@ const statusList = [
 const RecipeColumn = (
   refetch: () => void,
   handleEdit: (recipe: RecipeRequest) => void,
-  handleToast: (success: boolean, description: string) => void
+  handleToast: (success: boolean, description: string) => void,
+  handleDetail: (id: string) => void
 ): ColumnDef<RecipeList>[] => [
   {
     header: "No.",
@@ -50,6 +56,7 @@ const RecipeColumn = (
       );
     },
   },
+
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -65,6 +72,77 @@ const RecipeColumn = (
     },
   },
   {
+    accessorKey: "price",
+    header: "Price",
+  },
+
+  {
+    accessorKey: "servingSize",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Serving Size
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <span className="text-left">{row.original.servingSize} person</span>
+      );
+    },
+  },
+  {
+    accessorKey: "cookingTime",
+    header: "Time",
+  },
+  {
+    accessorKey: "createdBy",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Created By
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "approvedBy",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Approved By
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "popularity",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Popularity
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
+  },
+
+  {
     accessorKey: "processStatus",
     header: ({ column }) => {
       return (
@@ -72,7 +150,7 @@ const RecipeColumn = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Process Status
+          Request
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
@@ -120,86 +198,29 @@ const RecipeColumn = (
     },
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "baseStatus",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created At
+          Show on
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      return formatFromISOString(row.original.createdAt, FormatType.DATETIME);
-    },
-  },
-  {
-    accessorKey: "createdBy",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Created By
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "servingSize",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Serving Size
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "cookingTime",
-    header: "Time",
-  },
-  {
-    accessorKey: "approvedAt",
-    header: "Approved At",
-    cell: ({ row }) => {
-      if (
-        row.original.approvedAt ||
-        typeof row.original.approvedAt === "string"
-      ) {
-        return formatFromISOString(
-          row.original.approvedAt,
-          FormatType.DATETIME
-        );
+      const status = row.original.baseStatus.toLowerCase();
+
+      if (status === "available") {
+        return <Badge variant="success">Available</Badge>;
       }
-      return null;
+
+      return <Badge variant="destructive">Unavailable</Badge>;
     },
   },
-  {
-    accessorKey: "approvedBy",
-    header: "Approved By",
-  },
-  {
-    accessorKey: "popularity",
-    header: "Popularity",
-  },
-  {
-    accessorKey: "price",
-    header: "Price",
-  },
-  {
-    accessorKey: "notice",
-    header: "Notice",
-  },
+
   {
     id: "actions",
     cell: ({ row }) => {
@@ -215,6 +236,14 @@ const RecipeColumn = (
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                handleDetail(recipe.id);
+              }}
+            >
+              <NotebookTabs className="w-4 h-4 mr-2" />
+              Detail
+            </DropdownMenuItem>
             <DropdownMenuGroup>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
@@ -227,8 +256,6 @@ const RecipeColumn = (
                       <DropdownMenuItem
                         key={status.id}
                         onClick={async () => {
-                          console.log(status.name);
-
                           const result = await recipeApi.changeStatusRecipe(
                             recipe.id,
                             status.id,
@@ -268,7 +295,6 @@ const RecipeColumn = (
                   img: recipe.img,
                   servingSize: recipe.servingSize,
                   cookingTime: recipe.cookingTime,
-                  createdBy: recipe.createdBy,
                   difficulty: recipe.difficulty,
                   categoryIds: recipe.recipeCategories.map(
                     (category) => category.categoryId

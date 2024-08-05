@@ -9,7 +9,7 @@ const DashboardLayout = () => {
       <Header />
       <div className="flex flex-1 w-full h-fit ">
         <SiderBar />
-        <div className="w-full px-3 h-fit">
+        <div className="w-full h-full px-3">
           <main>
             <Outlet />
           </main>

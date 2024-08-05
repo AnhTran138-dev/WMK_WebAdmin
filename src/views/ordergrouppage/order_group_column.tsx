@@ -23,12 +23,8 @@ const OrderGroupColumn = (
     cell: (info) => info.row.index + 1,
   },
   {
-    accessorKey: "shipperId",
-    header: "Shipper Id",
-  },
-  {
-    accessorKey: "coordinates",
-    header: "Coordinates",
+    accessorKey: "shipperUserName",
+    header: "Shipper Name",
   },
   {
     accessorKey: "asignAt",
@@ -40,6 +36,10 @@ const OrderGroupColumn = (
   {
     accessorKey: "asignBy",
     header: "Asign By",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
   },
   {
     accessorKey: "location",

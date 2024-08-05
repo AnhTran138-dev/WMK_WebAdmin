@@ -6,11 +6,15 @@ import useFetch from "@/hooks/useFetch";
 import { IngredientRequest } from "@/models/requests";
 import { IngredientsList, Response } from "@/models/responses";
 import { useState } from "react";
+import IngredientForm from "./dialog/ingredient_form";
 import IngredientColumn from "./ingredient_column";
-import IngredientForm from "./ingredient_form";
+import Show from "../../../lib/show";
+import IngredientDetail from "./dialog/ingredient_detail";
 
 const IngredientPage = () => {
   const { toast } = useToast();
+  const [id, setId] = useState<string>("");
+  const [type, setType] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [ingredentEdit, setIngredentEdit] = useState<IngredientRequest | null>(
     null
@@ -24,11 +28,19 @@ const IngredientPage = () => {
   } = useFetch<Response<IngredientsList[]>>("/api/ingredients/get-all");
 
   const handleCreate = () => {
+    setType("edit");
     setIsDialogOpen(true);
     setIngredentEdit(null);
   };
 
+  const handleDetail = (id: string) => {
+    setId(id);
+    setType("detail");
+    setIsDialogOpen(true);
+  };
+
   const handleEdit = (ingredent: IngredientRequest) => {
+    setType("edit");
     setIsDialogOpen(true);
     setIngredentEdit(ingredent);
   };
@@ -57,7 +69,7 @@ const IngredientPage = () => {
       <DataRender isLoading={loading} error={error}>
         <DataTable
           data={ingredient?.data ?? []}
-          columns={IngredientColumn(handleEdit, handleToast, refetch)}
+          columns={IngredientColumn(handleEdit, handleToast, refetch, handleDetail)}
           searchColumn="name"
           handleCreate={handleCreate}
         />
@@ -67,11 +79,18 @@ const IngredientPage = () => {
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         children={
-          <IngredientForm
-            onClose={handleCloseDialog}
-            reFresh={refetch}
-            ingredient={ingredentEdit}
-          />
+          <Show>
+            <Show.When isTrue={type === "edit"}>
+              <IngredientForm
+                onClose={handleCloseDialog}
+                reFresh={refetch}
+                ingredient={ingredentEdit}
+              />
+            </Show.When>
+            <Show.When isTrue={type === "detail"}>
+              <IngredientDetail id={id} />
+            </Show.When>
+          </Show>
         }
       />
     </div>

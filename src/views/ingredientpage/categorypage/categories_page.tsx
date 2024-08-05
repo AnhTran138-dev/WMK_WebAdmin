@@ -9,10 +9,13 @@ import { CategoriesIngredient, Response } from "@/models/responses";
 import { useState } from "react";
 import CategoriesForm from "../../categorypopup/categories_form";
 import { CategoriesIngredientColumn } from "./categories_ingredient_column";
+import Show from "../../../lib/show";
+// import MessageChanging from "./dialog/message_changing";
 
 const CategoriesPage = () => {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [type, setType] = useState<string>("");
   const [categoryEdit, setCategoryEdit] = useState<CategoryRequest | null>(
     null
   );
@@ -27,40 +30,55 @@ const CategoriesPage = () => {
   );
 
   const handleCreate = () => {
+    setType("edit");
     setIsDialogOpen(true);
     setCategoryEdit(null);
   };
 
   const handleEdit = (category: CategoryRequest) => {
+    setType("edit");
     setIsDialogOpen(true);
     setCategoryEdit(category);
   };
+
+  // const handleAction = (type: string, category: CategoryRequest) => {
+  //   setType(type);
+  //   setCategoryAction(category);
+  //   setIsDialogOpen(true);
+  // };
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
   };
 
   const handleToast = (success: boolean, description: string) => {
-    if (success) {
-      toast({
-        title: "success",
-        description: description,
-      });
-      refetch();
-    } else {
-      toast({
-        title: "error",
-        description: description,
-      });
-    }
+    toast({
+      title: success ? "Success" : "Error",
+      description: description,
+    });
+    if (success) refetch();
   };
 
-  const createCategory = async (category: CategoryRequest) => {
-    await IngredientApi.category.createCategory(category);
+  const createCategory = async (
+    category: CategoryRequest
+  ): Promise<Response<null>> => {
+    const respone: Response<null> = await IngredientApi.category.createCategory(
+      category
+    );
+
+    return respone;
   };
 
-  const updateCategory = async (id: string, category: CategoryRequest) => {
-    await IngredientApi.category.updateCategory(id, category);
+  const updateCategory = async (
+    id: string,
+    category: CategoryRequest
+  ): Promise<Response<null>> => {
+    const respone: Response<null> = await IngredientApi.category.updateCategory(
+      id,
+      category
+    );
+
+    return respone;
   };
 
   return (
@@ -76,14 +94,19 @@ const CategoriesPage = () => {
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         children={
-          <CategoriesForm
-            type="ingredient"
-            createCategory={createCategory}
-            updateCategory={updateCategory}
-            reFresh={refetch}
-            onClose={handleCloseDialog}
-            category={categoryEdit}
-          />
+          <Show>
+            <Show.When isTrue={type === "detail"}>
+              <CategoriesForm
+                type="ingredient"
+                createCategory={createCategory}
+                updateCategory={updateCategory}
+                reFresh={refetch}
+                onClose={handleCloseDialog}
+                category={categoryEdit}
+              />
+            </Show.When>
+            <Show.Else>{/* <MessageChanging type={type} /> */}</Show.Else>
+          </Show>
         }
       />
     </div>

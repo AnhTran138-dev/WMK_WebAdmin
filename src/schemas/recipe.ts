@@ -17,11 +17,14 @@ export const recipeSchema = z.object({
   name: z.string(),
   servingSize: z.number(),
   cookingTime: z.number(),
-  difficulty: z.number(),
+  difficulty: z.number().min(0).max(2),
   description: z.string(),
   img: z.string(),
-  createdBy: z.string(),
-  step: z.array(stepSchema),
+  steps: z.array(stepSchema),
   categoryIds: z.array(z.string().uuid()),
-  recipeIngredientsList: z.array(ingredentsSchema),
+  recipeIngredientsList: z
+    .array(ingredentsSchema)
+    .refine((value) => value.some((item) => item), {
+      message: "You have to select at least one item.",
+    }),
 });

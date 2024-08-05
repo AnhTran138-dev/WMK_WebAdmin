@@ -1,10 +1,7 @@
-import { Type } from "./recipe_list";
-import { Status } from "./recipes";
-
 export interface CategoriesRecipe {
   id: string;
-  type: Type;
+  type: string;
   name: string;
   description: string;
-  status: Status;
+  status: string;
 }

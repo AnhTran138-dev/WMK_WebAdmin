@@ -18,9 +18,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { IngredientApi } from "../../../features";
-import GeneralInfoForm from "./tabs/GeneralInfoForm";
-import NutritionalInfoForm from "./tabs/NutritionalInfoForm";
+import { IngredientApi } from "../../../../features";
+import GeneralInfoForm from "../tabs/GeneralInfoForm";
+import NutritionalInfoForm from "../tabs/NutritionalInfoForm";
+import { Response } from "../../../../models/responses";
 
 interface IngredientFormProps {
   reFresh: () => void;
@@ -47,8 +48,6 @@ const IngredientForm: React.FC<IngredientFormProps> = ({
       price: 0,
       packagingMethod: "",
       preservationMethod: "",
-      status: 0,
-      createdBy: "",
       nutrientInfo: {
         calories: 0,
         fat: 0,
@@ -71,8 +70,6 @@ const IngredientForm: React.FC<IngredientFormProps> = ({
       "price",
       "packagingMethod",
       "preservationMethod",
-      "status",
-      "createdBy",
     ];
 
     return requiredKeys.every(
@@ -116,20 +113,37 @@ const IngredientForm: React.FC<IngredientFormProps> = ({
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
+      let response: Response<null> | null = null;
+
       if (ingredient) {
-        await IngredientApi.updateIngredient(ingredient.id ?? "", values);
+        response = await IngredientApi.updateIngredient(
+          ingredient.id ?? "",
+          values
+        );
       } else {
-        await IngredientApi.createIngredeint(values);
+        response = await IngredientApi.createIngredeint(values);
       }
 
-      reFresh();
-      onClose();
+      if (response?.statusCode !== 200) {
+        toast({
+          title: "Error",
+          description: response.message,
+          duration: 5000,
+        });
+        return;
+      }
 
-      toast({
-        title: "Success",
-        description: ingredient ? "Ingredient updated" : "Ingredient created",
-        duration: 500,
-      });
+      if (response?.statusCode === 200) {
+        reFresh();
+        onClose();
+
+        toast({
+          title: "Success",
+          description: ingredient ? response.message : response.message,
+          duration: 10000,
+        });
+        return;
+      }
     } catch (error) {
       toast({
         title: "Error",

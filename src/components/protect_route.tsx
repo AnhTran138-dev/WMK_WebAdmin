@@ -1,4 +1,4 @@
-import { useEffect, useCallback, ReactNode } from "react";
+import { useEffect, useCallback, ReactNode, useMemo } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getItem } from "@/lib";
 import { useUserState } from "@/states";
@@ -12,13 +12,17 @@ interface PrivateRouteProps {
 }
 
 const ProtectRoute = ({ children, roles = [] }: PrivateRouteProps) => {
-  const { setData, data: user } = useUserState();
+  const { setData } = useUserState();
   const token = getItem("token");
   const location = useLocation();
   const navigate = useNavigate();
 
   // Decode the token to get the user's role and other info
-  const tokenRewrite: TokenResponse = jwtDecode(token);
+
+  const tokenRewrite: TokenResponse = useMemo(
+    () => (token ? jwtDecode(token) : ({} as TokenResponse)),
+    [token]
+  );
 
   const fetchUserByToken = useCallback(
     async (token: string) => {
@@ -45,28 +49,32 @@ const ProtectRoute = ({ children, roles = [] }: PrivateRouteProps) => {
   );
 
   useEffect(() => {
-    const storedToken = getItem("token");
-    if (storedToken) {
-      fetchUserByToken(storedToken);
+    if (token) {
+      fetchUserByToken(token);
+    } else {
+      navigate("/sign-in", { replace: true });
     }
-  }, [fetchUserByToken]);
+  }, [token, fetchUserByToken, navigate]);
 
   if (!token) {
     return <Navigate to="/sign-in" state={{ from: location }} replace />;
   }
 
-  if (
-    roles.length > 0 &&
-    !roles.includes(
-      tokenRewrite[
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-      ]
-    )
-  ) {
-    return <div>Private Page</div>;
+  const userRole =
+    tokenRewrite[
+      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+    ];
+
+  if (roles.length > 0 && !roles.includes(userRole)) {
+    return (
+      <div className="font-semibold text-center text-gray-400 h-96">
+        <div className="text-4xl">Access Denied</div>
+        <div>403 Forbidden</div>
+      </div>
+    );
   }
 
-  return <div>{children}</div>;
+  return <>{children}</>;
 };
 
 export default ProtectRoute;

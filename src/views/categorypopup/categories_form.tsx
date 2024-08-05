@@ -26,13 +26,17 @@ import {
 } from "@/components/ui";
 import { categorySchema } from "../../schemas";
 import { CategoryRequest } from "../../models/requests";
+import { Response } from "../../models/responses";
 
 interface CategoryFormProps {
   reFresh: () => void;
   category: CategoryRequest | null;
   onClose: () => void;
-  createCategory: (category: CategoryRequest) => Promise<void>;
-  updateCategory: (id: string, category: CategoryRequest) => Promise<void>;
+  createCategory: (category: CategoryRequest) => Promise<Response<null>>;
+  updateCategory: (
+    id: string,
+    category: CategoryRequest
+  ) => Promise<Response<null>>;
   type: "recipe" | "ingredient";
 }
 
@@ -72,18 +76,32 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     };
 
     try {
+      let response: Response<null>;
       if (category) {
-        await updateCategory(category.id ?? "", newCategory);
+        response = await updateCategory(category.id ?? "", newCategory);
       } else {
-        await createCategory(values);
+        response = await createCategory(values);
       }
-      reFresh();
-      onClose();
-      toast({
-        title: "Success",
-        description: category ? "Category updated" : "Category created",
-        duration: 5000,
-      });
+
+      if (response.statusCode === 200) {
+        reFresh();
+        onClose();
+        toast({
+          title: "Success",
+          description: category ? "Category updated" : "Category created",
+          duration: 5000,
+        });
+        return;
+      }
+
+      if (response.statusCode !== 200) {
+        toast({
+          title: "Error",
+          description: response.message,
+          duration: 5000,
+        });
+        return;
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -117,7 +135,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
                   </FormItem>
                 )}
               />
-              {type === "recipe" && !category && (
+              {type === "recipe" && (
                 <FormField
                   control={form.control}
                   name="type"

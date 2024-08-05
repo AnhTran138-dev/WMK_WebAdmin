@@ -4,11 +4,11 @@ import useFetch from "@/hooks/useFetch";
 import { CategoriesRecipe, Response } from "@/models/responses";
 import { CategoriesRecipeColumns } from "./categories_recipe_column";
 import { useState } from "react";
-import { CategoryRequest } from "../../../models/requests";
-import { useToast } from "../../../components/ui";
-import DialogCustom from "../../../components/common/dialog";
+import { CategoryRequest } from "@/models/requests";
+import { useToast } from "@/components/ui";
+import DialogCustom from "@/components/common/dialog";
 import CategoriesForm from "../../categorypopup/categories_form";
-import { recipeApi } from "../../../features";
+import { recipeApi } from "@/features";
 
 const CategoriesPage = () => {
   const { toast } = useToast();
@@ -54,11 +54,13 @@ const CategoriesPage = () => {
   };
 
   const createCategory = async (category: CategoryRequest) => {
-    await recipeApi.category.createCategory(category);
+    const response = await recipeApi.category.createCategory(category);
+    return response;
   };
 
   const updateCategory = async (id: string, category: CategoryRequest) => {
-    await recipeApi.category.updateCategory(id, category);
+    const response = await recipeApi.category.updateCategory(id, category);
+    return response;
   };
 
   return (

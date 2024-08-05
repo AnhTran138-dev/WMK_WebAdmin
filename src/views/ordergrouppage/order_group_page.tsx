@@ -7,10 +7,10 @@ import { OrderGroupList } from "@/models/responses/order_group_list";
 import { useState } from "react";
 import OrderGroupColumn from "./order_group_column";
 import DialogCustom from "../../components/common/dialog";
-import DetailOrderForm from "../weeklyplanpage/dialog/DetailOrderForm";
-import OrderGroupForm from "../weeklyplanpage/dialog/OrderGroupForm";
+import DetailOrderForm from "./dialog/DetailOrderForm";
+import OrderGroupForm from "./dialog/OrderGroupForm";
 import Show from "../../lib/show";
-import ClusterForm from "../weeklyplanpage/dialog/ClusterForm";
+import ClusterForm from "./dialog/ClusterForm";
 
 const OrderGroupPage = () => {
   const { toast } = useToast();
@@ -76,16 +76,17 @@ const OrderGroupPage = () => {
           data={orderGroup?.data || []}
           handleCreate={handleCreate}
           handleCluster={handleCluster}
+          searchColumn="shipperUserName"
         />
       </DataRender>
       <DialogCustom
-        className="flex-grow flex-shrink p-6"
+        className="flex-grow flex-shrink max-w-5xl p-6 "
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         children={
           <Show>
             <Show.When isTrue={type === "detail"}>
-              <DetailOrderForm id={orderGroupId} />
+              <DetailOrderForm id={orderGroupId} onToast={handleToast} />
             </Show.When>
             <Show.When isTrue={type === "edit"}>
               <OrderGroupForm />

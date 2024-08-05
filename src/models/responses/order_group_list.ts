@@ -5,6 +5,7 @@ export interface OrderGroupList {
   location: string;
   asignAt: Date;
   asignBy: string;
+  status: string;
   orders: Order[];
 }
 

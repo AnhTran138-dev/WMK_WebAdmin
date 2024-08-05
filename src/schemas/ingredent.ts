@@ -19,8 +19,6 @@ const ingredientSchema = z.object({
   price: z.number().nonnegative().min(100, "Price is required"),
   packagingMethod: z.string().min(1, "Packaging method is required"),
   preservationMethod: z.string().min(1, "Preservation method is required"),
-  status: z.number().int().nonnegative().min(0).max(1),
-  createdBy: z.string().min(1, "Created by is required"),
   nutrientInfo: nutrientInfoSchema,
 });
 

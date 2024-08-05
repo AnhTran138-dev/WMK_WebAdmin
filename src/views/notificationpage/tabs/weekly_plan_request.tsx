@@ -5,7 +5,7 @@ import { Response } from "../../../models/responses";
 import { WeeklyPlanList } from "../../../models/responses/weekly_plan";
 import { formatFromISOString, FormatType } from "../../../lib";
 import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
-import { ScrollArea } from "../../../components/ui";
+import { Button, ScrollArea } from "../../../components/ui";
 
 const WeeklyPlanRequest = () => {
   const {
@@ -16,7 +16,7 @@ const WeeklyPlanRequest = () => {
 
   // Filter weekly plans to only include those with processStatus "approved"
   const processingPlans = weeklyplans?.data.filter(
-    (plan) => plan.processStatus.toLowerCase() === "approved"
+    (plan) => plan.processStatus.toLowerCase() === "processing"
   );
 
   const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
@@ -94,16 +94,23 @@ const WeeklyPlanRequest = () => {
                   </div>
                 )}
               </div>
-              <div className="absolute p-2 bottom-4 right-4">
-                <button
+              <div className="absolute p-2 space-x-3 bottom-4 right-4">
+                <Button
+                  variant="success"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent the click event from affecting the card's expanded state
-                    // Implement Access button action here
+                    e.stopPropagation();
                   }}
-                  className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
                 >
                   Access
-                </button>
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  Deny
+                </Button>
               </div>
             </div>
           ))}

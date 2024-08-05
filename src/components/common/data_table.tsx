@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         {searchColumn && (
           <Input
-            placeholder={`Filter ${searchColumn}...`}
+            placeholder={`Search ${searchColumn}...`}
             value={
               (table.getColumn(searchColumn)?.getFilterValue() as string) ?? ""
             }
@@ -133,9 +133,14 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, index) => (
                 <TableRow
                   key={row.id}
+                  className={
+                    index % 2 === 0
+                      ? "bg-gray-100 hover:bg-gray-100"
+                      : "bg-white"
+                  }
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (

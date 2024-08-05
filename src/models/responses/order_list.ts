@@ -2,14 +2,18 @@ export interface OrderList {
   id: string;
   orderCode: number;
   userId: string;
+  orderGroupId: string;
+  receiveName: string;
+  receivePhone: string;
   note: string;
   address: string;
   longitude: number;
   latitude: number;
   shipDate: Date;
   orderDate: Date;
+  img: string;
   totalPrice: number;
-  status: ProcessStatusEnum;
+  status: string;
   transactions: Transaction[];
   orderDetails: OrderDetail[];
 }
@@ -38,7 +42,7 @@ export interface Recipe {
   img: string;
   price: number;
   popularity: number;
-  processStatus: ProcessStatusEnum;
+  processStatus: string;
   baseStatus: number;
   createdAt: Date;
   createdBy: string;
@@ -47,18 +51,10 @@ export interface Recipe {
   approvedBy: string;
   updatedAt: Date;
   updatedBy: string;
-  recipeIngredients: any[];
-  recipeCategories: any[];
+  // recipeIngredients: any[];
+  // recipeCategories: any[];
   recipeNutrient: null;
-  recipeSteps: any[];
-}
-
-export enum ProcessStatusEnum {
-  Approved = "Approved",
-  Cancel = "Cancel",
-  Customer = "Customer",
-  Denied = "Denied",
-  Processing = "Processing",
+  // recipeSteps: any[];
 }
 
 export interface RecipeIngredientOrderDetail {
@@ -80,18 +76,31 @@ export interface Ingredient {
   price: number;
   packagingMethod: PackagingMethod;
   preservationMethod: string;
-  status: IngredientStatus;
+  status: string;
   createdAt: Date;
-  createdBy: CreatedBy;
+  createdBy: string;
   updatedAt: Date;
-  updatedBy: UpdatedBy;
-  ingredientNutrient: null;
-  ingredientCategory: null;
+  updatedBy: string;
+  ingredientNutrient: IngredientNutrient;
+  ingredientCategory: {
+    id: string;
+    name: string;
+    description: string;
+    status: string;
+  };
 }
 
-export enum CreatedBy {
-  Ba21D44E75Ff40398AdaC494C0A90Fc9 = "BA21D44E-75FF-4039-8ADA-C494C0A90FC9",
-  System = "system",
+interface IngredientNutrient {
+  id: string;
+  ingredientID: string;
+  calories: number;
+  fat: number;
+  saturatedFat: number;
+  sugar: number;
+  carbonhydrate: number;
+  dietaryFiber: number;
+  protein: number;
+  sodium: number;
 }
 
 export enum PackagingMethod {
@@ -113,10 +122,6 @@ export enum PackagingMethod {
   ĐóngGóiTheoBó = "Đóng gói theo bó",
 }
 
-export enum IngredientStatus {
-  Available = "Available",
-}
-
 export enum Unit {
   Cái = "cái",
   Cây = "cây",
@@ -124,11 +129,6 @@ export enum Unit {
   Kg = "kg",
   Lít = "lít",
   Quả = "quả",
-}
-
-export enum UpdatedBy {
-  Ba21D44E75Ff40398AdaC494C0A90Fc9 = "BA21D44E-75FF-4039-8ADA-C494C0A90FC9",
-  String = "string",
 }
 
 export interface Transaction {

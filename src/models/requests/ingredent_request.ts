@@ -7,8 +7,8 @@ export interface IngredientRequest {
   price: number;
   packagingMethod: string;
   preservationMethod: string;
-  status: number;
-  createdBy: string;
+  // status: number;
+  // createdBy: string;
   nutrientInfo: NutrientInfo;
 }
 

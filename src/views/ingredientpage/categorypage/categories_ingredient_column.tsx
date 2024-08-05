@@ -1,5 +1,3 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { CategoriesIngredient } from "../../../models/responses";
 import {
   Badge,
   Button,
@@ -9,7 +7,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui";
+} from "@/components/ui";
+import { IngredientApi } from "@/features";
+import Show from "@/lib/show";
+import { CategoryRequest } from "@/models/requests";
+import { CategoriesIngredient, Response } from "@/models/responses";
+import { ColumnDef } from "@tanstack/react-table";
 import {
   CircleMinus,
   MoreHorizontal,
@@ -17,9 +20,6 @@ import {
   ScanEye,
   Trash2,
 } from "lucide-react";
-import { CategoryRequest } from "../../../models/requests";
-import { IngredientApi } from "../../../features";
-import Show from "../../../lib/show";
 
 export const CategoriesIngredientColumn = (
   handleEdit: (category: CategoryRequest) => void,
@@ -113,14 +113,25 @@ export const CategoriesIngredientColumn = (
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={async () => {
-                const success = await IngredientApi.category.deleteCategory(
-                  category.id
-                );
-                if (success) {
-                  onToast(success, `Delete ${category.name} success`);
+                const result: Response<null> =
+                  await IngredientApi.category.deleteCategory(category.id);
+                if (result.statusCode === 200) {
+                  onToast(true, result.message);
                   refetch();
-                } else {
-                  onToast(success, `Delete ${category.name} failed`);
+                }
+
+                if (result.statusCode === 400) {
+                  onToast(false, result.message);
+                  refetch();
+                }
+
+                if (result.statusCode === 404) {
+                  onToast(false, result.message);
+                  refetch();
+                }
+
+                if (result.statusCode === 500) {
+                  onToast(false, result.message);
                   refetch();
                 }
               }}

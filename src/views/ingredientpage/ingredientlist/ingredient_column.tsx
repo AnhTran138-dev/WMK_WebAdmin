@@ -8,25 +8,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui";
+import { IngredientApi } from "@/features";
+import Show from "@/lib/show";
 import { formatTotal } from "@/lib/utils/formatPrice";
 import { IngredientRequest } from "@/models/requests";
-import { IngredientsList } from "@/models/responses";
+import { IngredientsList, Response } from "@/models/responses";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
   CircleMinus,
   MoreHorizontal,
   PencilLine,
+  ReceiptText,
   ScanEye,
   Trash2,
 } from "lucide-react";
-import Show from "../../../lib/show";
-import { IngredientApi } from "../../../features";
 
 const IngredientColumn = (
   handleEdit: (ingredent: IngredientRequest) => void,
   onToast: (success: boolean, description: string) => void,
-  refetch: () => void
+  refetch: () => void,
+  handleDetail: (id: string) => void
 ): ColumnDef<IngredientsList>[] => [
   {
     header: "No.",
@@ -110,10 +112,10 @@ const IngredientColumn = (
                   ingredent.status.toLocaleLowerCase() === "unavailable" ? 0 : 1
                 );
                 if (result) {
-                  onToast(true, "Delete category successfully");
+                  onToast(true, `Change status ${ingredent.name} success`);
                   refetch();
                 } else {
-                  onToast(false, "Delete category failed");
+                  onToast(false, `Change status ${ingredent.name} failed`);
                   refetch();
                 }
               }}
@@ -133,11 +135,15 @@ const IngredientColumn = (
                 </Show.Else>
               </Show>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => handleDetail(ingredent.id)}>
+              <ReceiptText className="w-4 h-4 mr-2" />
+              Detail
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 handleEdit({
                   id: ingredent.id,
-                  createdBy: ingredent.createdBy,
                   nutrientInfo: {
                     calories: ingredent.ingredientNutrient.calories,
                     fat: ingredent.ingredientNutrient.fat,
@@ -154,7 +160,6 @@ const IngredientColumn = (
                   price: ingredent.price,
                   unit: ingredent.unit,
                   img: ingredent.img,
-                  status: ingredent.status === "Available" ? 1 : 0,
                   ingredientCategoryId: ingredent.ingredientCategory.id,
                 });
               }}
@@ -164,16 +169,16 @@ const IngredientColumn = (
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={async () => {
-                const isDelete = await IngredientApi.deleteIngredient(
-                  ingredent.id
-                );
+                const isDelete: Response<null> =
+                  await IngredientApi.deleteIngredient(ingredent.id);
 
-                if (isDelete) {
-                  onToast(isDelete, `Delete ${ingredent.name} success`);
+                if (isDelete.statusCode === 200) {
+                  onToast(true, isDelete.message);
                   refetch();
-                } else {
-                  onToast(isDelete, `Delete ${ingredent.name} failed`);
-                  refetch();
+                }
+
+                if (isDelete.statusCode !== 200) {
+                  onToast(false, isDelete.message);
                 }
               }}
             >

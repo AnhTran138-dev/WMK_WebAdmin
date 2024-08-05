@@ -1,25 +1,16 @@
 import axios from "axios";
 import { axiosInstance } from "../configs";
+import { OrderGroupRequest } from "../models/requests";
 import { Response } from "../models/responses";
 
-export const OrderApi = {
-  getOrderList: () => axiosInstance.get("/api/order/get-all"),
-
-  getOrderById: (Id: string) => axiosInstance.get(`/api/order/get-order/${Id}`),
-
-  // createOrder: (data: OrderRequest) =>
-  //   axiosInstance.post("/api/order/create-new", data),
-
-  // updateOrder: (id: string, data: OrderRequest) =>
-  //   axiosInstance.put(`/api/order/update/${id}`, data),
-
-  changeOrderStatus: async (
-    Id: string,
-    Status: number
+export const OrderGroupApi = {
+  createOrderGroup: async (
+    data: OrderGroupRequest
   ): Promise<Response<null>> => {
     try {
-      const response = await axiosInstance.put<Response<null>>(
-        `/api/order/change-status/${Id}?status=${Status}`
+      const response = await axiosInstance.post<Response<null>>(
+        `/api/order-group/create`,
+        data
       );
       return response?.data;
     } catch (error) {
@@ -39,37 +30,10 @@ export const OrderApi = {
     }
   },
 
-  groupOrder: async (
-    isOrder: string,
-    groupOrder: string
-  ): Promise<Response<null>> => {
-    try {
-      const response = await axiosInstance.put<Response<null>>(
-        `/api/order/change-ordergroup/${isOrder}`,
-        groupOrder
-      );
-      return response?.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return {
-          data: null,
-          message: error.response?.data.message || error.message,
-          statusCode: error.response?.data.statusCode,
-        };
-      } else {
-        return {
-          data: null,
-          message: "An unexpected error occurred.",
-          statusCode: 500,
-        };
-      }
-    }
-  },
-
-  deleteOrder: async (Id: string): Promise<Response<null>> => {
+  deleteOrderGroup: async (id: string): Promise<Response<null>> => {
     try {
       const response = await axiosInstance.delete<Response<null>>(
-        `/api/order/delete/${Id}`
+        `/api/order-group/delete/${id}`
       );
       return response?.data;
     } catch (error) {
@@ -89,10 +53,34 @@ export const OrderApi = {
     }
   },
 
-  removeInOrder: async (idOrder: string): Promise<Response<null>> => {
+  changeStatusOrderGroup: async (id: string): Promise<Response<null>> => {
     try {
-      const response = await axiosInstance.delete<Response<null>>(
-        `/api/order/remove-ordergroup/${idOrder}`
+      const response = await axiosInstance.put<Response<null>>(
+        `/api/order-group/change-status/${id}`
+      );
+      return response?.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          data: null,
+          message: error.response?.data.message || error.message,
+          statusCode: error.response?.data.statusCode,
+        };
+      } else {
+        return {
+          data: null,
+          message: "An unexpected error occurred.",
+          statusCode: 500,
+        };
+      }
+    }
+  },
+
+  clusterOrderGroup: async (radius: number): Promise<Response<null>> => {
+    try {
+      const response = await axiosInstance.put<Response<null>>(
+        `/api/order-group/cluster`,
+        { radius }
       );
       return response?.data;
     } catch (error) {

@@ -1,14 +1,61 @@
+import axios from "axios";
 import { axiosInstance } from "../configs";
 import { CategoryRequest, RecipeRequest } from "../models/requests";
+import { Response } from "../models/responses";
 
 export const recipeApi = {
   getRecipeList: () => axiosInstance.get("/api/recipes/get-all"),
 
-  createRecipe: (data: RecipeRequest) =>
-    axiosInstance.post("/api/recipes/create-new", data),
+  createRecipe: async (data: RecipeRequest): Promise<Response<null>> => {
+    try {
+      const respone = await axiosInstance.post<Response<null>>(
+        "/api/recipes/create-new",
+        data
+      );
+      return respone.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          data: null,
+          message: error.response?.data.message || error.message,
+          statusCode: error.response?.data.statusCode,
+        };
+      } else {
+        return {
+          data: null,
+          message: "An unexpected error occurred.",
+          statusCode: 500,
+        };
+      }
+    }
+  },
 
-  updateRecipe: (id: string, ProcessStatus: number, Notice: string) =>
-    axiosInstance.put(`/api/recipes/update/${id}/${ProcessStatus}/${Notice}`),
+  updateRecipe: async (
+    id: string,
+    data: RecipeRequest
+  ): Promise<Response<null>> => {
+    try {
+      const respone = await axiosInstance.put<Response<null>>(
+        `/api/recipes/update/${id}`,
+        data
+      );
+      return respone.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          data: null,
+          message: error.response?.data.message || error.message,
+          statusCode: error.response?.data.statusCode,
+        };
+      } else {
+        return {
+          data: null,
+          message: "An unexpected error occurred.",
+          statusCode: 500,
+        };
+      }
+    }
+  },
 
   deleteRecipe: async (id: string): Promise<boolean> => {
     try {
@@ -21,24 +68,83 @@ export const recipeApi = {
 
   changeStatusRecipe: async (
     id: string,
-    ProcessStatus: number,
-    Notice: string
-  ): Promise<boolean> => {
+    processStatus: number,
+    notice: string
+  ): Promise<Response<null>> => {
     try {
-      await axiosInstance.put(
-        `/api/recipes/change-status/${id}?ProcessStatus=${ProcessStatus}&Notice=${Notice}`
+      const respone = await axiosInstance.put<Response<null>>(
+        `/api/recipes/change-status/${id}`,
+        {
+          processStatus,
+          notice,
+        }
       );
-      return true;
+      return respone.data;
     } catch (error) {
-      return false;
+      if (axios.isAxiosError(error)) {
+        return {
+          data: null,
+          message: error.response?.data.message || error.message,
+          statusCode: error.response?.data.statusCode,
+        };
+      } else {
+        return {
+          data: null,
+          message: "An unexpected error occurred.",
+          statusCode: 500,
+        };
+      }
+    }
+  },
+
+  changeBaseStatusRecipe: async (id: string, status: number): Promise<Response<null>> => {
+    try {
+      const respone = await axiosInstance.put(`/api/recipes/change-base-status/${id}`, {status})
+      return respone.data
+    } catch (error) {
+       if (axios.isAxiosError(error)) {
+         return {
+           data: null,
+           message: error.response?.data.message || error.message,
+           statusCode: error.response?.data.statusCode,
+         };
+       } else {
+         return {
+           data: null,
+           message: "An unexpected error occurred.",
+           statusCode: 500,
+         };
+       }
     }
   },
 
   category: {
-    getCategoryList: () => axiosInstance.get("/api/categories/get-all"),
+    getCategoryList: async () =>
+      await axiosInstance.get("/api/categories/get-all"),
 
-    createCategory: (data: CategoryRequest) =>
-      axiosInstance.post("/api/categories/create", data),
+    createCategory: async (data: CategoryRequest): Promise<Response<null>> => {
+      try {
+        const respone = await axiosInstance.post(
+          "/api/categories/create",
+          data
+        );
+        return respone.data;
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          return {
+            data: null,
+            message: error.response?.data.message || error.message,
+            statusCode: error.response?.data.statusCode,
+          };
+        } else {
+          return {
+            data: null,
+            message: "An unexpected error occurred.",
+            statusCode: 500,
+          };
+        }
+      }
+    },
 
     changeCategoryStatus: async (
       id: string,
@@ -54,16 +160,53 @@ export const recipeApi = {
       }
     },
 
-    updateCategory: (id: string, data: CategoryRequest) =>
-      axiosInstance.put(`/api/categories/update/${id}`, data),
-
-    deleteCategory: async (id: string): Promise<boolean> => {
+    updateCategory: async (
+      id: string,
+      data: CategoryRequest
+    ): Promise<Response<null>> => {
       try {
-        await axiosInstance.delete(`/api/categories/delete/${id}`);
-        return true;
+        const respone = await axiosInstance.put<Response<null>>(
+          `/api/categories/update/${id}`,
+          data
+        );
+        return respone.data;
       } catch (error) {
-        console.log(error);
-        return false;
+        if (axios.isAxiosError(error)) {
+          return {
+            data: null,
+            message: error.response?.data.message || error.message,
+            statusCode: error.response?.data.statusCode,
+          };
+        } else {
+          return {
+            data: null,
+            message: "An unexpected error occurred.",
+            statusCode: 500,
+          };
+        }
+      }
+    },
+
+    deleteCategory: async (id: string): Promise<Response<null>> => {
+      try {
+        const response = await axiosInstance.delete(
+          `/api/categories/delete/${id}`
+        );
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          return {
+            data: null,
+            message: error.response?.data.message || error.message,
+            statusCode: error.response?.data.statusCode,
+          };
+        } else {
+          return {
+            data: null,
+            message: "An unexpected error occurred.",
+            statusCode: 500,
+          };
+        }
       }
     },
   },

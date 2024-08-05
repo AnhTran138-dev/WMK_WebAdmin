@@ -1,3 +1,4 @@
+import { useState } from "react";
 import DataRender from "../../../components/data_render";
 import {
   Button,
@@ -7,18 +8,47 @@ import {
   CardHeader,
   CardTitle,
   ScrollArea,
+  useToast,
 } from "../../../components/ui";
+import { recipeApi } from "../../../features";
 import useFetch from "../../../hooks/useFetch";
 import { formatFromISOString, FormatType } from "../../../lib";
 import Show from "../../../lib/show";
 import { RecipeList, Response } from "../../../models/responses";
 
 const RecipeRequest = () => {
+  const { toast } = useToast();
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
   const {
     data: recipes,
     loading,
     error,
+    refetch,
   } = useFetch<Response<RecipeList[]>>("/api/recipes/get-all");
+
+  const handleChangeStatus = async (id: string, status: number) => {
+    const response: Response<null> = await recipeApi.changeStatusRecipe(
+      id,
+      status,
+      ""
+    );
+
+    if (response.statusCode === 200) {
+      toast({
+        title: "Success",
+        description: response.message,
+        duration: 5000,
+      });
+      refetch();
+    }
+    if (response.statusCode !== 200) {
+      toast({
+        title: "Error",
+        description: response.message,
+        duration: 5000,
+      });
+    }
+  };
 
   return (
     <DataRender className="flex-1" isLoading={loading} error={error}>
@@ -46,10 +76,16 @@ const RecipeRequest = () => {
                       </CardDescription>
                     </CardHeader>
                     <CardFooter className="flex flex-col mt-auto sm:flex-row sm:gap-2">
-                      <Button className="w-full mb-2 bg-primary text-primary-foreground hover:bg-primary-darker sm:w-auto sm:mb-0">
+                      <Button
+                        variant="success"
+                        onClick={() => handleChangeStatus(recipe.id, 1)}
+                      >
                         Access
                       </Button>
-                      <Button className="w-full bg-destructive text-destructive-foreground hover:bg-destructive-foreground sm:w-auto">
+                      <Button
+                        variant="destructive"
+                        onClick={() => handleChangeStatus(recipe.id, 2)}
+                      >
                         Deny
                       </Button>
                     </CardFooter>

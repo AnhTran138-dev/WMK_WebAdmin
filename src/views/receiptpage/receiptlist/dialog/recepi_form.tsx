@@ -16,17 +16,25 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import GeneralInfoForm from "./tab/GeneralInfoForm";
-import ReciptStepForm from "./tab/ReciptStepForm";
-import IngredientInfoForm from "./tab/IngredientInfoForm";
+import GeneralInfoForm from "../tab/GeneralInfoForm";
+import ReciptStepForm from "../tab/ReciptStepForm";
+import IngredientInfoForm from "../tab/IngredientInfoForm";
+import { recipeApi } from "../../../../features";
+import { Response } from "../../../../models/responses";
 
 interface RecepiFormProps {
   onClose: () => void;
   refetch: () => void;
+  onToast: (success: boolean, description: string) => void;
   recipe: RecipeRequest | null;
 }
 
-const RecepiForm: React.FC<RecepiFormProps> = ({ recipe }) => {
+const RecepiForm: React.FC<RecepiFormProps> = ({
+  recipe,
+  onClose,
+  refetch,
+  onToast,
+}) => {
   const [activeTab, setActiveTab] = useState<string>("general");
   const form = useForm<z.infer<typeof recipeSchema>>({
     defaultValues: {
@@ -36,17 +44,31 @@ const RecepiForm: React.FC<RecepiFormProps> = ({ recipe }) => {
       difficulty: recipe?.difficulty || 0,
       description: recipe?.description || "",
       img: recipe?.img || "",
-      createdBy: recipe?.createdBy || "",
-      step: recipe?.steps || [],
+      steps: recipe?.steps || [],
       categoryIds: recipe?.categoryIds || [],
       recipeIngredientsList: recipe?.recipeIngredientsList || [],
     },
   });
 
-  console.log("recipe", recipe);
-
   const onSubmit = async (values: z.infer<typeof recipeSchema>) => {
     console.log(values);
+
+    let response: Response<null>;
+    if (recipe) {
+      response = await recipeApi.updateRecipe(recipe.id ?? "", values);
+    } else {
+      response = await recipeApi.createRecipe(values);
+    }
+
+    if (response.statusCode === 200) {
+      onToast(true, response.message);
+      refetch();
+      onClose();
+    }
+
+    if (response.statusCode !== 200) {
+      onToast(false, response.message);
+    }
   };
 
   return (

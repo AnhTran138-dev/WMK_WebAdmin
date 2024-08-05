@@ -6,10 +6,9 @@ export interface RecipeRequest {
   difficulty: number;
   description: string;
   img: string;
-  createdBy: string;
   categoryIds: string[];
   recipeIngredientsList: RecipeIngredientsList[];
-  steps: Step[];
+  steps?: Step[];
 }
 
 export interface RecipeIngredientsList {

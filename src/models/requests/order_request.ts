@@ -27,3 +27,13 @@ export interface UpdateOrderRequest {
   longitude: number;
   latitude: number;
 }
+
+export enum OrderStatus {
+  Processing = 0,
+  Shipping = 1,
+  Shipped = 2,
+  Delivered = 3,
+  UnShipped = 4,
+  Refund = 5,
+  Canceled = 6,
+}

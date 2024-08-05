@@ -8,18 +8,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui";
-import { CategoriesRecipe } from "@/models/responses";
+import { recipeApi } from "@/features";
+import Show from "@/lib/show";
+import { CategoryRequest } from "@/models/requests";
+import { CategoriesRecipe, Response } from "@/models/responses";
 import { ColumnDef } from "@tanstack/react-table";
 import {
+  ArrowUpDown,
   CircleMinus,
   MoreHorizontal,
   PencilLine,
   ScanEye,
   Trash2,
 } from "lucide-react";
-import { CategoryRequest } from "@/models/requests";
-import { recipeApi } from "@/features";
-import Show from "../../../lib/show";
 
 export const CategoriesRecipeColumns = (
   handleEdit: (category: CategoryRequest) => void,
@@ -31,20 +32,44 @@ export const CategoriesRecipeColumns = (
     cell: ({ row }) => row.index + 1,
   },
   {
-    header: "Name",
     accessorKey: "name",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Name
+        <ArrowUpDown className="ml-2 size-4" />
+      </Button>
+    ),
   },
   {
-    header: "Type",
     accessorKey: "type",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Type
+        <ArrowUpDown className="ml-2 size-4" />
+      </Button>
+    ),
   },
   {
     header: "Description",
     accessorKey: "description",
   },
   {
-    header: "Status",
     accessorKey: "status",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Status
+        <ArrowUpDown className="ml-2 size-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const status = row.original.status.toLowerCase();
 
@@ -81,10 +106,16 @@ export const CategoriesRecipeColumns = (
                   catogory.status.toLocaleLowerCase() === "unavailable" ? 0 : 1
                 );
                 if (result) {
-                  onToast(true, "Delete category successfully");
+                  onToast(
+                    true,
+                    `Change category status of ${catogory.name} successfully`
+                  );
                   refetch();
                 } else {
-                  onToast(false, "Delete category failed");
+                  onToast(
+                    false,
+                    `Change category status of ${catogory.name} failed`
+                  );
                   refetch();
                 }
               }}
@@ -116,14 +147,26 @@ export const CategoriesRecipeColumns = (
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={async () => {
-                const result = await recipeApi.category.deleteCategory(
-                  catogory.id
-                );
-                if (result) {
-                  onToast(true, "Delete category successfully");
+                const result: Response<null> =
+                  await recipeApi.category.deleteCategory(catogory.id);
+
+                if (result.statusCode === 200) {
+                  onToast(true, result.message);
                   refetch();
-                } else {
-                  onToast(false, "Delete category failed");
+                }
+
+                if (result.statusCode === 404) {
+                  onToast(false, result.message);
+                  refetch();
+                }
+
+                if (result.statusCode === 500) {
+                  onToast(false, result.message);
+                  refetch();
+                }
+
+                if (result.statusCode === 400) {
+                  onToast(false, result.message);
                   refetch();
                 }
               }}

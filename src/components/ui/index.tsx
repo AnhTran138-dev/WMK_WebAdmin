@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
+export * from "./accordion";
 export * from "./alert-dialog";
 export * from "./avatar";
 export * from "./badge";

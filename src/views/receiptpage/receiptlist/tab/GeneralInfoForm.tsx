@@ -21,6 +21,24 @@ import {
 import useFetch from "@/hooks/useFetch";
 import { CategoriesRecipe, Response } from "@/models/responses";
 
+const listDifficulties = [
+  {
+    id: 1,
+    name: "Easy",
+    value: 0,
+  },
+  {
+    id: 2,
+    name: "Medium",
+    value: 1,
+  },
+  {
+    id: 3,
+    name: "Hard",
+    value: 2,
+  },
+];
+
 const GeneralInfoForm: React.FC = () => {
   const { register, setValue, getValues, watch } =
     useFormContext<z.infer<typeof recipeSchema>>();
@@ -46,6 +64,10 @@ const GeneralInfoForm: React.FC = () => {
 
   const handleSelectChange = (type: string, value: string) => {
     const currentCategories = getValues("categoryIds") || [];
+
+    if (value === "") {
+      return;
+    }
 
     const updatedCategories = currentCategories.filter(
       (item) =>
@@ -76,7 +98,7 @@ const GeneralInfoForm: React.FC = () => {
       <div className="col-span-full">
         <Label className="block mb-2">Category</Label>
         <div className="flex flex-wrap gap-4">
-          {categoryTypes.map((category) => {
+          {categoryTypes.map((category, index) => {
             return (
               <FormField
                 key={category.id}
@@ -85,17 +107,19 @@ const GeneralInfoForm: React.FC = () => {
                   <FormItem>
                     <FormControl>
                       <Select
-                        defaultValue={categories?.data
-                          .filter(
-                            (item) =>
-                              categoryTypesSet.has(item.type) &&
-                              recipeCategoryIDs.includes(item.id)
-                          )
-                          .map((item) => item.id)
-                          .join(",")}
+                        value={
+                          categories?.data
+                            .filter(
+                              (item) =>
+                                categoryTypesSet.has(item.type) &&
+                                recipeCategoryIDs.includes(item.id)
+                            )
+                            .map((item) => item.id)[index]
+                        }
                         onValueChange={(value) => {
                           handleSelectChange(category.type, value);
                         }}
+                        {...register("categoryIds")}
                       >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder={category.type} />
@@ -104,7 +128,11 @@ const GeneralInfoForm: React.FC = () => {
                           <SelectGroup>
                             <SelectLabel>{category.type}</SelectLabel>
                             {categories?.data
-                              .filter((item) => item.type === category.type)
+                              .filter(
+                                (item) =>
+                                  item.type === category.type &&
+                                  item.status === "Available"
+                              )
                               .map((item) => (
                                 <SelectItem key={item.id} value={item.id}>
                                   {item.name}
@@ -207,37 +235,42 @@ const GeneralInfoForm: React.FC = () => {
       <div className="md:col-span-1">
         <FormField
           name="difficulty"
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Difficulty</FormLabel>
               <FormControl>
-                <Input
+                <Select
+                  onValueChange={field.onChange}
+                  value={
+                    listDifficulties
+                      .find((difficulty) => difficulty.value === field.value)
+                      ?.value.toString() || ""
+                  }
+                  {...register("difficulty")}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Difficulty" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {listDifficulties.map((difficulty) => (
+                      <SelectItem
+                        key={difficulty.id}
+                        value={difficulty.value.toString()}
+                      >
+                        {difficulty.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+
+              {/* <Input
                   id="difficulty"
                   type="number"
                   placeholder="Difficulty"
                   {...register("difficulty", { valueAsNumber: true })}
                   className="w-full"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </div>
-
-      <div className="md:col-span-1">
-        <FormField
-          name="createdBy"
-          render={() => (
-            <FormItem>
-              <FormLabel>Created By</FormLabel>
-              <FormControl>
-                <Input
-                  id="createdBy"
-                  placeholder="Created By"
-                  {...register("createdBy")}
-                  className="w-full"
-                />
-              </FormControl>
+                /> */}
             </FormItem>
           )}
         />
