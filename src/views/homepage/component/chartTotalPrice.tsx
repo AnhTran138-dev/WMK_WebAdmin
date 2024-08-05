@@ -44,8 +44,6 @@ const ChartTotalPrice = () => {
     refetch,
   } = useFetch<Response<Order[]>>("/api/order/get-all");
 
-  console.log("ordersResponse", ordersResponse);
-
   useEffect(() => {
     // debugger;
     if (!ordersResponse?.data) return;
@@ -61,7 +59,6 @@ const ChartTotalPrice = () => {
           order.status === "Processing"
       );
 
-      console.log("filteredOrders", filteredOrders);
       // debugger;
       const currentWeekStart = dayjs().startOf("week").add(1, "day"); // Thứ Hai
       const currentWeekEnd = dayjs().endOf("week").subtract(1, "day"); // Chủ Nhật
@@ -131,10 +128,6 @@ const ChartTotalPrice = () => {
     0
   );
 
-  console.log("chartData", chartData);
-
-  console.log("chartSeries", chartSeries);
-
   const percentChange =
     previousWeekTotal === 0
       ? 100
@@ -146,12 +139,10 @@ const ChartTotalPrice = () => {
       dayjs().startOf("week").add(index, "day").format("ddd, MMM D")
     );
 
-  console.log("xAxisData", xAxisData); // Kiểm tra dữ liệu xAxisData
-
   return (
     <DataRender isLoading={loading} error={error}>
-      <div className="container mx-auto p-4 flex flex-wrap">
-        <div className="w-[40%] p-2 mx-auto ">
+      <div className="container mx-auto p-4 flex flex-col  items-center lg:flex-row flex-wrap">
+        <div className="flex-1 min-w-0 lg:w-[40%] p-2 mx-auto">
           <div className="p-4 shadow-md rounded-md">
             <h2 className="text-lg font-semibold mb-2 uppercase">
               Revenue Summary:
@@ -182,19 +173,18 @@ const ChartTotalPrice = () => {
             />
           </div>
         </div>
-        <div className="w-[60%] flex justify-center mx-auto">
-          <div>
-            <h1 className="text-xl font-semibold mb-6 text-center uppercase">
-              Total income chart for the current week
-            </h1>
+        <div className="flex-1 min-w-0 lg:w-[60%] p-2 mx-auto">
+          <h1 className="text-xl font-semibold mb-6 text-center uppercase">
+            Total Income Chart for the Current Week
+          </h1>
+          <div className="overflow-x-auto">
             <LineChart
-              width={550}
+              width={700}
               height={300}
               data={chartSeries?.data?.map((value, index) => ({
                 day: chartData.xAxis[index],
                 value,
               }))}
-              //   className="!h-[120%]"
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
@@ -202,9 +192,9 @@ const ChartTotalPrice = () => {
                 tickFormatter={(tickItem) =>
                   dayjs(tickItem).format("ddd, MMM D")
                 }
-                tick={{ fontSize: 11 }} // Kích thước chữ
-                angle={-20} // Góc nghiêng chữ
-                textAnchor="end" // Căn chỉnh chữ
+                tick={{ fontSize: 11 }}
+                angle={-20}
+                textAnchor="end"
               />
               <YAxis tick={{ fontSize: 11 }} />
               <Tooltip />
@@ -215,7 +205,7 @@ const ChartTotalPrice = () => {
                 dataKey="value"
                 stroke="#8884d8"
                 fill="url(#gradientColor)"
-                fillOpacity={0.3} // Adjust the opacity for transparency
+                fillOpacity={0.3}
               />
               <defs>
                 <linearGradient id="gradientColor" x1="0" y1="0" x2="0" y2="1">
