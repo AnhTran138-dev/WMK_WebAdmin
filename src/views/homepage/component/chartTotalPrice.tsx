@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import useFetch from "../../../hooks/useFetch";
-import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { Response, Order } from "../../../models/responses";
 import DataRender from "../../../components/data_render";
@@ -17,6 +16,7 @@ import {
 import { Button } from "@/components/ui";
 import ChartAlertDialog from "./ChartModal";
 import ChangeDisplay from "./ChangeDisplay";
+import dayjs from "dayjs";
 
 dayjs.extend(isBetween);
 
@@ -41,7 +41,6 @@ const ChartTotalPrice = () => {
     data: ordersResponse,
     loading,
     error,
-    refetch,
   } = useFetch<Response<Order[]>>("/api/order/get-all");
 
   useEffect(() => {
@@ -53,10 +52,8 @@ const ChartTotalPrice = () => {
 
     if (ordersResponse) {
       const filteredOrders = ordersResponse?.data.filter(
-        (order) =>
-          order.status === "Shipped" ||
-          order.status === "Delivered" ||
-          order.status === "Processing"
+        (order) => order.status === "Shipped" || order.status === "Delivered"
+        // order.status === "Processing"
       );
 
       // debugger;
@@ -141,10 +138,10 @@ const ChartTotalPrice = () => {
 
   return (
     <DataRender isLoading={loading} error={error}>
-      <div className="container mx-auto p-4 flex flex-col  items-center lg:flex-row flex-wrap">
+      <div className="container flex flex-col flex-wrap items-center p-4 mx-auto lg:flex-row">
         <div className="flex-1 min-w-0 lg:w-[40%] p-2 mx-auto">
-          <div className="p-4 shadow-md rounded-md">
-            <h2 className="text-lg font-semibold mb-2 uppercase">
+          <div className="p-4 rounded-md shadow-md">
+            <h2 className="mb-2 text-lg font-semibold uppercase">
               Revenue Summary:
             </h2>
             <p>
@@ -174,7 +171,7 @@ const ChartTotalPrice = () => {
           </div>
         </div>
         <div className="flex-1 min-w-0 lg:w-[60%] p-2 mx-auto">
-          <h1 className="text-xl font-semibold mb-6 text-center uppercase">
+          <h1 className="mb-6 text-xl font-semibold text-center uppercase">
             Total Income Chart for the Current Week
           </h1>
           <div className="overflow-x-auto">
