@@ -11,12 +11,16 @@ import DetailOrderForm from "./dialog/DetailOrderForm";
 import OrderGroupForm from "./dialog/OrderGroupForm";
 import Show from "../../lib/show";
 import ClusterForm from "./dialog/ClusterForm";
+import DeleteOrderGroup from "./dialog/DeleteOrderGroup";
+import { OrderGroupRequest } from "../../models/requests";
 
 const OrderGroupPage = () => {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [type, setType] = useState<string>("");
   const [orderGroupId, setOrderGroupId] = useState<string>("");
+  const [editOrderGroup, setEditOrderGroup] =
+    useState<OrderGroupRequest | null>(null);
 
   const {
     data: orderGroup,
@@ -54,9 +58,13 @@ const OrderGroupPage = () => {
     setIsDialogOpen(true);
   };
 
-  const handleEdit = (type: string) => {
+  const handleDialog = (type: string) => {
     setType(type);
     setIsDialogOpen(true);
+  };
+
+  const handleEdit = (orderGroup: OrderGroupRequest) => {
+    setEditOrderGroup(orderGroup);
   };
 
   const handleCloseDialog = () => {
@@ -67,12 +75,7 @@ const OrderGroupPage = () => {
     <div>
       <DataRender isLoading={loading} error={error}>
         <DataTable
-          columns={OrderGroupColumn(
-            handleToast,
-            handleEdit,
-            handleDetail,
-            refetch
-          )}
+          columns={OrderGroupColumn(handleDialog, handleDetail, handleEdit)}
           data={orderGroup?.data || []}
           handleCreate={handleCreate}
           handleCluster={handleCluster}
@@ -89,10 +92,23 @@ const OrderGroupPage = () => {
               <DetailOrderForm id={orderGroupId} onToast={handleToast} />
             </Show.When>
             <Show.When isTrue={type === "edit"}>
-              <OrderGroupForm />
+              <OrderGroupForm
+                onToast={handleToast}
+                onClose={handleCloseDialog}
+                refetch={refetch}
+                orderGroup={editOrderGroup}
+              />
             </Show.When>
             <Show.When isTrue={type === "cluster"}>
               <ClusterForm />
+            </Show.When>
+            <Show.When isTrue={type === "delete"}>
+              <DeleteOrderGroup
+                onClose={handleCloseDialog}
+                refetch={refetch}
+                onToast={handleToast}
+                orderGroupId={orderGroupId}
+              />
             </Show.When>
           </Show>
         }

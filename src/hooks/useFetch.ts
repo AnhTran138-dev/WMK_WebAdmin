@@ -2,11 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import axios from "axios";
 import { axiosInstance } from "../configs";
 
-interface FetchOptions {
-  params?: Record<string, unknown>;
-}
-
-const useFetch = <T>(url: string, options?: FetchOptions) => {
+const useFetch = <T>(url: string, options?: Record<string, unknown>) => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");

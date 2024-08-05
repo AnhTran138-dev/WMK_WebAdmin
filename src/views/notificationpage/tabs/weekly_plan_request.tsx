@@ -1,20 +1,40 @@
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 import DataRender from "../../../components/data_render";
 import useFetch from "../../../hooks/useFetch";
 import { Response } from "../../../models/responses";
 import { WeeklyPlanList } from "../../../models/responses/weekly_plan";
 import { formatFromISOString, FormatType } from "../../../lib";
 import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
-import { Button, ScrollArea } from "../../../components/ui";
+import { Button, ScrollArea, useToast } from "../../../components/ui";
+import { weeklyPlanApi } from "../../../features/weekly_plan.api";
+import { useDebounce } from "../../../hooks";
 
-const WeeklyPlanRequest = () => {
+interface WeeklyPlanRequestProps {
+  title: string;
+}
+
+const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({ title }) => {
+  const { toast } = useToast();
+
+  const titleDebounce = useDebounce(title, 500);
+
+  const options = useMemo(() => {
+    const params: { [key: string]: string } = {};
+    if (titleDebounce) {
+      params.Title = titleDebounce;
+    }
+    return { params };
+  }, [titleDebounce]);
+
   const {
     data: weeklyplans,
     loading,
     error,
-  } = useFetch<Response<WeeklyPlanList[]>>("/api/weeklyplan/get-all");
+  } = useFetch<Response<WeeklyPlanList[]>>(
+    "/api/weeklyplan/get-all-filter",
+    options
+  );
 
-  // Filter weekly plans to only include those with processStatus "approved"
   const processingPlans = weeklyplans?.data.filter(
     (plan) => plan.processStatus.toLowerCase() === "processing"
   );
@@ -97,8 +117,27 @@ const WeeklyPlanRequest = () => {
               <div className="absolute p-2 space-x-3 bottom-4 right-4">
                 <Button
                   variant="success"
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.stopPropagation();
+                    const response = await weeklyPlanApi.changeStatusWeeklyPlan(
+                      plan.id,
+                      1,
+                      ""
+                    );
+
+                    if (response.statusCode === 200) {
+                      toast({
+                        title: "Success",
+                        description: response.message,
+                        duration: 5000,
+                      });
+                    } else {
+                      toast({
+                        title: "Error",
+                        description: response.message,
+                        duration: 5000,
+                      });
+                    }
                   }}
                 >
                   Access

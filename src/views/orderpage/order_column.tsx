@@ -228,7 +228,7 @@ const OrderColum = (
             <DropdownMenuSeparator />
             {/* <DropdownMenuGroup> */}
             <Show>
-              <Show.When isTrue={order.status.toLowerCase() === "proccessing"}>
+              <Show.When isTrue={order.status.toLowerCase() === "processing"}>
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>
                     <Group className="w-4 h-4 mr-4" />

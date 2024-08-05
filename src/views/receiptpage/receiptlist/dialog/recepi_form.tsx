@@ -1,8 +1,3 @@
-import React, { useState } from "react";
-import { RecipeRequest } from "@/models/requests";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { recipeSchema } from "@/schemas/recipe";
 import {
   AlertDialogCancel,
   AlertDialogDescription,
@@ -16,11 +11,16 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
+import { recipeApi } from "@/features";
+import { RecipeRequest } from "@/models/requests";
+import { Response } from "@/models/responses";
+import { recipeSchema } from "@/schemas/recipe";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import GeneralInfoForm from "../tab/GeneralInfoForm";
-import ReciptStepForm from "../tab/ReciptStepForm";
 import IngredientInfoForm from "../tab/IngredientInfoForm";
-import { recipeApi } from "../../../../features";
-import { Response } from "../../../../models/responses";
+import ReciptStepForm from "../tab/ReciptStepForm";
 
 interface RecepiFormProps {
   onClose: () => void;
@@ -51,11 +51,14 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
   });
 
   const onSubmit = async (values: z.infer<typeof recipeSchema>) => {
-    console.log(values);
+    const newData = {
+      ...values,
+      difficulty: parseInt(values.difficulty.toString()),
+    };
 
     let response: Response<null>;
     if (recipe) {
-      response = await recipeApi.updateRecipe(recipe.id ?? "", values);
+      response = await recipeApi.updateRecipe(recipe.id ?? "", newData);
     } else {
       response = await recipeApi.createRecipe(values);
     }

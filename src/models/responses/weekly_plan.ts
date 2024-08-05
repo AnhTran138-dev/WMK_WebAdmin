@@ -26,7 +26,7 @@ export interface RecipePLAN {
   recipe: Recipe;
 }
 
-export interface Recipe {
+interface Recipe {
   id: string;
   name: string;
   servingSize: number;
@@ -51,14 +51,14 @@ export interface Recipe {
   recipeSteps: RecipeStep[];
 }
 
-export interface RecipeCategory {
+interface RecipeCategory {
   id: string;
   categoryId: string;
   recipeId: string;
   category: Category;
 }
 
-export interface Category {
+interface Category {
   id: string;
   type?: string;
   name: string;
@@ -66,7 +66,7 @@ export interface Category {
   status: string;
 }
 
-export interface RecipeIngredient {
+interface RecipeIngredient {
   id: string;
   recipeId: string;
   ingredientId: string;
@@ -74,7 +74,7 @@ export interface RecipeIngredient {
   ingredient: Ingredient;
 }
 
-export interface Ingredient {
+interface Ingredient {
   id: string;
   ingredientCategoryId: string;
   name: string;
@@ -92,7 +92,7 @@ export interface Ingredient {
   ingredientCategory: Category;
 }
 
-export interface Nutrient {
+interface Nutrient {
   id: string;
   ingredientID?: string;
   calories: number;
@@ -106,7 +106,7 @@ export interface Nutrient {
   recipeID?: string;
 }
 
-export interface RecipeStep {
+interface RecipeStep {
   id: string;
   recipeId: string;
   index: number;

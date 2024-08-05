@@ -11,12 +11,12 @@ import { OrderGroupList } from "@/models/responses/order_group_list";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, PencilLine, ReceiptText, Trash2 } from "lucide-react";
 import { formatFromISOString, FormatType } from "../../lib";
+import { OrderGroupRequest } from "../../models/requests";
 
 const OrderGroupColumn = (
-  onToast: (success: boolean, description: string) => void,
   handleDialog: (type: string) => void,
   handleDetail: (id: string) => void,
-  refetch: () => void
+  handleEdit: (orderGroup: OrderGroupRequest) => void
 ): ColumnDef<OrderGroupList>[] => [
   {
     header: "No.",
@@ -72,16 +72,21 @@ const OrderGroupColumn = (
             <DropdownMenuItem
               onClick={() => {
                 handleDialog("edit");
+                handleEdit({
+                  shipperId: order_group.shipperId,
+                  location: order_group.location,
+                  longitude: order_group.longitude,
+                  latitude: order_group.latitude,
+                });
               }}
             >
               <PencilLine className="mr-2 size-4" />
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={async () => {
-                const success = true;
-                onToast(success, "Delete user");
-                refetch();
+              onClick={() => {
+                handleDialog("delete");
+                handleDetail(order_group.id);
               }}
             >
               <Trash2 className="mr-2 size-4" />

@@ -10,17 +10,29 @@ import {
 import { formatFromISOString, FormatType } from "@/lib";
 import { WeeklyPlanList } from "@/models/responses/weekly_plan";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
+import { WeeklyPlanRequest } from "../../models/requests";
 // import { UpdateWeeklyPlan } from "../../models/requests/weekly_plan_request";
 
 const WeeklyPlanColumn = (
-  // refresh: () => void,
-  // onEdit: (weeklyplan: UpdateWeeklyPlan) => void,
-  // onToast: (success: boolean, description: string) => void
+  onEdit: (weeklyplan: WeeklyPlanRequest) => void,
+  handleID: (id: string) => void,
+  handleType: (type: string) => void
 ): ColumnDef<WeeklyPlanList>[] => [
   {
     header: "No.",
     cell: (info) => info.row.index + 1,
+  },
+  {
+    accessorKey: "urlImage",
+    header: "Image",
+    cell: ({ row }) => (
+      <img
+        src={row.original.urlImage}
+        alt={row.original.title}
+        className="object-cover rounded-md size-32"
+      />
+    ),
   },
   {
     accessorKey: "title",
@@ -28,7 +40,17 @@ const WeeklyPlanColumn = (
   },
   {
     accessorKey: "beginDate",
-    header: "Begin Date",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Begin Date
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       if (
         row.original.beginDate ||
@@ -41,7 +63,17 @@ const WeeklyPlanColumn = (
   },
   {
     accessorKey: "endDate",
-    header: "End Date",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          End Date
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       if (row.original.endDate || typeof row.original.endDate === "string") {
         return formatFromISOString(row.original.endDate, FormatType.DATETIME);
@@ -109,7 +141,8 @@ const WeeklyPlanColumn = (
   },
   {
     id: "actions",
-    cell: () => {
+    cell: ({ row }) => {
+      const weeklyplan = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -121,15 +154,43 @@ const WeeklyPlanColumn = (
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleID(weeklyplan.id);
+                handleType("detail");
+              }}
+            >
               <PencilLine className="w-4 h-4 mr-2" />
-              Edit Full
+              Detail
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                onEdit({
+                  title: weeklyplan.title,
+                  description: weeklyplan.description,
+                  urlImage: weeklyplan.urlImage,
+                  beginDate: weeklyplan.beginDate,
+                  endDate: weeklyplan.endDate,
+                  recipeIds: weeklyplan.recipePLans.map((recipe) => {
+                    return {
+                      recipeId: recipe.recipeId,
+                      quantity: recipe.quantity,
+                      dayInWeek: recipe.dayInWeek,
+                      mealInDay: recipe.mealInDay,
+                    };
+                  }),
+                });
+              }}
+            >
               <PencilLine className="w-4 h-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleID(weeklyplan.id);
+                handleType("delete");
+              }}
+            >
               <Trash2 className="w-4 h-4 mr-2" />
               Detele
             </DropdownMenuItem>

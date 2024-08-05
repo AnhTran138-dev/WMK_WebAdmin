@@ -16,8 +16,8 @@ const ReceiptPage = () => {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [recipeEdit, setRecipeEdit] = useState<RecipeRequest | null>(null);
-const [id, setId] = useState<string>("");
-const [type, setType] = useState<string>("");
+  const [id, setId] = useState<string>("");
+  const [type, setType] = useState<string>("");
   const {
     data: recipes,
     loading,
