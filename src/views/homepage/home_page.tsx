@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import ChartPopularRecipe from "./component/chartPopularRecipe";
-import ChartTotalPrice from "./component/chartTotalPrice";
+import ChartPopularRecipe from "./component/chart_popular_recipe";
+import ChartTotalPrice from "./component/chart_total_price";
 import { jwtDecode } from "jwt-decode";
 import { getItem } from "../../lib";
 import { TokenResponse } from "../../models/responses";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import useFetch from "../../../hooks/useFetch";
 import isBetween from "dayjs/plugin/isBetween";
 import { Response, Order } from "../../../models/responses";
@@ -14,8 +14,8 @@ import {
   Area,
 } from "recharts";
 import { Button } from "@/components/ui";
-import ChartAlertDialog from "./ChartModal";
-import ChangeDisplay from "./ChangeDisplay";
+import ChartAlertDialog from "./chart_modal";
+import ChangeDisplay from "./change_display";
 import dayjs from "dayjs";
 
 dayjs.extend(isBetween);
@@ -44,19 +44,15 @@ const ChartTotalPrice = () => {
   } = useFetch<Response<Order[]>>("/api/order/get-all");
 
   useEffect(() => {
-    // debugger;
     if (!ordersResponse?.data) return;
     if (ordersResponse.data.length === 0) return;
     if (ordersResponse === null || ordersResponse === undefined) return;
-    // Lọc đơn hàng có trạng thái là "Shipped" hoặc "Delivered"
 
     if (ordersResponse) {
       const filteredOrders = ordersResponse?.data.filter(
         (order) => order.status === "Shipped" || order.status === "Delivered"
-        // order.status === "Processing"
       );
 
-      // debugger;
       const currentWeekStart = dayjs().startOf("week").add(1, "day"); // Thứ Hai
       const currentWeekEnd = dayjs().endOf("week").subtract(1, "day"); // Chủ Nhật
 
@@ -130,11 +126,11 @@ const ChartTotalPrice = () => {
       ? 100
       : ((currentWeekTotal - previousWeekTotal) / previousWeekTotal) * 100;
 
-  const xAxisData = Array(7)
-    .fill(0)
-    .map((_, index) =>
-      dayjs().startOf("week").add(index, "day").format("ddd, MMM D")
-    );
+  // const xAxisData = Array(7)
+  //   .fill(0)
+  //   .map((_, index) =>
+  //     dayjs().startOf("week").add(index, "day").format("ddd, MMM D")
+  //   );
 
   return (
     <DataRender isLoading={loading} error={error}>
