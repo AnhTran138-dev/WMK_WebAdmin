@@ -10,9 +10,14 @@ import {
 import { formatFromISOString, FormatType } from "@/lib";
 import { WeeklyPlanList } from "@/models/responses/weekly_plan";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
+import {
+  ArrowUpDown,
+  MoreHorizontal,
+  PencilLine,
+  ReceiptText,
+  Trash2,
+} from "lucide-react";
 import { WeeklyPlanRequest } from "../../models/requests";
-// import { UpdateWeeklyPlan } from "../../models/requests/weekly_plan_request";
 
 const WeeklyPlanColumn = (
   onEdit: (weeklyplan: WeeklyPlanRequest) => void,
@@ -36,7 +41,17 @@ const WeeklyPlanColumn = (
   },
   {
     accessorKey: "title",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "beginDate",
@@ -137,7 +152,17 @@ const WeeklyPlanColumn = (
   },
   {
     accessorKey: "processStatus",
-    header: "Status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Process Status
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
   },
   {
     id: "actions",
@@ -160,7 +185,7 @@ const WeeklyPlanColumn = (
                 handleType("detail");
               }}
             >
-              <PencilLine className="w-4 h-4 mr-2" />
+              <ReceiptText className="w-4 h-4 mr-2" />
               Detail
             </DropdownMenuItem>
             <DropdownMenuItem

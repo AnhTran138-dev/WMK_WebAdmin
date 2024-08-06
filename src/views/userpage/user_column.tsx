@@ -55,15 +55,44 @@ const UserColumn = (
   },
   {
     accessorKey: "userName",
-    header: "UserName",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          UserName
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "email",
-    header: "Email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "emailConfirm",
-    header: "Confirm Email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email Confirm
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "firstName",
@@ -80,7 +109,17 @@ const UserColumn = (
   },
   {
     accessorKey: "phone",
-    header: "Phone",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Phone
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "address",

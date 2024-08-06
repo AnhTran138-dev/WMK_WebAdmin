@@ -1,31 +1,25 @@
-import { useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { DayInWeek, MealInDay } from "../../../models/requests";
 import { z } from "zod";
 import { WeeklyPlanRequestSchema } from "../../../schemas/weeklyplan";
 import {
+  Button,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
   Input,
-  ScrollArea,
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Checkbox,
 } from "../../../components/ui";
 import useFetch from "../../../hooks/useFetch";
 import { RecipeList, Response } from "../../../models/responses";
-import { useMemo, useState } from "react";
-import { useDebounce } from "../../../hooks";
-import { AccordionContent } from "@radix-ui/react-accordion";
-import Show from "../../../lib/show";
+import { CircleMinus, CirclePlus } from "lucide-react";
+import { useEffect } from "react";
 
 const MealInDayList = [
   { id: 1, name: "Breakfast", value: MealInDay.Breakfast },
@@ -44,177 +38,181 @@ const DayInWeekList = [
 ];
 
 const RecipeForm = () => {
-  const { register, setValue, watch, control } =
+  const { control, watch, setValue } =
     useFormContext<z.infer<typeof WeeklyPlanRequestSchema>>();
-  const [name, setName] = useState<string>("");
-  const [selectedRecipes, setSelectedRecipes] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const nameDebounce = useDebounce(name, 500);
-
-  const options = useMemo(() => {
-    const params: { [key: string]: string } = {};
-    if (nameDebounce) {
-      params.Name = nameDebounce;
-    }
-    return { params };
-  }, [nameDebounce]);
-
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "recipeIds",
+  });
   const { data: recipes } = useFetch<Response<RecipeList[]>>(
-    "/api/recipes/get-all",
-    options
+    "/api/recipes/get-all"
   );
 
-  const toggleRecipeSelection = (recipeId: string) => {
-    setSelectedRecipes((prev) => ({
-      ...prev,
-      [recipeId]: !prev[recipeId],
-    }));
-
-    const recipeIndex = Object.keys(selectedRecipes).indexOf(recipeId);
-    if (selectedRecipes[recipeId]) {
-      setValue(`recipeIds[${recipeIndex}].recipeId`, undefined);
-    } else {
-      setValue(`recipeIds[${recipeIndex}].recipeId`, recipeId);
+  useEffect(() => {
+    if (fields.length === 0) {
+      append({
+        recipeId: "",
+        quantity: undefined,
+        dayInWeek: undefined,
+        mealInDay: undefined,
+      });
     }
-  };
+  }, [fields, append]);
 
   return (
-    <div className="max-w-4xl px-4 py-6 mx-auto max-h-4xl">
-      <Input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Search recipe name"
-        className="mb-4"
-      />
-      <Accordion type="single" collapsible className="w-full">
-        <FormField
-          control={control}
-          name="recipeIds"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <ScrollArea className="w-full h-96 ">
-                {recipes?.data.map((recipe, index) => (
-                  <Show key={index}>
-                    <Show.When
-                      isTrue={recipe.processStatus.toLowerCase() === "approved"}
+    <div className="max-w-4xl px-4 py-6 mx-auto space-y-4">
+      {fields.map((field, index) => (
+        <div key={field.id} className="p-4 bg-white rounded-lg shadow-md">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+            <FormField
+              name={`recipeIds.${index}.recipeId`}
+              render={() => (
+                <FormItem>
+                  <FormLabel>Recipe</FormLabel>
+                  <FormControl>
+                    <Select
+                      defaultValue={watch(`recipeIds.${index}.recipeId`)}
+                      onValueChange={(value) =>
+                        setValue(`recipeIds.${index}.recipeId`, value)
+                      }
                     >
-                      <AccordionItem
-                        value={recipe.id}
-                        className="w-full px-4 bg-slate-100"
-                      >
-                        <AccordionTrigger className="flex flex-row justify-between w-full hover:no-underline">
-                          <div className="flex flex-row items-center justify-start gap-4">
-                            <FormField
-                              name={`recipeIds[${index}].recipeId`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={
-                                        selectedRecipes[recipe.id] || false
-                                      }
-                                      onCheckedChange={() =>
-                                        toggleRecipeSelection(recipe.id)
-                                      }
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <img
-                              src={recipe.img}
-                              alt={recipe.name}
-                              className="size-16 rounded-xl"
-                            />
-                            <div>{recipe.name}</div>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="flex items-center gap-3">
-                          <FormField
-                            name={`recipeIds[${index}].quantity`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    {...field}
-                                    onChange={(e) =>
-                                      setValue(
-                                        `recipeIds[${index}].quantity`,
-                                        parseInt(e.target.value, 10)
-                                      )
-                                    }
-                                    placeholder="Enter Quantity"
-                                    className="w-52"
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            name={`recipeIds[${index}].dayInWeek`}
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormControl>
-                                  <Select {...field}>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select Day In Week" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {DayInWeekList.map((day) => (
-                                        <SelectItem
-                                          key={day.id}
-                                          value={day.DayInWeek.toString()}
-                                        >
-                                          {day.name}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            name={`recipeIds[${index}].mealInDay`}
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormControl>
-                                  <Select {...field}>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select Meal In Day" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {MealInDayList.map((meal) => (
-                                        <SelectItem
-                                          key={meal.id}
-                                          value={meal.value.toString()}
-                                        >
-                                          {meal.name}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Show.When>
-                  </Show>
-                ))}
-              </ScrollArea>
-            </FormItem>
-          )}
-        />
-      </Accordion>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select recipe" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {recipes?.data.map((recipe) => (
+                          <SelectItem key={recipe.id} value={recipe.id}>
+                            {recipe.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name={`recipeIds.${index}.quantity`}
+              render={() => (
+                <FormItem>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      value={watch(`recipeIds.${index}.quantity`) || ""}
+                      onChange={(e) => {
+                        const numberValue = parseFloat(e.target.value);
+                        setValue(`recipeIds.${index}.quantity`, numberValue);
+                      }}
+                      placeholder="Enter Quantity"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name={`recipeIds.${index}.dayInWeek`}
+              render={() => (
+                <FormItem>
+                  <FormLabel>Day In Week</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => {
+                        const numberValue = parseInt(value, 10);
+                        setValue(`recipeIds.${index}.dayInWeek`, numberValue);
+                      }}
+                      value={
+                        watch(`recipeIds.${index}.dayInWeek`)?.toString() || ""
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Day In Week" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {DayInWeekList.map((day) => (
+                          <SelectItem
+                            key={day.id}
+                            value={day.DayInWeek.toString()}
+                          >
+                            {day.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name={`recipeIds.${index}.mealInDay`}
+              render={() => (
+                <FormItem>
+                  <FormLabel>Meal In Day</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => {
+                        const numberValue = parseInt(value, 10);
+                        setValue(`recipeIds.${index}.mealInDay`, numberValue);
+                      }}
+                      value={
+                        watch(`recipeIds.${index}.mealInDay`)?.toString() || ""
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Meal In Day" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MealInDayList.map((meal) => (
+                          <SelectItem
+                            key={meal.id}
+                            value={meal.value.toString()}
+                          >
+                            {meal.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <Button
+            variant="outline"
+            size="icon"
+            type="button"
+            className="mt-4"
+            onClick={() => remove(index)}
+          >
+            <CircleMinus className="size-12" />
+          </Button>
+        </div>
+      ))}
+
+      <Button
+        variant="outline"
+        size="icon"
+        type="button"
+        className="mt-4"
+        onClick={() => {
+          append({
+            recipeId: "",
+            quantity: undefined,
+            dayInWeek: undefined,
+            mealInDay: undefined,
+          });
+        }}
+      >
+        <CirclePlus className="size-12" />
+      </Button>
     </div>
   );
 };

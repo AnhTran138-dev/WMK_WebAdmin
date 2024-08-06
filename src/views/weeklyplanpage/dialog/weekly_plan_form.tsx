@@ -9,6 +9,7 @@ import {
   Button,
   Form,
   Tabs,
+  TabsContent,
   TabsList,
   TabsTrigger,
 } from "../../../components/ui";
@@ -18,7 +19,6 @@ import { WeeklyPlanRequestSchema } from "../../../schemas/weeklyplan";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Response } from "../../../models/responses";
 import { weeklyPlanApi } from "../../../features/weekly_plan.api";
-import { TabsContent } from "@radix-ui/react-tabs";
 import GeneralForm from "../forms/GeneralForm";
 import RecipeForm from "../forms/RecipeForm";
 
@@ -55,24 +55,41 @@ const WeeklyPlanForm: React.FC<WeeklyPlanFormProps> = ({
   });
 
   const onSubmit = async (values: z.infer<typeof WeeklyPlanRequestSchema>) => {
-    console.log("values", values);
-    // let response: Response<null>;
-    // if (weeklyplan) {
-    //   response = await weeklyPlanApi.updateWeeklyPlan(
-    //     weeklyplan.id ?? "",
-    //     values
-    //   );
-    // } else {
-    //   response = await weeklyPlanApi.createWeeklyPlan(values);
-    // }
-    // if (response.statusCode === 200) {
-    //   onToast(true, response.message);
-    //   refetch();
-    //   onClose();
-    // }
-    // if (response.statusCode !== 200) {
-    //   onToast(false, response.message);
-    // }
+    let response: Response<null>;
+    if (weeklyplan) {
+      const updatedValues: WeeklyPlanRequest = {
+        ...values,
+        recipeIds: values.recipeIds.map((recipe) => ({
+          recipeId: recipe.recipeId || "",
+          quantity: recipe.quantity || 0,
+          dayInWeek: recipe.dayInWeek || 0,
+          mealInDay: recipe.mealInDay || 0,
+        })),
+      };
+      response = await weeklyPlanApi.updateWeeklyPlan(
+        weeklyplan.id ?? "",
+        updatedValues
+      );
+    } else {
+      const newValues: WeeklyPlanRequest = {
+        ...values,
+        recipeIds: values.recipeIds.map((recipe) => ({
+          recipeId: recipe.recipeId || "",
+          quantity: recipe.quantity || 0,
+          dayInWeek: recipe.dayInWeek || 0,
+          mealInDay: recipe.mealInDay || 0,
+        })),
+      };
+      response = await weeklyPlanApi.createWeeklyPlan(newValues);
+    }
+    if (response.statusCode === 200) {
+      onToast(true, response.message);
+      refetch();
+      onClose();
+    }
+    if (response.statusCode !== 200) {
+      onToast(false, response.message);
+    }
   };
 
   return (
