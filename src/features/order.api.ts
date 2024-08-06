@@ -18,6 +18,7 @@ export const OrderApi = {
     Status: number
   ): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.put<Response<null>>(
         `/api/order/change-status/${Id}?status=${Status}`
       );
@@ -44,6 +45,7 @@ export const OrderApi = {
     groupOrder: string
   ): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.put<Response<null>>(
         `/api/order/change-ordergroup/${isOrder}`,
         groupOrder
@@ -68,6 +70,7 @@ export const OrderApi = {
 
   deleteOrder: async (Id: string): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.delete<Response<null>>(
         `/api/order/delete/${Id}`
       );
@@ -91,6 +94,7 @@ export const OrderApi = {
 
   removeInOrder: async (idOrder: string): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.delete<Response<null>>(
         `/api/order/remove-ordergroup/${idOrder}`
       );

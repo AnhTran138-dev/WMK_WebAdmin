@@ -8,6 +8,7 @@ export const OrderGroupApi = {
     data: OrderGroupRequest
   ): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axiosInstance.post<Response<null>>(
         `/api/order-group/create`,
         data
@@ -35,6 +36,7 @@ export const OrderGroupApi = {
     data: OrderGroupRequest
   ): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axiosInstance.put<Response<null>>(
         `/api/order-group/update/${id}`,
         data
@@ -59,6 +61,7 @@ export const OrderGroupApi = {
 
   deleteOrderGroup: async (id: string): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axiosInstance.delete<Response<null>>(
         `/api/order-group/delete/${id}`
       );
@@ -85,6 +88,7 @@ export const OrderGroupApi = {
     status: number
   ): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axiosInstance.put<Response<null>>(
         `/api/order-group/change-status/${id}`,
         { status }
@@ -109,6 +113,7 @@ export const OrderGroupApi = {
 
   clusterOrderGroup: async (radius: number): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axiosInstance.put<Response<null>>(
         `/api/order-group/cluster`,
         { radius }
