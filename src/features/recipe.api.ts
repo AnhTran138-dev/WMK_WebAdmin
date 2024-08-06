@@ -8,6 +8,7 @@ export const recipeApi = {
 
   createRecipe: async (data: RecipeRequest): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const respone = await axiosInstance.post<Response<null>>(
         "/api/recipes/create-new",
         data
@@ -35,6 +36,7 @@ export const recipeApi = {
     data: RecipeRequest
   ): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const respone = await axiosInstance.put<Response<null>>(
         `/api/recipes/update/${id}`,
         data
@@ -59,6 +61,7 @@ export const recipeApi = {
 
   deleteRecipe: async (id: string): Promise<boolean> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await axiosInstance.delete(`/api/recipes/delete/${id}`);
       return true;
     } catch (error) {
@@ -99,6 +102,7 @@ export const recipeApi = {
     notice: string
   ): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const respone = await axiosInstance.put<Response<null>>(
         `/api/recipes/change-status/${id}`,
         {

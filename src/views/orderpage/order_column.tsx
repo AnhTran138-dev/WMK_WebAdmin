@@ -186,6 +186,13 @@ const OrderColum = (
       if (status === "shipping") {
         return <Badge variant="success">Shipping</Badge>;
       }
+
+      if (status === "unshipped") {
+        return <Badge variant="destructive">Unshipped</Badge>;
+      }
+      if (status === "shipped") {
+        return <Badge variant="success">Shipped</Badge>;
+      }
     },
   },
   {

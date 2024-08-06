@@ -8,6 +8,7 @@ export const weeklyPlanApi = {
     data: WeeklyPlanRequest
   ): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axiosInstance.post("/api/weeklyplan/create", data);
       return response.data;
     } catch (error) {
@@ -32,6 +33,7 @@ export const weeklyPlanApi = {
     data: WeeklyPlanRequest
   ): Promise<Response<null>> => {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axiosInstance.put(
         `/api/weeklyplan/update/${id}`,
         data
