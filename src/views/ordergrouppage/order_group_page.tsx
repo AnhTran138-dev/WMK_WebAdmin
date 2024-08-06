@@ -31,8 +31,6 @@ const OrderGroupPage = () => {
     refetch,
   } = useFetch<Response<OrderGroupList[]>>("/api/order-group/get-all");
 
-  console.log("orderGroup", orderGroup);
-
   const handleCluster = () => {
     setType("cluster");
     setIsDialogOpen(true);

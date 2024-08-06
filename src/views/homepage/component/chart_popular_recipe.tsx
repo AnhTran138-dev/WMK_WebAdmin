@@ -2,7 +2,6 @@ import * as React from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 // import useFetch from "../../../hooks/useFetch";
 import { RecipeList } from "@/models/responses";
-import { log } from "console";
 import useFetch from "@/hooks/useFetchRecipe";
 
 const ChartPopularRecipe: React.FC = () => {
@@ -10,9 +9,7 @@ const ChartPopularRecipe: React.FC = () => {
     data: recipes,
     loading,
     error,
-    refetch,
   } = useFetch<RecipeList[]>("/api/recipes/get-all");
-
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
