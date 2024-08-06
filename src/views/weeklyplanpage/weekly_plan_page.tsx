@@ -33,6 +33,8 @@ const WeeklyPlanPage = () => {
     setWeeklyPlanEdit(null);
   };
 
+  console.log("weeklyplans", weeklyPlanEdit);
+
   const handleEdit = (weeklyPlan: WeeklyPlanRequest) => {
     setType("edit");
     setIsDialogOpen(true);
@@ -78,20 +80,24 @@ const WeeklyPlanPage = () => {
         />
       </DataRender>
       <DialogCustom
-        className="w-auto max-w-4xl"
+        className="max-w-4xl"
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         children={
           <Show>
             <Show.When isTrue={type === "edit"}>
-              <WeeklyPlanForm />
+              <WeeklyPlanForm
+                onClose={handleCloseDialog}
+                onToast={handleToast}
+                refetch={refetch}
+                weeklyplan={weeklyPlanEdit}
+              />
             </Show.When>
             <Show.When isTrue={type === "delete"}>
               <DeleteWeeklyPlan
                 id={id}
                 onClose={handleCloseDialog}
                 onToast={handleToast}
-                weeklyPlanEdit={weeklyPlanEdit}
               />
             </Show.When>
             <Show.When isTrue={type === "detail"}>

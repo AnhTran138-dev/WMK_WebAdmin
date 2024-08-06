@@ -13,7 +13,6 @@ const ChartPopularRecipe: React.FC = () => {
     refetch,
   } = useFetch<RecipeList[]>("/api/recipes/get-all");
 
-  console.log("recipes DATA", recipes);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -31,9 +30,9 @@ const ChartPopularRecipe: React.FC = () => {
   const pData = recipes.map((recipe) => recipe.popularity);
 
   return (
-    <div className="container mx-auto p-4 flex flex-col lg:flex-row flex-wrap">
+    <div className="container flex flex-col flex-wrap p-4 mx-auto lg:flex-row">
       <div className="flex-1 min-w-0 lg:w-[60%] p-2">
-        <h2 className="text-xl font-semibold mb-6 text-center uppercase">
+        <h2 className="mb-6 text-xl font-semibold text-center uppercase">
           Popular Recipe Chart
         </h2>
         <div className="overflow-x-auto">
@@ -46,10 +45,10 @@ const ChartPopularRecipe: React.FC = () => {
         </div>
       </div>
       <div className="flex-1 min-w-0 lg:w-[30%] p-2 mt-4 lg:mt-0 lg:mx-3">
-        <h2 className="text-xl font-semibold mb-6 text-center uppercase">
+        <h2 className="mb-6 text-xl font-semibold text-center uppercase">
           Top 5 Popular Recipes
         </h2>
-        <div className="overflow-x-auto flex justify-center">
+        <div className="flex justify-center overflow-x-auto">
           <table style={{ width: "80%", borderCollapse: "collapse" }}>
             <thead>
               <tr>

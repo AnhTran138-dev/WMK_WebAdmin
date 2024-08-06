@@ -13,11 +13,13 @@ import Show from "../../lib/show";
 import ClusterForm from "./dialog/ClusterForm";
 import DeleteOrderGroup from "./dialog/DeleteOrderGroup";
 import { OrderGroupRequest } from "../../models/requests";
+import ChangeStatus from "./dialog/ChangeStatus";
 
 const OrderGroupPage = () => {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [type, setType] = useState<string>("");
+  const [status, setStatus] = useState<number>(0);
   const [orderGroupId, setOrderGroupId] = useState<string>("");
   const [editOrderGroup, setEditOrderGroup] =
     useState<OrderGroupRequest | null>(null);
@@ -73,15 +75,30 @@ const OrderGroupPage = () => {
     setIsDialogOpen(false);
   };
 
+  const changeStatus = (id: string, status: number) => {
+    setOrderGroupId(id);
+    setType("change");
+    setIsDialogOpen(true);
+    setStatus(status);
+  };
+
+  const handleReset = () => {};
+
   return (
     <div>
       <DataRender isLoading={loading} error={error}>
         <DataTable
-          columns={OrderGroupColumn(handleDialog, handleDetail, handleEdit)}
+          columns={OrderGroupColumn(
+            handleDialog,
+            handleDetail,
+            handleEdit,
+            changeStatus
+          )}
           data={orderGroup?.data || []}
           handleCreate={handleCreate}
           handleCluster={handleCluster}
           searchColumn="shipperUserName"
+          handleReset={handleReset}
         />
       </DataRender>
       <DialogCustom
@@ -110,6 +127,15 @@ const OrderGroupPage = () => {
                 refetch={refetch}
                 onToast={handleToast}
                 orderGroupId={orderGroupId}
+              />
+            </Show.When>
+            <Show.When isTrue={type === "change"}>
+              <ChangeStatus
+                onClose={handleCloseDialog}
+                refetch={refetch}
+                onToast={handleToast}
+                orderGroupId={orderGroupId}
+                status={status}
               />
             </Show.When>
           </Show>

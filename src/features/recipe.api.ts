@@ -66,6 +66,33 @@ export const recipeApi = {
     }
   },
 
+  changeBaseStatusRecipe: async (
+    id: string,
+    baseStatus: number
+  ): Promise<Response<null>> => {
+    try {
+      const respone = await axiosInstance.put(
+        `/api/recipes/change-base-status/${id}`,
+        { baseStatus }
+      );
+      return respone.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          data: null,
+          message: error.response?.data.message || error.message,
+          statusCode: error.response?.data.statusCode,
+        };
+      } else {
+        return {
+          data: null,
+          message: "An unexpected error occurred.",
+          statusCode: 500,
+        };
+      }
+    }
+  },
+
   changeStatusRecipe: async (
     id: string,
     processStatus: number,
@@ -94,27 +121,6 @@ export const recipeApi = {
           statusCode: 500,
         };
       }
-    }
-  },
-
-  changeBaseStatusRecipe: async (id: string, status: number): Promise<Response<null>> => {
-    try {
-      const respone = await axiosInstance.put(`/api/recipes/change-base-status/${id}`, {status})
-      return respone.data
-    } catch (error) {
-       if (axios.isAxiosError(error)) {
-         return {
-           data: null,
-           message: error.response?.data.message || error.message,
-           statusCode: error.response?.data.statusCode,
-         };
-       } else {
-         return {
-           data: null,
-           message: "An unexpected error occurred.",
-           statusCode: 500,
-         };
-       }
     }
   },
 

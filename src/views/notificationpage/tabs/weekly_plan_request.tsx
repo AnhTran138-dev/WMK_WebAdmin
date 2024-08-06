@@ -1,21 +1,28 @@
-import React, { useMemo, useState } from "react";
-import DataRender from "../../../components/data_render";
-import useFetch from "../../../hooks/useFetch";
-import { Response } from "../../../models/responses";
-import { WeeklyPlanList } from "../../../models/responses/weekly_plan";
-import { formatFromISOString, FormatType } from "../../../lib";
+import DataRender from "@/components/data_render";
+import { Button, ScrollArea } from "@/components/ui";
+import { useDebounce } from "@/hooks";
+import useFetch from "@/hooks/useFetch";
+import { formatFromISOString, FormatType } from "@/lib";
+import { Response } from "@/models/responses";
+import { WeeklyPlanList } from "@/models/responses/weekly_plan";
 import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
-import { Button, ScrollArea, useToast } from "../../../components/ui";
-import { weeklyPlanApi } from "../../../features/weekly_plan.api";
-import { useDebounce } from "../../../hooks";
+import React, { useMemo, useState } from "react";
+import { SelectType } from "../notification_page";
 
 interface WeeklyPlanRequestProps {
+  role: string;
   title: string;
+  handleChangeStatus: (
+    chooseNotification: SelectType,
+    refetch: () => void
+  ) => void;
 }
 
-const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({ title }) => {
-  const { toast } = useToast();
-
+const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
+  title,
+  handleChangeStatus,
+  role,
+}) => {
   const titleDebounce = useDebounce(title, 500);
 
   const options = useMemo(() => {
@@ -30,6 +37,7 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({ title }) => {
     data: weeklyplans,
     loading,
     error,
+    refetch,
   } = useFetch<Response<WeeklyPlanList[]>>(
     "/api/weeklyplan/get-all-filter",
     options
@@ -119,25 +127,15 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({ title }) => {
                   variant="success"
                   onClick={async (e) => {
                     e.stopPropagation();
-                    const response = await weeklyPlanApi.changeStatusWeeklyPlan(
-                      plan.id,
-                      1,
-                      ""
+                    handleChangeStatus(
+                      {
+                        id: plan.id,
+                        status: 1,
+                        type: "weeklyplan",
+                        author: "access",
+                      },
+                      refetch
                     );
-
-                    if (response.statusCode === 200) {
-                      toast({
-                        title: "Success",
-                        description: response.message,
-                        duration: 5000,
-                      });
-                    } else {
-                      toast({
-                        title: "Error",
-                        description: response.message,
-                        duration: 5000,
-                      });
-                    }
                   }}
                 >
                   Access
@@ -146,6 +144,15 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({ title }) => {
                   variant="destructive"
                   onClick={(e) => {
                     e.stopPropagation();
+                    handleChangeStatus(
+                      {
+                        id: plan.id,
+                        status: 2,
+                        type: "weeklyplan",
+                        author: "deny",
+                      },
+                      refetch
+                    );
                   }}
                 >
                   Deny

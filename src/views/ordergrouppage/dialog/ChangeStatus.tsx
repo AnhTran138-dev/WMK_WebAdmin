@@ -9,32 +9,37 @@ import {
 } from "../../../components/ui";
 import { OrderGroupApi } from "../../../features/order_group";
 
-interface DeleteOrderGroupProps {
+interface ChangeStatusProps {
   onClose: () => void;
   refetch: () => void;
   onToast: (success: boolean, description: string) => void;
   orderGroupId: string;
+  status: number;
 }
 
-const DeleteOrderGroup: React.FC<DeleteOrderGroupProps> = ({
-  orderGroupId,
+const ChangeStatus: React.FC<ChangeStatusProps> = ({
   onClose,
   refetch,
   onToast,
+  orderGroupId,
+  status,
 }) => {
   return (
     <div>
       <AlertDialogHeader>
-        <AlertDialogTitle>Delete Order Group</AlertDialogTitle>
-        <AlertDialogDescription>
-          Are you sure you want to delete this order group?
-        </AlertDialogDescription>
+        <AlertDialogTitle>Change Status</AlertDialogTitle>
       </AlertDialogHeader>
+      <AlertDialogDescription>
+        Are you sure you want to change this order group status?
+      </AlertDialogDescription>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
         <Button
           onClick={async () => {
-            const response = await OrderGroupApi.deleteOrderGroup(orderGroupId);
+            const response = await OrderGroupApi.changeStatusOrderGroup(
+              orderGroupId,
+              status
+            );
 
             if (response.statusCode === 200) {
               onToast(true, response.message);
@@ -52,4 +57,4 @@ const DeleteOrderGroup: React.FC<DeleteOrderGroupProps> = ({
   );
 };
 
-export default DeleteOrderGroup;
+export default ChangeStatus;

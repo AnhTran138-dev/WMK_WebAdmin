@@ -8,13 +8,11 @@ import {
   Button,
 } from "../../../components/ui";
 import { weeklyPlanApi } from "../../../features/weekly_plan.api";
-import { WeeklyPlanRequest } from "../../../models/requests";
 
 interface DeleteWeeklyPlanProps {
   id: string;
   onClose: () => void;
   onToast: (success: boolean, description: string) => void;
-  weeklyPlanEdit: WeeklyPlanRequest | null;
 }
 
 const DeleteWeeklyPlan: React.FC<DeleteWeeklyPlanProps> = ({

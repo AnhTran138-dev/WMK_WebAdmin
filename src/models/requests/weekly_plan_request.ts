@@ -1,4 +1,5 @@
 export interface WeeklyPlanRequest {
+  id?: string;
   title: string;
   description: string;
   urlImage: string;

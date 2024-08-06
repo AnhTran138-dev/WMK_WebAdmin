@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +13,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, PencilLine, ReceiptText, Trash2 } from "lucide-react";
 import { formatFromISOString, FormatType } from "../../lib";
 import { OrderGroupRequest } from "../../models/requests";
+import Show from "../../lib/show";
 
 const OrderGroupColumn = (
   handleDialog: (type: string) => void,
   handleDetail: (id: string) => void,
-  handleEdit: (orderGroup: OrderGroupRequest) => void
+  handleEdit: (orderGroup: OrderGroupRequest) => void,
+  changeStatus: (id: string, status: number) => void
 ): ColumnDef<OrderGroupList>[] => [
   {
     header: "No.",
@@ -40,6 +43,17 @@ const OrderGroupColumn = (
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status;
+
+      if (parseInt(status) === 0) {
+        return <Badge variant="success">Available</Badge>;
+      }
+
+      if (parseInt(status) === 1) {
+        return <Badge variant="destructive">Unavailable</Badge>;
+      }
+    },
   },
   {
     accessorKey: "location",
@@ -60,6 +74,23 @@ const OrderGroupColumn = (
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <Show>
+              <Show.When isTrue={parseInt(order_group.status) === 0}>
+                <DropdownMenuItem
+                  onClick={() => changeStatus(order_group.id, 1)}
+                >
+                  Unvailable
+                </DropdownMenuItem>
+              </Show.When>
+              <Show.When isTrue={parseInt(order_group.status) === 1}>
+                <DropdownMenuItem
+                  onClick={() => changeStatus(order_group.id, 0)}
+                >
+                  Available
+                </DropdownMenuItem>
+              </Show.When>
+            </Show>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
                 handleDialog("detail");
@@ -73,6 +104,7 @@ const OrderGroupColumn = (
               onClick={() => {
                 handleDialog("edit");
                 handleEdit({
+                  id: order_group.id,
                   shipperId: order_group.shipperId,
                   location: order_group.location,
                   longitude: order_group.longitude,

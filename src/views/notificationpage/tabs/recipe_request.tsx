@@ -11,7 +11,6 @@ import {
   ScrollArea,
   useToast,
 } from "@/components/ui";
-import { recipeApi } from "@/features";
 import useFetch from "@/hooks/useFetch";
 import { formatFromISOString, FormatType } from "@/lib";
 import Show from "@/lib/show";
@@ -20,13 +19,22 @@ import { RecipeList, Response } from "@/models/responses";
 import DialogCustom from "@/components/common/dialog";
 import RecepiForm from "../../receiptpage/receiptlist/dialog/recepi_form";
 import { useDebounce } from "../../../hooks";
+import { SelectType } from "../notification_page";
 
 interface RecipeRequestProps {
   role: string;
   name: string | "";
+  handleChangeStatus: (
+    chooseNotification: SelectType,
+    refetch: () => void
+  ) => void;
 }
 
-const RecipeRequest: React.FC<RecipeRequestProps> = ({ role, name }) => {
+const RecipeRequest: React.FC<RecipeRequestProps> = ({
+  role,
+  name,
+  handleChangeStatus,
+}) => {
   const { toast } = useToast();
   const [recipeEdit, setRecipeEdit] = useState<RecipeRequest | null>(null);
   const nameDebounce = useDebounce<string>(name, 500);
@@ -45,30 +53,6 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({ role, name }) => {
     loading,
     error,
   } = useFetch<Response<RecipeList[]>>(`/api/recipes/get-all`, options);
-
-  const handleChangeStatus = async (id: string, status: number) => {
-    const response: Response<null> = await recipeApi.changeStatusRecipe(
-      id,
-      status,
-      ""
-    );
-
-    if (response.statusCode === 200) {
-      toast({
-        title: "Success",
-        description: response.message,
-        duration: 5000,
-      });
-      await refetch();
-    }
-    if (response.statusCode !== 200) {
-      toast({
-        title: "Error",
-        description: response.message,
-        duration: 5000,
-      });
-    }
-  };
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
@@ -125,13 +109,33 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({ role, name }) => {
                     <CardFooter className="flex flex-col mt-auto sm:flex-row sm:gap-2">
                       <Button
                         variant="success"
-                        onClick={() => handleChangeStatus(recipe.id, 1)}
+                        onClick={() =>
+                          handleChangeStatus(
+                            {
+                              id: recipe.id,
+                              status: 1,
+                              type: "recipe",
+                              author: "access",
+                            },
+                            refetch
+                          )
+                        }
                       >
                         Access
                       </Button>
                       <Button
                         variant="destructive"
-                        onClick={() => handleChangeStatus(recipe.id, 2)}
+                        onClick={() =>
+                          handleChangeStatus(
+                            {
+                              id: recipe.id,
+                              status: 2,
+                              type: "recipe",
+                              author: "deny",
+                            },
+                            refetch
+                          )
+                        }
                       >
                         Deny
                       </Button>

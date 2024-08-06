@@ -6,3 +6,4 @@ export * from "./user_request";
 export * from "./order_group_request";
 export * from "./order_request";
 export * from "./weekly_plan_request";
+export * from "./enum";

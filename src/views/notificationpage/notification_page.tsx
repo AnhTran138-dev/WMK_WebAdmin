@@ -6,9 +6,26 @@ import WeeklyPlanRequest from "./tabs/weekly_plan_request";
 import { TokenResponse } from "../../models/responses";
 import { jwtDecode } from "jwt-decode";
 import { getItem } from "../../lib";
+import DialogCustom from "../../components/common/dialog";
+import Note from "./dialog.tsx/note";
+
+export interface SelectType {
+  id: string;
+  status: number;
+  type: string;
+  author: string;
+}
 
 const NotificationPage = () => {
   const [isTabActive, setIsTabActive] = useState<string>("recipe");
+  const [isOpened, setIsOpened] = useState<boolean>(false);
+  const [refetch, setRefetch] = useState<() => void>(() => {});
+  const [chooseNotification, setChooseNotification] = useState<SelectType>({
+    id: "",
+    status: 0,
+    type: "",
+    author: "",
+  });
   const [role, setRole] = useState<string>("");
   const [name, setName] = useState<string>("");
 
@@ -18,6 +35,16 @@ const NotificationPage = () => {
       token["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
     );
   }, []);
+
+  const handleChangeStatus = (data: SelectType, refetch: () => void) => {
+    setChooseNotification(data);
+    setIsOpened(true);
+    setRefetch(() => refetch);
+  };
+
+  const handleClose = () => {
+    setIsOpened(false);
+  };
 
   return (
     <div className="px-10 py-5">
@@ -39,12 +66,31 @@ const NotificationPage = () => {
           />
         </div>
         <TabsContent value="recipe">
-          <RecipeRequest role={role} name={name} />
+          <RecipeRequest
+            role={role}
+            name={name}
+            handleChangeStatus={handleChangeStatus}
+          />
         </TabsContent>
         <TabsContent value="weeklyplan">
-          <WeeklyPlanRequest title={name} />
+          <WeeklyPlanRequest
+            role={role}
+            title={name}
+            handleChangeStatus={handleChangeStatus}
+          />
         </TabsContent>
       </Tabs>
+      <DialogCustom
+        onClose={() => setIsOpened(false)}
+        isOpen={isOpened}
+        children={
+          <Note
+            chooseNotification={chooseNotification}
+            refetch={refetch}
+            onClose={handleClose}
+          />
+        }
+      />
     </div>
   );
 };

@@ -3,14 +3,14 @@ import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
+  // DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
+  // DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
+  // DropdownMenuSub,
+  // DropdownMenuSubContent,
+  // DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui";
 import { recipeApi } from "@/features";
@@ -19,19 +19,23 @@ import { RecipeList } from "@/models/responses/recipe_list";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
+  CircleMinus,
   MoreHorizontal,
   NotebookTabs,
   PencilLine,
+  ScanEye,
   Trash2,
 } from "lucide-react";
+import Show from "../../../lib/show";
+import { Response } from "../../../models/responses";
 
-const statusList = [
-  { id: 0, name: "Processing" },
-  // { id: 1, name: "Approved" },
-  // { id: 2, name: "Denied" },
-  // { id: 3, name: "Customer" },
-  { id: 4, name: "Cancel" },
-];
+// const statusList = [
+//   { id: 0, name: "Processing" },
+//   // { id: 1, name: "Approved" },
+//   // { id: 2, name: "Denied" },
+//   // { id: 3, name: "Customer" },
+//   { id: 4, name: "Cancel" },
+// ];
 
 const RecipeColumn = (
   refetch: () => void,
@@ -244,7 +248,40 @@ const RecipeColumn = (
               <NotebookTabs className="w-4 h-4 mr-2" />
               Detail
             </DropdownMenuItem>
-            <DropdownMenuGroup>
+            <DropdownMenuItem
+              onClick={async () => {
+                const result: Response<null> =
+                  await recipeApi.changeBaseStatusRecipe(
+                    recipe.id,
+                    recipe.baseStatus.toLocaleLowerCase() === "unavailable"
+                      ? 0
+                      : 1
+                  );
+
+                if (result.statusCode === 200) {
+                  handleToast(true, result.message);
+                  refetch();
+                } else {
+                  handleToast(false, result.message);
+                }
+              }}
+            >
+              <Show>
+                <Show.When
+                  isTrue={
+                    recipe.baseStatus.toLocaleLowerCase() === "unavailable"
+                  }
+                >
+                  <ScanEye className="w-4 h-4 mr-2" />
+                  Available
+                </Show.When>
+                <Show.Else>
+                  <CircleMinus className="w-4 h-4 mr-2" />
+                  Unavailable
+                </Show.Else>
+              </Show>
+            </DropdownMenuItem>
+            {/* <DropdownMenuGroup>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <PencilLine className="w-4 h-4 mr-2" />
@@ -277,7 +314,7 @@ const RecipeColumn = (
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
-            </DropdownMenuGroup>
+            </DropdownMenuGroup> */}
             <DropdownMenuItem
               onClick={() => {
                 handleEdit({

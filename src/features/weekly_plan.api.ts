@@ -4,19 +4,56 @@ import { WeeklyPlanRequest } from "../models/requests/weekly_plan_request";
 import { Response } from "../models/responses";
 
 export const weeklyPlanApi = {
-  createWeeklyPlan: async (data: WeeklyPlanRequest) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    await axiosInstance.post("/api/weekly-plan/create", data);
+  createWeeklyPlan: async (
+    data: WeeklyPlanRequest
+  ): Promise<Response<null>> => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await axiosInstance.post("/api/weeklyplan/create", data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          statusCode: error.response?.status || 500,
+          message: error.response?.data.message || "Internal server error",
+          data: null,
+        };
+      } else {
+        return {
+          statusCode: 500,
+          message: "Internal server error",
+          data: null,
+        };
+      }
+    }
   },
 
-  updateWeeklyPlan: async (id: string, data: WeeklyPlanRequest) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    await axiosInstance.put(`/api/weekly-plan/update/${id}`, data);
-  },
-
-  updateWeeklyPlanFullInfo: async (id: string, data: WeeklyPlanRequest) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    await axiosInstance.put(`/api/weekly-plan/update-full-info/${id}`, data);
+  updateWeeklyPlan: async (
+    id: string,
+    data: WeeklyPlanRequest
+  ): Promise<Response<null>> => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await axiosInstance.put(
+        `/api/weeklyplan/update/${id}`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          statusCode: error.response?.status || 500,
+          message: error.response?.data.message || "Internal server error",
+          data: null,
+        };
+      } else {
+        return {
+          statusCode: 500,
+          message: "Internal server error",
+          data: null,
+        };
+      }
+    }
   },
 
   changeStatusWeeklyPlan: async (
@@ -28,7 +65,7 @@ export const weeklyPlanApi = {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const response = await axiosInstance.put(
-        `/api/weekly-plan/change-status/${id}`,
+        `/api/weeklyplan/change-status/${id}`,
         { processStatus, note }
       );
       return response.data;

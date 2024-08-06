@@ -4,14 +4,18 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OrderGroupSchema } from "../../../schemas/order_group";
 import {
+  AlertDialogCancel,
   AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  Button,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
+  Input,
   Select,
   SelectContent,
   SelectItem,
@@ -21,6 +25,7 @@ import {
 import useFetch from "../../../hooks/useFetch";
 import { Response, User } from "../../../models/responses";
 import Show from "../../../lib/show";
+import { OrderGroupApi } from "../../../features/order_group";
 
 interface OrderGroupFormProps {
   onClose: () => void;
@@ -31,9 +36,9 @@ interface OrderGroupFormProps {
 
 const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
   orderGroup,
-  // onClose,
-  // refetch,
-  // onToast,
+  onClose,
+  refetch,
+  onToast,
 }) => {
   const { data: user } = useFetch<Response<User[]>>("/api/user/get-all");
   const form = useForm<z.infer<typeof OrderGroupSchema>>({
@@ -46,7 +51,24 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
   });
 
   const onSubmit = async (values: z.infer<typeof OrderGroupSchema>) => {
-    console.log(values);
+    let response: Response<null>;
+
+    if (orderGroup) {
+      response = await OrderGroupApi.updateOrderGroup(
+        orderGroup.id ?? "",
+        values
+      );
+    } else {
+      response = await OrderGroupApi.createOrderGroup(values);
+    }
+
+    if (response.statusCode === 200) {
+      onToast(true, response.message);
+      refetch();
+      onClose();
+    } else {
+      onToast(false, response.message);
+    }
   };
 
   return (
@@ -65,11 +87,8 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
               <FormItem>
                 <FormLabel>Shipper</FormLabel>
                 <FormControl>
-                  <Select>
-                    <SelectTrigger
-                      value={field.value}
-                      onChange={field.onChange}
-                    >
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
                       <SelectValue placeholder="Select shipper" />
                     </SelectTrigger>
                     <SelectContent>
@@ -90,7 +109,64 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Location</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder="Location"
+                    className="input"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <div className="flex flex-row items-center gap-6 mt-2">
+            <FormField
+              control={form.control}
+              name="longitude"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Longitude</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      placeholder="Longitude"
+                      className="input"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="latitude"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Latitude</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      placeholder="Latitude"
+                      className="input"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
         </AlertDialogDescription>
+        <AlertDialogFooter className="mt-5">
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <Button type="submit">{orderGroup ? "Update" : "Submit"}</Button>
+        </AlertDialogFooter>
       </form>
     </Form>
   );
