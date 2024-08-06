@@ -66,6 +66,7 @@ const WeeklyPlanForm: React.FC<WeeklyPlanFormProps> = ({
           mealInDay: recipe.mealInDay || 0,
         })),
       };
+
       response = await weeklyPlanApi.updateWeeklyPlan(
         weeklyplan.id ?? "",
         updatedValues

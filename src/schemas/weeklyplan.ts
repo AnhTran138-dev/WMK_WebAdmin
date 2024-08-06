@@ -3,8 +3,8 @@ import { z } from "zod";
 const RecipeIDSchema = z.object({
   recipeId: z.string().optional(),
   quantity: z.number().optional(),
-  dayInWeek: z.number().int().min(0).max(6).optional(),
-  mealInDay: z.number().int().min(0).max(3).optional(),
+  dayInWeek: z.number().int().min(1).max(8).optional(),
+  mealInDay: z.number().int().min(1).max(3).optional(),
 });
 
 const WeeklyPlanRequestSchema = z.object({
