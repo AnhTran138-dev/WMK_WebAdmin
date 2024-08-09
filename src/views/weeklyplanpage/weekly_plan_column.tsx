@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui";
 import { formatFromISOString, FormatType } from "@/lib";
+import { WeeklyPlanRequest } from "@/models/requests";
 import { WeeklyPlanList } from "@/models/responses/weekly_plan";
 import { ColumnDef } from "@tanstack/react-table";
 import {
@@ -17,7 +18,6 @@ import {
   ReceiptText,
   Trash2,
 } from "lucide-react";
-import { WeeklyPlanRequest } from "../../models/requests";
 
 const WeeklyPlanColumn = (
   onEdit: (weeklyplan: WeeklyPlanRequest) => void,
@@ -194,8 +194,6 @@ const WeeklyPlanColumn = (
                   title: weeklyplan.title,
                   description: weeklyplan.description,
                   urlImage: weeklyplan.urlImage,
-                  beginDate: weeklyplan.beginDate,
-                  endDate: weeklyplan.endDate,
                   recipeIds: weeklyplan.recipePLans.map((recipe) => {
                     return {
                       recipeId: recipe.recipeId,

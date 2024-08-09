@@ -1,36 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
   Input,
   Textarea,
-  Popover,
-  Button,
-  Calendar,
-  PopoverContent,
-  PopoverTrigger,
 } from "@/components/ui";
-import { CalendarIcon } from "lucide-react";
-import { cn, formatFromISOString, FormatType } from "@/lib";
+import { WeeklyPlanRequestSchema } from "@/schemas/weeklyplan";
+import React, { useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { z } from "zod";
-import { WeeklyPlanRequestSchema } from "../../../schemas/weeklyplan";
 
 const GeneralForm: React.FC = () => {
-  const { setValue, register, watch, getValues } =
+  const { setValue, register, watch } =
     useFormContext<z.infer<typeof WeeklyPlanRequestSchema>>();
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file: File | null = event.target.files?.[0] || null;
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setImagePreview(imageUrl);
-      setValue("urlImage", imageUrl);
+      setValue("urlImage", file);
     }
   };
 
@@ -56,7 +49,7 @@ const GeneralForm: React.FC = () => {
               </FormControl>
               {imagePreview && (
                 <img
-                  src={imagePreview}
+                  src={imagePreview as string}
                   alt="Selected"
                   className="object-cover w-full mt-2 max-h-60"
                 />
@@ -111,7 +104,7 @@ const GeneralForm: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-2 md:gap-8">
         {/* Begin Date Field */}
-        <FormField
+        {/* <FormField
           name="beginDate"
           render={({ field }) => {
             return (
@@ -152,10 +145,10 @@ const GeneralForm: React.FC = () => {
               </FormItem>
             );
           }}
-        />
+        /> */}
 
         {/* End Date Field */}
-        <FormField
+        {/* <FormField
           name="endDate"
           render={({ field }) => (
             <FormItem>
@@ -194,7 +187,7 @@ const GeneralForm: React.FC = () => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
       </div>
     </div>
   );

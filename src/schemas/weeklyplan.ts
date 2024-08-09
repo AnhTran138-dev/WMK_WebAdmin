@@ -10,9 +10,12 @@ const RecipeIDSchema = z.object({
 const WeeklyPlanRequestSchema = z.object({
   title: z.string().nonempty(),
   description: z.string().nonempty(),
-  urlImage: z.string().url(),
-  beginDate: z.date(),
-  endDate: z.date(),
+  urlImage: z.union([
+    z.string().url(),
+    z.custom<File>((file) => file instanceof File, {
+      message: "Image must be a file",
+    }),
+  ]),
   recipeIds: z.array(RecipeIDSchema),
 });
 

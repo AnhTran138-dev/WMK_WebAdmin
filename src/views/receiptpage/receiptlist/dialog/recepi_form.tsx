@@ -12,6 +12,7 @@ import {
   TabsTrigger,
 } from "@/components/ui";
 import { recipeApi } from "@/features";
+import { utilApi } from "@/features/util.api";
 import { RecipeRequest } from "@/models/requests";
 import { Response } from "@/models/responses";
 import { recipeSchema } from "@/schemas/recipe";
@@ -21,6 +22,10 @@ import { z } from "zod";
 import GeneralInfoForm from "../tab/GeneralInfoForm";
 import IngredientInfoForm from "../tab/IngredientInfoForm";
 import ReciptStepForm from "../tab/ReciptStepForm";
+
+// Define utility functions for validation
+const validateFields = <T,>(values: T, requiredKeys: Array<keyof T>): boolean =>
+  requiredKeys.every((key) => values[key] !== "" && values[key] !== undefined);
 
 interface RecepiFormProps {
   onClose: () => void;
@@ -50,27 +55,103 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
     },
   });
 
+  const convertDifficult = (value: string) => {
+    switch (value) {
+      case "Normal":
+        return 0;
+      case "Medinum":
+        return 1;
+      case "Hard":
+        return 2;
+      default:
+        return;
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof recipeSchema>) => {
-    const newData = {
-      ...values,
-      difficulty: parseInt(values.difficulty.toString()),
-    };
-
-    let response: Response<null>;
-    if (recipe) {
-      response = await recipeApi.updateRecipe(recipe.id ?? "", newData);
-    } else {
-      response = await recipeApi.createRecipe(values);
+    if (activeTab === "general") {
+      const requiredGeneralKeys: Array<keyof typeof values> = [
+        "name",
+        "servingSize",
+        "cookingTime",
+        "difficulty",
+        "description",
+        "img",
+        "categoryIds",
+      ];
+      if (!validateFields(values, requiredGeneralKeys)) {
+        return onToast(false, "Please fill all required fields");
+      }
+      setActiveTab("ingredient");
+      return;
     }
 
-    if (response.statusCode === 200) {
-      onToast(true, response.message);
-      refetch();
-      onClose();
+    if (activeTab === "ingredient") {
+      if (
+        !values.recipeIngredientsList.every((ingredient) =>
+          validateFields(ingredient, ["ingredientId", "amount"])
+        )
+      ) {
+        return onToast(false, "Please fill all required fields");
+      }
+      setActiveTab("Step");
+      return;
     }
 
-    if (response.statusCode !== 200) {
-      onToast(false, response.message);
+    if (activeTab === "Step") {
+      if (
+        !values.steps.every((step) =>
+          validateFields(step, ["name", "description", "mediaURL", "imageLink"])
+        )
+      ) {
+        return onToast(false, "Please fill all required fields");
+      }
+    }
+
+    try {
+      // Handle image upload
+      let imgURL = values.img;
+      if (imgURL instanceof File) {
+        imgURL = await utilApi.uploadFile(imgURL);
+      }
+
+      // Handle step image uploads
+      const stepFiles = await Promise.all(
+        values.steps.map((step) => {
+          console.log("step", step.imageLink);
+
+          if (step.imageLink instanceof File) {
+            return utilApi.uploadFile(step.imageLink);
+          }
+          return step.imageLink;
+        })
+      );
+
+      // console.log("stepFiles", stepFiles);
+
+      const payload = {
+        ...values,
+        img: imgURL,
+        difficulty: convertDifficult(values.difficulty.toString()) ?? 0,
+        steps: values.steps.map((step, index) => ({
+          ...step,
+          imageLink: stepFiles[index],
+        })),
+      };
+
+      const response: Response<null> = recipe
+        ? await recipeApi.updateRecipe(recipe.id ?? "", payload)
+        : await recipeApi.createRecipe(payload);
+
+      if (response.statusCode === 200) {
+        onToast(true, response.message);
+        refetch();
+        onClose();
+      } else {
+        onToast(false, response.message);
+      }
+    } catch (error) {
+      onToast(false, "An error occurred while processing your request.");
     }
   };
 
@@ -105,7 +186,7 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
           </Tabs>
         </AlertDialogDescription>
         <AlertDialogFooter className="flex justify-end mt-5">
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
           <Button type="submit" className="ml-2">
             {recipe ? "Save Changes" : "Create"}
           </Button>

@@ -24,12 +24,12 @@ import { CategoriesRecipe, Response } from "@/models/responses";
 const listDifficulties = [
   {
     id: 1,
-    name: "Easy",
+    name: "Normal",
     value: 0,
   },
   {
     id: 2,
-    name: "Medium",
+    name: "Medinum",
     value: 1,
   },
   {
@@ -42,7 +42,9 @@ const listDifficulties = [
 const GeneralInfoForm: React.FC = () => {
   const { register, setValue, getValues, watch } =
     useFormContext<z.infer<typeof recipeSchema>>();
-  const [imagePreview, setImagePreview] = useState<string | null>(watch("img"));
+  const [imagePreview, setImagePreview] = useState<string | File | null>(
+    watch("img")
+  );
   const recipeCategoryIDs = watch("categoryIds");
 
   const { data: categories } = useFetch<Response<CategoriesRecipe[]>>(
@@ -84,7 +86,7 @@ const GeneralInfoForm: React.FC = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (reader.result) {
-          setValue("img", reader.result as string);
+          setValue("img", file);
           setImagePreview(reader.result as string);
         }
       };
@@ -162,7 +164,7 @@ const GeneralInfoForm: React.FC = () => {
               </FormControl>
               {imagePreview && (
                 <img
-                  src={imagePreview}
+                  src={imagePreview as string}
                   alt="Selected"
                   className="object-cover mt-2 max-h-40"
                 />
@@ -235,31 +237,33 @@ const GeneralInfoForm: React.FC = () => {
       <div className="md:col-span-1">
         <FormField
           name="difficulty"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>Difficulty</FormLabel>
               <FormControl>
                 <Select
-                  onValueChange={field.onChange}
-                  value={
-                    listDifficulties
-                      .find((difficulty) => difficulty.value === field.value)
-                      ?.value.toString() || ""
-                  }
-                  {...register("difficulty")}
+                  value={watch("difficulty").toString()}
+                  onValueChange={(value) => {
+                    console.log("value", value);
+
+                    setValue("difficulty", parseInt(value));
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Difficulty" />
                   </SelectTrigger>
                   <SelectContent>
-                    {listDifficulties.map((difficulty) => (
-                      <SelectItem
-                        key={difficulty.id}
-                        value={difficulty.value.toString()}
-                      >
-                        {difficulty.name}
-                      </SelectItem>
-                    ))}
+                    <SelectGroup>
+                      <SelectLabel>Difficulty</SelectLabel>
+                      {listDifficulties.map((difficulty) => (
+                        <SelectItem
+                          key={difficulty.id}
+                          value={difficulty.name.toString()}
+                        >
+                          {difficulty.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   </SelectContent>
                 </Select>
               </FormControl>

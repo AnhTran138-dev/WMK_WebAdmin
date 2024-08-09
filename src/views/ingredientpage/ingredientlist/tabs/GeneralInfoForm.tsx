@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from "react";
 import {
+  FormControl,
   FormField,
   FormItem,
-  FormControl,
   FormLabel,
   FormMessage,
   Input,
   Select,
+  SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectContent,
-  // Switch,
 } from "@/components/ui";
+import useFetch from "@/hooks/useFetch";
+import { CategoriesIngredient, Response } from "@/models/responses";
+import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import useFetch from "../../../../hooks/useFetch";
-import { CategoriesIngredient, Response } from "../../../../models/responses";
 
 const GeneralInfoForm: React.FC = () => {
   const { register, setValue, watch } = useFormContext();
@@ -38,7 +37,7 @@ const GeneralInfoForm: React.FC = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (reader.result) {
-          setValue("img", reader.result as string);
+          setValue("img", file);
           setImagePreview(reader.result as string);
         }
       };

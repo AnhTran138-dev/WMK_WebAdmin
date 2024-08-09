@@ -3,8 +3,6 @@ export interface WeeklyPlanRequest {
   title: string;
   description: string;
   urlImage: string;
-  beginDate: Date;
-  endDate: Date;
   recipeIds: RecipeID[];
 }
 

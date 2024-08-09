@@ -1,5 +1,3 @@
-import React from "react";
-import { WeeklyPlanRequest } from "../../../models/requests";
 import {
   AlertDialogCancel,
   AlertDialogDescription,
@@ -12,15 +10,18 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../../../components/ui";
+} from "@/components/ui";
+import { WeeklyPlanRequest } from "@/models/requests";
+import { Response } from "@/models/responses";
+import { WeeklyPlanRequestSchema } from "@/schemas/weeklyplan";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { WeeklyPlanRequestSchema } from "../../../schemas/weeklyplan";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Response } from "../../../models/responses";
-import { weeklyPlanApi } from "../../../features/weekly_plan.api";
 import GeneralForm from "../forms/GeneralForm";
 import RecipeForm from "../forms/RecipeForm";
+import { utilApi } from "../../../features/util.api";
+import { weeklyPlanApi } from "../../../features/weekly_plan.api";
 
 interface WeeklyPlanFormProps {
   onClose: () => void;
@@ -42,8 +43,6 @@ const WeeklyPlanForm: React.FC<WeeklyPlanFormProps> = ({
       title: "" || weeklyplan?.title,
       description: "" || weeklyplan?.description,
       urlImage: "" || weeklyplan?.urlImage,
-      beginDate: "" || weeklyplan?.beginDate,
-      endDate: "" || weeklyplan?.endDate,
       recipeIds:
         weeklyplan?.recipeIds.map((recipe) => ({
           recipeId: recipe.recipeId || "",
@@ -55,40 +54,27 @@ const WeeklyPlanForm: React.FC<WeeklyPlanFormProps> = ({
   });
 
   const onSubmit = async (values: z.infer<typeof WeeklyPlanRequestSchema>) => {
-    let response: Response<null>;
-    if (weeklyplan) {
-      const updatedValues: WeeklyPlanRequest = {
-        ...values,
-        recipeIds: values.recipeIds.map((recipe) => ({
-          recipeId: recipe.recipeId || "",
-          quantity: recipe.quantity || 0,
-          dayInWeek: recipe.dayInWeek || 0,
-          mealInDay: recipe.mealInDay || 0,
-        })),
-      };
+    const image = await utilApi.uploadFile(values.urlImage as File);
+    const newValue: WeeklyPlanRequest = {
+      ...values,
+      urlImage: image,
+      recipeIds: values.recipeIds.map((recipe) => ({
+        recipeId: recipe.recipeId || "",
+        quantity: recipe.quantity || 0,
+        dayInWeek: recipe.dayInWeek || 0,
+        mealInDay: recipe.mealInDay || 0,
+      })),
+    };
 
-      response = await weeklyPlanApi.updateWeeklyPlan(
-        weeklyplan.id ?? "",
-        updatedValues
-      );
-    } else {
-      const newValues: WeeklyPlanRequest = {
-        ...values,
-        recipeIds: values.recipeIds.map((recipe) => ({
-          recipeId: recipe.recipeId || "",
-          quantity: recipe.quantity || 0,
-          dayInWeek: recipe.dayInWeek || 0,
-          mealInDay: recipe.mealInDay || 0,
-        })),
-      };
-      response = await weeklyPlanApi.createWeeklyPlan(newValues);
-    }
+    const response: Response<null> = weeklyplan
+      ? await weeklyPlanApi.updateWeeklyPlan(weeklyplan?.id ?? "", newValue)
+      : await weeklyPlanApi.createWeeklyPlan(newValue);
+
     if (response.statusCode === 200) {
       onToast(true, response.message);
       refetch();
       onClose();
-    }
-    if (response.statusCode !== 200) {
+    } else {
       onToast(false, response.message);
     }
   };

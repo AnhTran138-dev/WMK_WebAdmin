@@ -12,16 +12,17 @@ import {
   TabsTrigger,
   useToast,
 } from "@/components/ui";
+import { IngredientApi } from "@/features";
+import { utilApi } from "@/features/util.api";
 import { IngredientRequest } from "@/models/requests";
+import { Response } from "@/models/responses";
 import { ingredientSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { IngredientApi } from "../../../../features";
 import GeneralInfoForm from "../tabs/GeneralInfoForm";
 import NutritionalInfoForm from "../tabs/NutritionalInfoForm";
-import { Response } from "../../../../models/responses";
 
 interface IngredientFormProps {
   reFresh: () => void;
@@ -112,17 +113,19 @@ const IngredientForm: React.FC<IngredientFormProps> = ({
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      const imageIngredient = await utilApi.uploadFile(
+        new File([values.img], "image.jpg")
+      );
 
-      let response: Response<null> | null = null;
-
-      if (ingredient) {
-        response = await IngredientApi.updateIngredient(
-          ingredient.id ?? "",
-          values
-        );
-      } else {
-        response = await IngredientApi.createIngredeint(values);
-      }
+      const response: Response<null> = ingredient
+        ? await IngredientApi.updateIngredient(ingredient.id ?? "", {
+            ...values,
+            img: imageIngredient,
+          })
+        : await IngredientApi.createIngredeint({
+            ...values,
+            img: imageIngredient,
+          });
 
       if (response?.statusCode !== 200) {
         toast({

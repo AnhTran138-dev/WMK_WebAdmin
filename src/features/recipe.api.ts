@@ -8,7 +8,6 @@ export const recipeApi = {
 
   createRecipe: async (data: RecipeRequest): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const respone = await axiosInstance.post<Response<null>>(
         "/api/recipes/create-new",
         data
@@ -36,7 +35,6 @@ export const recipeApi = {
     data: RecipeRequest
   ): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const respone = await axiosInstance.put<Response<null>>(
         `/api/recipes/update/${id}`,
         data

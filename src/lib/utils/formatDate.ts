@@ -12,9 +12,9 @@ export function formatFromISOString(
   let formattedDateTime = "";
 
   const dateOptions: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
     year: "numeric",
     month: "2-digit",
-    day: "2-digit",
   };
 
   const timeOptions: Intl.DateTimeFormatOptions = {
@@ -26,13 +26,13 @@ export function formatFromISOString(
 
   switch (format) {
     case FormatType.DATE:
-      formattedDateTime = date.toLocaleDateString("en-US", dateOptions);
+      formattedDateTime = date.toLocaleDateString("vi-VN", dateOptions);
       break;
     case FormatType.TIME:
-      formattedDateTime = date.toLocaleTimeString("en-US", timeOptions);
+      formattedDateTime = date.toLocaleTimeString("vi-VN", timeOptions);
       break;
     case FormatType.DATETIME:
-      formattedDateTime = date.toLocaleString("en-US", {
+      formattedDateTime = date.toLocaleString("vi-VN", {
         ...dateOptions,
         ...timeOptions,
       });

@@ -70,7 +70,6 @@ export const OrderApi = {
 
   deleteOrder: async (Id: string): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.delete<Response<null>>(
         `/api/order/delete/${Id}`
       );
@@ -94,7 +93,6 @@ export const OrderApi = {
 
   removeInOrder: async (idOrder: string): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.delete<Response<null>>(
         `/api/order/remove-ordergroup/${idOrder}`
       );

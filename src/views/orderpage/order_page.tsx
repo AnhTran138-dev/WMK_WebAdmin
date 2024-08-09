@@ -27,6 +27,10 @@ const OrderPage = () => {
     refetch,
   } = useFetch<Response<OrderList[]>>("/api/order/get-all");
 
+  const sortedData = orders?.data?.sort((a, b) => {
+    return new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime();
+  });
+
   const { data: orderGroup } = useFetch<Response<OrderGroupList[]>>(
     "/api/order-group/get-all"
   );
@@ -73,7 +77,7 @@ const OrderPage = () => {
             handleDetail,
             orderGroup?.data ?? []
           )}
-          data={orders?.data ?? []}
+          data={sortedData ?? []}
           searchColumn="address"
         />
       </DataRender>
@@ -92,7 +96,7 @@ const OrderPage = () => {
               />
             </Show.When>
             <Show.When isTrue={type === "detail"}>
-              <OrderDetail id={id} />
+              <OrderDetail id={id} onClose={handleCloseDialog} refetch={refetch}/>
             </Show.When>
           </Show>
         }

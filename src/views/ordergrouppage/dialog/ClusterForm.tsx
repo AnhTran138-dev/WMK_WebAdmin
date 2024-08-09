@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   AlertDialogCancel,
   AlertDialogDescription,
@@ -12,7 +12,12 @@ import {
 import { OrderGroupApi } from "../../../features/order_group";
 import { Response } from "../../../models/responses";
 
-const ClusterForm = () => {
+interface ClusterFormProps {
+  onClose: () => void;
+  refetch: () => void;
+}
+
+const ClusterForm: React.FC<ClusterFormProps> = ({ onClose, refetch }) => {
   const { toast } = useToast();
   const [radius, setRadius] = useState<number>(0);
   return (
@@ -42,6 +47,9 @@ const ClusterForm = () => {
                 description: response.message,
                 duration: 5000,
               });
+
+              refetch();
+              onClose();
             } else {
               toast({
                 title: "Error",

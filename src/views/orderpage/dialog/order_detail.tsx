@@ -1,27 +1,31 @@
+import useFetch from "@/hooks/useFetch";
+import { OrderDetailDialog, Response } from "@/models/responses";
 import React, { useState } from "react";
-import useFetch from "../../../hooks/useFetch";
-import { OrderDetailDialog, Response } from "../../../models/responses";
 
-import DataRender from "../../../components/data_render";
+import DataRender from "@/components/data_render";
 import {
+  AlertDialogCancel,
   AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../../../components/ui";
+} from "@/components/ui";
 import GeneralInfoDetail from "../tabs/GeneralInfoDetail";
+import OrderIngredientDetail from "../tabs/OrderIngredientDetail";
 import OrderRecipeInfoDetail from "../tabs/OrderRecipeInfoDetail";
 import OrderTransaction from "../tabs/OrderTransaction";
-import OrderIngredientDetail from "../tabs/OrderIngredientDetail";
 
 interface OrderDetailProps {
   id: string;
+  onClose: () => void;
+  refetch: () => void;
 }
 
-const OrderDetail: React.FC<OrderDetailProps> = ({ id }) => {
+const OrderDetail: React.FC<OrderDetailProps> = ({ id, onClose, refetch }) => {
   const [activeTab, setActiveTab] = useState<string>("general");
   const {
     data: order,
@@ -76,11 +80,17 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ id }) => {
             <TabsContent value="transactions">
               <OrderTransaction
                 transactions={order.data.transactions}
-                orderCode={order.data.orderCode}
+                onClose={onClose}
+                orderId={order.data.id}
+                refetch={refetch}
               />
             </TabsContent>
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <AlertDialogFooter className="mt-3 space-x-2">
+          <AlertDialogCancel>Close</AlertDialogCancel>
+          {/* <Button>Refund</Button> */}
+        </AlertDialogFooter>
       </Tabs>
     </DataRender>
   );

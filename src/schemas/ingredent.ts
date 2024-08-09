@@ -14,7 +14,12 @@ const nutrientInfoSchema = z.object({
 const ingredientSchema = z.object({
   ingredientCategoryId: z.string().uuid(),
   name: z.string().min(1, "Name is required"),
-  img: z.string().url(),
+  img: z.union([
+    z.string().url(),
+    z.custom<File>((file) => file instanceof File, {
+      message: "Image must be a file",
+    }),
+  ]),
   unit: z.string().min(1, "Unit is required"),
   price: z.number().nonnegative().min(100, "Price is required"),
   packagingMethod: z.string().min(1, "Packaging method is required"),

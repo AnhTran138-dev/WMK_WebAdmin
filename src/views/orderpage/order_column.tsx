@@ -25,7 +25,6 @@ import { OrderList } from "@/models/responses/order_list";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
-  CircleDollarSign,
   CircleX,
   Group,
   MoreHorizontal,
@@ -46,11 +45,11 @@ const statusList = [
     label: "Canceled",
     icon: <CircleX className="mr-4 size-4 " />,
   },
-  {
-    value: OrderStatus.Refund,
-    label: "Refund",
-    icon: <CircleDollarSign className="mr-4 size-4" />,
-  },
+  // {
+  //   value: OrderStatus.Refund,
+  //   label: "Refund",
+  //   icon: <CircleDollarSign className="mr-4 size-4" />,
+  // },
 ];
 
 const OrderColum = (

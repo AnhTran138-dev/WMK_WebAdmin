@@ -5,6 +5,7 @@ import {
   AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
+  Badge,
   ScrollArea,
 } from "../../../../components/ui";
 import DataRender from "../../../../components/data_render";
@@ -29,36 +30,48 @@ const RecepiDetail: React.FC<RecepiDetailProps> = ({ id }) => {
   };
 
   return (
-    <ScrollArea className="p-4 h-96">
+    <ScrollArea className="p-4 h-[calc(90vh-4rem)]">
       <DataRender isLoading={loading} error={error}>
         {recipe && recipe.data && (
           <>
-            <AlertDialogHeader className="flex flex-row items-start">
+            <AlertDialogHeader className="flex flex-col md:flex-row md:items-start">
               <img
                 src={recipe.data.img}
                 alt={recipe.data.name}
-                className="object-cover w-32 h-32 mr-4 rounded-md"
+                className="object-cover w-32 h-32 mb-4 rounded-md shadow-md md:mb-0 md:mr-4"
               />
-              <div>
-                <AlertDialogTitle className="text-2xl font-bold">
-                  {recipe.data.name} ({recipe.data.price})
+              <div className="flex-1">
+                <AlertDialogTitle className="text-3xl font-bold">
+                  {recipe.data.name} -{" "}
+                  <span className="text-xl font-semibold">
+                    {recipe.data.price}
+                  </span>
                 </AlertDialogTitle>
-                <AlertDialogDescription className="my-2">
-                  <p className="text-sm">{recipe.data.description}</p>
+                <AlertDialogDescription className="mt-2 text-lg text-gray-600">
+                  {recipe.data.description}
                 </AlertDialogDescription>
+                <div className="mt-2"></div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {recipe.data.recipeCategories.map((category) => (
+                    <Badge
+                      key={category.id}
+                      className="text-blue-800 bg-blue-100"
+                    >
+                      {category.category.name}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             </AlertDialogHeader>
 
-            {/* Grid Container for Details */}
-            <div className="grid grid-cols-1 gap-4 mt-4">
-              {/* Ingredients and Nutritional Information */}
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="mt-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Ingredients */}
-                <div>
-                  <h3 className="text-lg font-semibold">Ingredients</h3>
-                  <ul className="mt-2 list-disc list-inside">
+                <div className="p-4 bg-white border rounded-md shadow-sm">
+                  <h3 className="mb-2 text-xl font-semibold">Ingredients</h3>
+                  <ul className="list-disc list-inside">
                     {recipe.data.recipeIngredients.map((ingredient) => (
-                      <li key={ingredient.id}>
+                      <li key={ingredient.id} className="mb-1">
                         {ingredient.ingredient.name}: {ingredient.amount}{" "}
                         {ingredient.ingredient.unit} (
                         {ingredient.ingredient.price})
@@ -69,11 +82,11 @@ const RecepiDetail: React.FC<RecepiDetailProps> = ({ id }) => {
 
                 {/* Nutritional Information */}
                 {recipe.data.recipeNutrient && (
-                  <div>
-                    <h3 className="text-lg font-semibold">
+                  <div className="p-4 bg-white border rounded-md shadow-sm">
+                    <h3 className="mb-2 text-xl font-semibold">
                       Nutritional Information
                     </h3>
-                    <ul className="mt-2 list-disc list-inside">
+                    <ul className="list-disc list-inside">
                       <li>
                         Calories: {recipe.data.recipeNutrient.calories} kcal
                       </li>
@@ -98,14 +111,16 @@ const RecepiDetail: React.FC<RecepiDetailProps> = ({ id }) => {
               </div>
 
               {/* Preparation Steps */}
-              <div>
-                <h3 className="text-lg font-semibold">Preparation</h3>
+              <div className="mt-6">
+                <h3 className="mb-4 text-xl font-semibold">Preparation</h3>
                 <div className="flex flex-col gap-4">
                   {recipe.data.recipeSteps.map((step, index) => (
                     <div
                       key={step.id}
                       className={`flex items-start p-4 border rounded-md cursor-pointer transition-transform duration-300 ease-in-out ${
-                        selectedStepIndex === index ? "bg-gray-100" : "bg-white"
+                        selectedStepIndex === index
+                          ? "bg-gray-100 shadow-lg"
+                          : "bg-white"
                       }`}
                       onClick={() => handleStepClick(index)}
                     >
@@ -120,10 +135,9 @@ const RecepiDetail: React.FC<RecepiDetailProps> = ({ id }) => {
                         <div className="text-lg font-semibold">
                           Step {step.index} - {step.name}
                         </div>
-                        <p className="mt-2">{step.description}</p>
+                        <p className="mt-2 text-gray-700">{step.description}</p>
                         {step.mediaURL && (
                           <div className="mt-2">
-                            {/* Include additional media rendering if needed */}
                             <a
                               href={step.mediaURL}
                               target="_blank"

@@ -10,7 +10,6 @@ export const IngredientApi = {
     data: IngredientRequest
   ): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.put<Response<null>>(
         `/api/ingredients/update/${id}`,
         data
@@ -37,7 +36,6 @@ export const IngredientApi = {
     data: IngredientRequest
   ): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const respone = await axiosInstance.post<Response<null>>(
         "/api/ingredients/create-new",
         data
@@ -65,7 +63,6 @@ export const IngredientApi = {
 
   deleteIngredient: async (id: string): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.delete<Response<null>>(
         `/api/ingredients/delete/${id}`
       );
@@ -92,7 +89,6 @@ export const IngredientApi = {
     status: number
   ): Promise<boolean> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       await axiosInstance.put(`/api/ingredients/update-status/${id}`, {
         status,
       });
@@ -106,7 +102,6 @@ export const IngredientApi = {
   category: {
     createCategory: async (data: CategoryRequest): Promise<Response<null>> => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
         const respone = await axiosInstance.post(
           "/api/ingredientcategories/create",
           data
@@ -134,7 +129,6 @@ export const IngredientApi = {
       status: number
     ): Promise<boolean> => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
         await axiosInstance.put(
           `/api/ingredientcategories/change-status/${id}`,
           {
@@ -153,7 +147,6 @@ export const IngredientApi = {
       data: CategoryRequest
     ): Promise<Response<null>> => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
         const response = await axiosInstance.put<Response<null>>(
           `/api/ingredientcategories/update/${id}`,
           data
@@ -178,7 +171,6 @@ export const IngredientApi = {
 
     deleteCategory: async (id: string): Promise<Response<null>> => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
         const response = await axiosInstance.delete<Response<null>>(
           `/api/ingredientcategories/delete-by-id/${id}`
         );

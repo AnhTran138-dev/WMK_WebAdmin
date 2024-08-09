@@ -14,6 +14,7 @@ import ClusterForm from "./dialog/ClusterForm";
 import DeleteOrderGroup from "./dialog/DeleteOrderGroup";
 import { OrderGroupRequest } from "../../models/requests";
 import ChangeStatus from "./dialog/ChangeStatus";
+import ResetAllGroup from "./dialog/ResetAllGroup";
 
 const OrderGroupPage = () => {
   const { toast } = useToast();
@@ -80,7 +81,10 @@ const OrderGroupPage = () => {
     setStatus(status);
   };
 
-  const handleReset = () => {};
+  const handleReset = () => {
+    setType("reset");
+    setIsDialogOpen(true);
+  };
 
   return (
     <div>
@@ -117,7 +121,7 @@ const OrderGroupPage = () => {
               />
             </Show.When>
             <Show.When isTrue={type === "cluster"}>
-              <ClusterForm />
+              <ClusterForm onClose={handleCloseDialog} refetch={refetch} />
             </Show.When>
             <Show.When isTrue={type === "delete"}>
               <DeleteOrderGroup
@@ -134,6 +138,13 @@ const OrderGroupPage = () => {
                 onToast={handleToast}
                 orderGroupId={orderGroupId}
                 status={status}
+              />
+            </Show.When>
+            <Show.When isTrue={type === "reset"}>
+              <ResetAllGroup
+                onClose={handleCloseDialog}
+                refetch={refetch}
+                onToast={handleToast}
               />
             </Show.When>
           </Show>

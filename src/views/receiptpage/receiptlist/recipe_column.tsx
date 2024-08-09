@@ -76,6 +76,28 @@ const RecipeColumn = (
     },
   },
   {
+    accessorKey: "recipeCategories",
+    header: "Category",
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col gap-2 px-2 text-center">
+          {row.original.recipeCategories.map((category) => (
+            <Badge
+              key={category.id}
+              className="text-center text-blue-800 bg-blue-100 text-nowrap"
+            >
+              {category.category.name}
+            </Badge>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "difficulty",
+    header: "Difficulty",
+  },
+  {
     accessorKey: "price",
     header: "Price",
   },
@@ -117,20 +139,20 @@ const RecipeColumn = (
       );
     },
   },
-  {
-    accessorKey: "approvedBy",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Approved By
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "approvedBy",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         Approved By
+  //         <ArrowUpDown className="w-4 h-4 ml-2" />
+  //       </Button>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "popularity",
     header: ({ column }) => {

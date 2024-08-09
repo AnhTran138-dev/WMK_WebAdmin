@@ -169,7 +169,7 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
               <FormField
                 control={form.control}
                 name="role"
-                render={({ field }) => (
+              render={({ field }) => (
                   <FormItem>
                     <FormLabel>Role</FormLabel>
                     <FormControl>
