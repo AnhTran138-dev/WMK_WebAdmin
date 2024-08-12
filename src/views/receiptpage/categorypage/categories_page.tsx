@@ -65,14 +65,14 @@ const CategoriesPage = () => {
 
   return (
     <div>
-      <DataRender isLoading={loading} error={error}>
-        <DataTable
-          columns={CategoriesRecipeColumns(handleEdit, handleToast, refetch)}
-          data={categories?.data || []}
-          searchColumn="name"
-          handleCreate={handleCreate}
-        />
-      </DataRender>
+      {/* <DataRender isLoading={loading} error={error}> */}
+      <DataTable
+        columns={CategoriesRecipeColumns(handleEdit, handleToast, refetch)}
+        data={categories?.data || []}
+        searchColumn="name"
+        handleCreate={handleCreate}
+      />
+      {/* </DataRender> */}
       <DialogCustom
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}

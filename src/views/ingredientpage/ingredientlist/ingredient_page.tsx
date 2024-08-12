@@ -69,7 +69,12 @@ const IngredientPage = () => {
       <DataRender isLoading={loading} error={error}>
         <DataTable
           data={ingredient?.data ?? []}
-          columns={IngredientColumn(handleEdit, handleToast, refetch, handleDetail)}
+          columns={IngredientColumn(
+            handleEdit,
+            handleToast,
+            refetch,
+            handleDetail
+          )}
           searchColumn="name"
           handleCreate={handleCreate}
         />

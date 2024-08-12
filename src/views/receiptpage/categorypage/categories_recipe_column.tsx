@@ -154,19 +154,7 @@ export const CategoriesRecipeColumns = (
                 if (result.statusCode === 200) {
                   onToast(true, result.message);
                   refetch();
-                }
-
-                if (result.statusCode === 404) {
-                  onToast(false, result.message);
-                  refetch();
-                }
-
-                if (result.statusCode === 500) {
-                  onToast(false, result.message);
-                  refetch();
-                }
-
-                if (result.statusCode === 400) {
+                } else {
                   onToast(false, result.message);
                   refetch();
                 }

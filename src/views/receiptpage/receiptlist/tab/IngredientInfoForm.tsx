@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import {
-  Button,
   Checkbox,
   FormControl,
   FormField,
@@ -17,10 +16,20 @@ import useFetch from "@/hooks/useFetch";
 import Show from "@/lib/show";
 import { IngredientsList, Response } from "@/models/responses";
 import { recipeSchema } from "@/schemas/recipe";
+import DialogCustom from "../../../../components/common/dialog";
+import IngredientForm from "../../../ingredientpage/ingredientlist/dialog/ingredient_form";
 
 type RecipeFormValues = z.infer<typeof recipeSchema>;
 
-const IngredientInfoForm: React.FC = () => {
+interface IngredientInfoFormProps {
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isDialogOpen: boolean;
+}
+
+const IngredientInfoForm: React.FC<IngredientInfoFormProps> = ({
+  setIsDialogOpen,
+  isDialogOpen,
+}) => {
   const { register, watch, setValue, control } =
     useFormContext<RecipeFormValues>();
   const { fields, append, remove } = useFieldArray({
@@ -38,7 +47,7 @@ const IngredientInfoForm: React.FC = () => {
     return { params };
   }, [searchDebounce]);
 
-  const { data: ingredients } = useFetch<Response<IngredientsList[]>>(
+  const { data: ingredients, refetch } = useFetch<Response<IngredientsList[]>>(
     "/api/ingredients/get-all",
     options
   );
@@ -70,17 +79,17 @@ const IngredientInfoForm: React.FC = () => {
     setValue("recipeIngredientsList", updatedIngredients);
   };
 
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+  };
+
   return (
     <div>
-      <div className="flex flex-row gap-3">
-        <Input
-          placeholder="Search name recipe"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <Button>Create new ingredent</Button>
-        <Button>Check ingredent</Button>
-      </div>
+      <Input
+        placeholder="Search name recipe"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <ScrollArea className="h-60">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
           {ingredients?.data.map((ingredient) => {
@@ -151,6 +160,14 @@ const IngredientInfoForm: React.FC = () => {
         </div>
       </ScrollArea>
       <FormMessage />
+      <DialogCustom
+        className="max-w-5xl p-6"
+        onClose={handleDialogClose}
+        isOpen={isDialogOpen}
+        children={
+          <IngredientForm onClose={handleDialogClose} reFresh={refetch} />
+        }
+      />
     </div>
   );
 };

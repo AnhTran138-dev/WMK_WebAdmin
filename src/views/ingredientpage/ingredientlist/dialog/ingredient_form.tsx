@@ -27,7 +27,7 @@ import NutritionalInfoForm from "../tabs/NutritionalInfoForm";
 interface IngredientFormProps {
   reFresh: () => void;
   onClose: () => void;
-  ingredient: IngredientRequest | null;
+  ingredient?: IngredientRequest | null;
 }
 
 const IngredientForm: React.FC<IngredientFormProps> = ({

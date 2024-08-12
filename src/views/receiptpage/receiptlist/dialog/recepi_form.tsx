@@ -22,6 +22,7 @@ import { z } from "zod";
 import GeneralInfoForm from "../tab/GeneralInfoForm";
 import IngredientInfoForm from "../tab/IngredientInfoForm";
 import ReciptStepForm from "../tab/ReciptStepForm";
+import Show from "../../../../lib/show";
 
 const validateFields = <T,>(values: T, requiredKeys: Array<keyof T>): boolean =>
   requiredKeys.every((key) => values[key] !== "" && values[key] !== undefined);
@@ -40,6 +41,14 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
   onToast,
 }) => {
   const [activeTab, setActiveTab] = useState<string>("general");
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+  const handleTabChange = (value: string) => {
+    if (!isDialogOpen) {
+      setActiveTab(value);
+    }
+  };
+
   const form = useForm<z.infer<typeof recipeSchema>>({
     defaultValues: {
       name: recipe?.name || "",
@@ -93,11 +102,11 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
       ) {
         return onToast(false, "Please fill all required fields");
       }
-      setActiveTab("Step");
+      setActiveTab("step");
       return;
     }
 
-    if (activeTab === "Step") {
+    if (activeTab === "step") {
       if (
         !values.steps.every((step) =>
           validateFields(step, ["name", "description", "mediaURL", "imageLink"])
@@ -115,8 +124,6 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
 
       const stepFiles = await Promise.all(
         values.steps.map((step) => {
-          console.log("step", step.imageLink);
-
           if (step.imageLink instanceof File) {
             return utilApi.uploadFile(step.imageLink);
           }
@@ -161,21 +168,43 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
         <AlertDialogDescription>
           <Tabs
             value={activeTab}
-            onValueChange={setActiveTab}
+            onValueChange={handleTabChange}
             className="w-full"
           >
-            <TabsList>
-              <TabsTrigger value="general">General Info</TabsTrigger>
-              <TabsTrigger value="ingredient">Ingredient Info</TabsTrigger>
-              <TabsTrigger value="Step">Step Info</TabsTrigger>
-            </TabsList>
+            <div className="flex justify-between w-full">
+              <TabsList>
+                <TabsTrigger value="general">General Info</TabsTrigger>
+                <TabsTrigger value="ingredient">Ingredient Info</TabsTrigger>
+                <TabsTrigger value="step">Step Info</TabsTrigger>
+              </TabsList>
+              <Show>
+                <Show.When isTrue={activeTab === "ingredient"}>
+                  <div className="space-x-2">
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsDialogOpen(true);
+                      }}
+                    >
+                      <span className="text-sm">Add New Ingredient</span>
+                    </Button>
+                    <Button>
+                      <span className="text-sm">Check Ingredents</span>
+                    </Button>
+                  </div>
+                </Show.When>
+              </Show>
+            </div>
             <TabsContent value="general">
               <GeneralInfoForm />
             </TabsContent>
             <TabsContent value="ingredient">
-              <IngredientInfoForm />
+              <IngredientInfoForm
+                setIsDialogOpen={setIsDialogOpen}
+                isDialogOpen={isDialogOpen}
+              />
             </TabsContent>
-            <TabsContent value="Step">
+            <TabsContent value="step">
               <ReciptStepForm />
             </TabsContent>
           </Tabs>

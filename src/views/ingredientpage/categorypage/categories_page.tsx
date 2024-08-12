@@ -82,13 +82,13 @@ const CategoriesPage = () => {
 
   return (
     <div>
-      <DataRender isLoading={loading} error={error}>
-        <DataTable
-          columns={CategoriesIngredientColumn(handleEdit, handleToast, refetch)}
-          data={ingredient?.data || []}
-          handleCreate={handleCreate}
-        />
-      </DataRender>
+      {/* <DataRender isLoading={loading} error={error}> */}
+      <DataTable
+        columns={CategoriesIngredientColumn(handleEdit, handleToast, refetch)}
+        data={ingredient?.data || []}
+        handleCreate={handleCreate}
+      />
+      {/* </DataRender> */}
       <DialogCustom
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}

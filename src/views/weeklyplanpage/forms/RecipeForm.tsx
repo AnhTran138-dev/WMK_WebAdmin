@@ -57,7 +57,7 @@ const RecipeForm = () => {
   const [selectedMeal, setSelectedMeal] = useState<MealInDay | null>(null);
   const [selectedDay, setSelectedDay] = useState<DayInWeek | null>(null);
   const [quantity, setQuantity] = useState<number | "">("");
-  const [openPopover, setOpenPopover] = useState<string | null>(null); // Key to manage which Popover is open
+  const [openPopover, setOpenPopover] = useState<string | null>(null);
 
   // useEffect(() => {
   //   if (fields.length === 0) {
