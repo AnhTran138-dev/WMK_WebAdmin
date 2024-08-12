@@ -68,19 +68,19 @@ const OrderPage = () => {
 
   return (
     <div>
-      <DataRender className="my-4 h-fit" isLoading={loading} error={error}>
-        <DataTable
-          columns={OrderColum(
-            refetch,
-            handleDialog,
-            handleToast,
-            handleDetail,
-            orderGroup?.data ?? []
-          )}
-          data={sortedData ?? []}
-          searchColumn="address"
-        />
-      </DataRender>
+      {/* <DataRender className="my-4 h-fit" isLoading={loading} error={error}> */}
+      <DataTable
+        columns={OrderColum(
+          refetch,
+          handleDialog,
+          handleToast,
+          handleDetail,
+          orderGroup?.data ?? []
+        )}
+        data={sortedData ?? []}
+        searchColumn="address"
+      />
+      {/* </DataRender> */}
       <DialogCustom
         className="max-w-5xl p-6"
         isOpen={isDialogOpen}
@@ -96,7 +96,11 @@ const OrderPage = () => {
               />
             </Show.When>
             <Show.When isTrue={type === "detail"}>
-              <OrderDetail id={id} onClose={handleCloseDialog} refetch={refetch}/>
+              <OrderDetail
+                id={id}
+                onClose={handleCloseDialog}
+                refetch={refetch}
+              />
             </Show.When>
           </Show>
         }

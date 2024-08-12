@@ -88,21 +88,21 @@ const OrderGroupPage = () => {
 
   return (
     <div>
-      <DataRender isLoading={loading} error={error}>
-        <DataTable
-          columns={OrderGroupColumn(
-            handleDialog,
-            handleDetail,
-            handleEdit,
-            changeStatus
-          )}
-          data={orderGroup?.data || []}
-          handleCreate={handleCreate}
-          handleCluster={handleCluster}
-          searchColumn="shipperUserName"
-          handleReset={handleReset}
-        />
-      </DataRender>
+      {/* <DataRender isLoading={loading} error={error}> */}
+      <DataTable
+        columns={OrderGroupColumn(
+          handleDialog,
+          handleDetail,
+          handleEdit,
+          changeStatus
+        )}
+        data={orderGroup?.data || []}
+        handleCreate={handleCreate}
+        handleCluster={handleCluster}
+        searchColumn="shipperUserName"
+        handleReset={handleReset}
+      />
+      {/* </DataRender> */}
       <DialogCustom
         className="flex-grow flex-shrink max-w-5xl p-6 "
         isOpen={isDialogOpen}

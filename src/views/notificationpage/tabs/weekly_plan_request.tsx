@@ -98,7 +98,7 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
   };
 
   return (
-    <DataRender className="p-4" isLoading={loading} error={error}>
+    <div>
       <Show>
         <Show.When isTrue={role !== "Staff"}>
           {weeklyplans?.data
@@ -158,7 +158,9 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
           />
         }
       />
-    </DataRender>
+    </div>
+    // <DataRender className="p-4" isLoading={loading} error={error}>
+    // </DataRender>
   );
 };
 
