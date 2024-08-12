@@ -4,6 +4,7 @@ import routes from "./router";
 import useThemeStore from "./states/local/theme";
 import { useEffect } from "react";
 import { Toaster } from "./components/ui";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 const queryClient = new QueryClient();
 
@@ -16,8 +17,10 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={routes} />
-      <Toaster />
+      <TooltipProvider>
+        <RouterProvider router={routes} />
+        <Toaster />
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }

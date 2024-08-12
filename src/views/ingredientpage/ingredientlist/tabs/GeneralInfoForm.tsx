@@ -61,7 +61,7 @@ const GeneralInfoForm: React.FC = () => {
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Category" />
+                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories?.data.map((category) => (
@@ -116,7 +116,7 @@ const GeneralInfoForm: React.FC = () => {
             name="price"
             render={() => (
               <FormItem>
-                <FormLabel>Price</FormLabel>
+                <FormLabel>Price (VNĐ)</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -128,33 +128,14 @@ const GeneralInfoForm: React.FC = () => {
               </FormItem>
             )}
           />
-          {/* {!status && (
-            <FormField
-              name="status"
-              render={() => (
-                <FormItem className="flex flex-col">
-                  <FormLabel className="mb-3">Status</FormLabel>
-                  <FormControl>
-                    <Switch
-                      checked={Boolean(watch("status"))}
-                      onCheckedChange={(checked) =>
-                        setValue("status", checked ? 1 : 0)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )} */}
         </div>
         <FormField
           name="unit"
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Unit</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="Unit" {...register("unit")} />
+                <Input type="text" placeholder="Unit" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -192,22 +173,6 @@ const GeneralInfoForm: React.FC = () => {
             </FormItem>
           )}
         />
-        {/* <FormField
-          name="createdBy"
-          render={() => (
-            <FormItem>
-              <FormLabel>Created By</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  placeholder="Created By"
-                  {...register("createdBy")}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
       </div>
     </div>
   );

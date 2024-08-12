@@ -1,26 +1,32 @@
 import React, { useMemo } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
-import { recipeSchema } from "@/schemas/recipe";
 import {
-  FormField,
-  FormLabel,
-  FormControl,
-  Input,
-  FormItem,
+  Button,
   Checkbox,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
   FormMessage,
+  Input,
   ScrollArea,
 } from "@/components/ui";
+import { useDebounce } from "@/hooks";
 import useFetch from "@/hooks/useFetch";
+import Show from "@/lib/show";
 import { IngredientsList, Response } from "@/models/responses";
-import { useDebounce } from "../../../../hooks";
-import Show from "../../../../lib/show";
+import { recipeSchema } from "@/schemas/recipe";
 
 type RecipeFormValues = z.infer<typeof recipeSchema>;
 
 const IngredientInfoForm: React.FC = () => {
-  const { register, watch, setValue } = useFormContext<RecipeFormValues>();
+  const { register, watch, setValue, control } =
+    useFormContext<RecipeFormValues>();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "recipeIngredientsList",
+  });
   const [search, setSearch] = React.useState<string>("");
   const searchDebounce = useDebounce(search, 500);
 
@@ -37,45 +43,47 @@ const IngredientInfoForm: React.FC = () => {
     options
   );
 
-  // Get the sanitized list of ingredients
-  const recipeIngredientsList = (watch("recipeIngredientsList") || []).filter(
-    (item) =>
-      typeof item.amount === "number" && !isNaN(item.amount) && item.amount >= 0
-  );
+  const recipeIngredientsList = watch("recipeIngredientsList") || [];
 
   const handleCheckboxChange = (ingredientId: string, checked: boolean) => {
     if (checked) {
-      // Add ingredient if not already present
       const ingredientExists = recipeIngredientsList.some(
         (item) => item.ingredientId === ingredientId
       );
       if (!ingredientExists) {
-        setValue("recipeIngredientsList", [
-          ...recipeIngredientsList,
-          { ingredientId, amount: 0 },
-        ]);
+        append({ ingredientId, amount: 0 });
       }
     } else {
-      // Remove ingredient
-      setValue(
-        "recipeIngredientsList",
-        recipeIngredientsList.filter(
-          (item) => item.ingredientId !== ingredientId
-        )
+      const ingredientIndex = recipeIngredientsList.findIndex(
+        (item) => item.ingredientId === ingredientId
       );
+      if (ingredientIndex !== -1) {
+        remove(ingredientIndex);
+      }
     }
+  };
+
+  const handleAmountChange = (ingredientId: string, amount: number) => {
+    const updatedIngredients = recipeIngredientsList.map((item) =>
+      item.ingredientId === ingredientId ? { ...item, amount } : item
+    );
+    setValue("recipeIngredientsList", updatedIngredients);
   };
 
   return (
     <div>
-      <Input
-        placeholder="Search name recipe"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <div className="flex flex-row gap-3">
+        <Input
+          placeholder="Search name recipe"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <Button>Create new ingredent</Button>
+        <Button>Check ingredent</Button>
+      </div>
       <ScrollArea className="h-60">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-          {ingredients?.data.map((ingredient, index) => {
+          {ingredients?.data.map((ingredient) => {
             const isChecked = recipeIngredientsList.some(
               (item) => item.ingredientId === ingredient.id
             );
@@ -91,7 +99,9 @@ const IngredientInfoForm: React.FC = () => {
                 >
                   <FormField
                     name={
-                      `recipeIngredientsList.${ingredient.id}.amount` as const
+                      `recipeIngredientsList.${fields.findIndex(
+                        (field) => field.ingredientId === ingredient.id
+                      )}.amount` as const
                     }
                     render={() => (
                       <FormItem className="flex flex-row items-baseline justify-between">
@@ -106,35 +116,28 @@ const IngredientInfoForm: React.FC = () => {
                                 )
                               }
                               {...register(
-                                `recipeIngredientsList.${ingredient.id}.checked`
+                                `recipeIngredientsList.${fields.findIndex(
+                                  (field) =>
+                                    field.ingredientId === ingredient.id
+                                )}.ingredientId` as const
                               )}
                             />
                           </FormControl>
                           <FormLabel className="font-normal">
-                            {ingredient.name}
+                            {ingredient.name} - ({ingredient.unit})
                           </FormLabel>
                         </div>
+
                         <FormControl className="w-24">
                           <Input
                             type="number"
                             value={amount}
-                            {...register(
-                              `recipeIngredientsList.${ingredient.id}.amount`,
-                              {
-                                onChange: (e) => {
-                                  const newAmount = parseFloat(e.target.value);
-                                  // Update amount in the list
-                                  setValue(
-                                    "recipeIngredientsList",
-                                    recipeIngredientsList.map((item) =>
-                                      item.ingredientId === ingredient.id
-                                        ? { ...item, amount: newAmount }
-                                        : item
-                                    )
-                                  );
-                                },
-                              }
-                            )}
+                            onChange={(e) =>
+                              handleAmountChange(
+                                ingredient.id,
+                                parseFloat(e.target.value)
+                              )
+                            }
                             disabled={!isChecked}
                           />
                         </FormControl>
@@ -145,9 +148,9 @@ const IngredientInfoForm: React.FC = () => {
               </Show>
             );
           })}
-          <FormMessage />
         </div>
       </ScrollArea>
+      <FormMessage />
     </div>
   );
 };

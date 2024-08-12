@@ -84,7 +84,7 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
     handleChangeStatus(
       {
         id: planId,
-        status: 1,
+        status: 2,
         type: "weeklyplan",
         author: "deny",
       },

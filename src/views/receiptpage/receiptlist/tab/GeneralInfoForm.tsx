@@ -96,7 +96,6 @@ const GeneralInfoForm: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-      {/* Category Row */}
       <div className="col-span-full">
         <Label className="block mb-2">Category</Label>
         <div className="flex flex-wrap gap-4">
@@ -199,7 +198,7 @@ const GeneralInfoForm: React.FC = () => {
           name="servingSize"
           render={() => (
             <FormItem>
-              <FormLabel>Serving Size</FormLabel>
+              <FormLabel>Serving Size (person)</FormLabel>
               <FormControl>
                 <Input
                   id="servingSize"
@@ -219,7 +218,7 @@ const GeneralInfoForm: React.FC = () => {
           name="cookingTime"
           render={() => (
             <FormItem>
-              <FormLabel>Cooking Time</FormLabel>
+              <FormLabel>Cooking Time (minutes)</FormLabel>
               <FormControl>
                 <Input
                   id="cookingTime"
@@ -237,18 +236,11 @@ const GeneralInfoForm: React.FC = () => {
       <div className="md:col-span-1">
         <FormField
           name="difficulty"
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Difficulty</FormLabel>
               <FormControl>
-                <Select
-                  value={watch("difficulty").toString()}
-                  onValueChange={(value) => {
-                    console.log("value", value);
-
-                    setValue("difficulty", parseInt(value));
-                  }}
-                >
+                <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Difficulty" />
                   </SelectTrigger>

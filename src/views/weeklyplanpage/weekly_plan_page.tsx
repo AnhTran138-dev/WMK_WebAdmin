@@ -33,8 +33,6 @@ const WeeklyPlanPage = () => {
     setWeeklyPlanEdit(null);
   };
 
-  console.log("weeklyplans", weeklyPlanEdit);
-
   const handleEdit = (weeklyPlan: WeeklyPlanRequest) => {
     setType("edit");
     setIsDialogOpen(true);

@@ -1,26 +1,30 @@
-import { useFieldArray, useFormContext } from "react-hook-form";
-import { DayInWeek, MealInDay } from "../../../models/requests";
-import { z } from "zod";
-import { WeeklyPlanRequestSchema } from "../../../schemas/weeklyplan";
 import {
+  Badge,
   Button,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
   Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   ScrollArea,
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../../../components/ui";
-import useFetch from "../../../hooks/useFetch";
-import { RecipeList, Response } from "../../../models/responses";
-import { CircleMinus, CirclePlus } from "lucide-react";
-import { useEffect } from "react";
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui";
+import useFetch from "@/hooks/useFetch";
+import { DayInWeek, MealInDay } from "@/models/requests";
+import { RecipeList, Response } from "@/models/responses";
+import { WeeklyPlanRequestSchema } from "@/schemas/weeklyplan";
+import { CirclePlus, CircleX } from "lucide-react";
+import { useState } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { z } from "zod";
 
 const MealInDayList = [
   { id: 1, name: "Breakfast", value: MealInDay.Breakfast },
@@ -39,9 +43,9 @@ const DayInWeekList = [
 ];
 
 const RecipeForm = () => {
-  const { control, watch, setValue } =
+  const { control, getValues, setValue } =
     useFormContext<z.infer<typeof WeeklyPlanRequestSchema>>();
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append } = useFieldArray({
     control,
     name: "recipeIds",
   });
@@ -49,175 +53,202 @@ const RecipeForm = () => {
     "/api/recipes/get-all"
   );
 
-  useEffect(() => {
-    if (fields.length === 0) {
+  const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
+  const [selectedMeal, setSelectedMeal] = useState<MealInDay | null>(null);
+  const [selectedDay, setSelectedDay] = useState<DayInWeek | null>(null);
+  const [quantity, setQuantity] = useState<number | "">("");
+  const [openPopover, setOpenPopover] = useState<string | null>(null); // Key to manage which Popover is open
+
+  // useEffect(() => {
+  //   if (fields.length === 0) {
+  //     append({
+  //       recipeId: "",
+  //       quantity: undefined,
+  //       dayInWeek: undefined,
+  //       mealInDay: undefined,
+  //     });
+  //   }
+  // }, [fields, append]);
+
+  const handleAddRecipe = () => {
+    if (selectedRecipe && selectedMeal && selectedDay && quantity) {
+      const currentRecipes = getValues("recipeIds") || [];
+      const existingEntry = currentRecipes.find(
+        (r) =>
+          r.dayInWeek === selectedDay &&
+          r.mealInDay === selectedMeal &&
+          r.recipeId === selectedRecipe
+      );
+
+      if (existingEntry) {
+        return; // Recipe already added for this cell
+      }
+
+      if (
+        currentRecipes.filter(
+          (r) => r.dayInWeek === selectedDay && r.mealInDay === selectedMeal
+        ).length >= 4
+      ) {
+        return; // Limit to 4 recipes per cell
+      }
+
       append({
-        recipeId: "",
-        quantity: undefined,
-        dayInWeek: undefined,
-        mealInDay: undefined,
+        recipeId: selectedRecipe,
+        quantity,
+        dayInWeek: selectedDay,
+        mealInDay: selectedMeal,
       });
+      setSelectedRecipe(null);
+      setSelectedMeal(null);
+      setSelectedDay(null);
+      setQuantity("");
+      setOpenPopover(null); // Close the Popover
     }
-  }, [fields, append]);
+  };
+
+  const handleRemoveRecipe = (index: number) => {
+    const currentRecipes = getValues("recipeIds") || [];
+    const updatedRecipes = currentRecipes.filter((_, i) => i !== index);
+    setValue("recipeIds", updatedRecipes);
+  };
+
+  const renderRecipesForCell = (day: DayInWeek, meal: MealInDay) => {
+    return fields
+      .filter((field) => field.dayInWeek === day && field.mealInDay === meal)
+      .map((field, index) => (
+        <div
+          key={field.recipeId}
+          className="flex flex-row items-center justify-end "
+        >
+          <Badge className="mb-1 text-center">
+            <Tooltip>
+              <TooltipTrigger className="flex">
+                <div className="overflow-hidden max-w-32 text-nowrap text-ellipsis">
+                  {recipes?.data.find((r) => r.id === field.recipeId)?.name}
+                </div>
+                <div>( x{field.quantity})</div>
+              </TooltipTrigger>
+              <TooltipContent>
+                {recipes?.data.find((r) => r.id === field.recipeId)?.name}
+              </TooltipContent>
+            </Tooltip>
+          </Badge>
+          <Button variant="ghost" onClick={() => handleRemoveRecipe(index)}>
+            <CircleX />
+          </Button>
+        </div>
+      ));
+  };
+
+  const isAddButtonHidden = (day: DayInWeek, meal: MealInDay) => {
+    const currentRecipes = getValues("recipeIds") || [];
+    return (
+      currentRecipes.filter((r) => r.dayInWeek === day && r.mealInDay === meal)
+        .length >= 4
+    );
+  };
 
   return (
     <div className="max-w-4xl px-4 py-6 mx-auto space-y-4">
-      <ScrollArea className="h-96">
-        {fields.map((field, index) => (
-          <div key={field.id} className="p-4 bg-white rounded-lg shadow-md">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-              <FormField
-                name={`recipeIds.${index}.recipeId`}
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Recipe</FormLabel>
-                    <FormControl>
-                      <Select
-                        defaultValue={watch(`recipeIds.${index}.recipeId`)}
-                        onValueChange={(value) =>
-                          setValue(`recipeIds.${index}.recipeId`, value)
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select recipe" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {recipes?.data.map((recipe) => (
-                            <SelectItem key={recipe.id} value={recipe.id}>
-                              {recipe.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                name={`recipeIds.${index}.quantity`}
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        value={watch(`recipeIds.${index}.quantity`) || ""}
-                        onChange={(e) => {
-                          const numberValue = parseFloat(e.target.value);
-                          setValue(`recipeIds.${index}.quantity`, numberValue);
-                        }}
-                        placeholder="Enter Quantity"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                name={`recipeIds.${index}.dayInWeek`}
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Day In Week</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={(value) => {
-                          const numberValue = parseInt(value, 10);
-                          setValue(`recipeIds.${index}.dayInWeek`, numberValue);
-                        }}
-                        value={
-                          watch(`recipeIds.${index}.dayInWeek`)?.toString() ||
-                          ""
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Day In Week" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {DayInWeekList.map((day) => (
-                            <SelectItem
-                              key={day.id}
-                              value={day.DayInWeek.toString()}
+      <table className="min-w-full divide-y divide-gray-200">
+        <ScrollArea className="h-96">
+          <thead>
+            <tr>
+              <th className="px-6 py-3 text-left bg-gray-100">Meal/Day</th>
+              {MealInDayList.map((meal) => (
+                <th key={meal.id} className="px-6 py-3 text-center bg-gray-50">
+                  {meal.name}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {DayInWeekList.map((day) => (
+              <tr key={day.id}>
+                <td className="px-6 py-4 font-medium text-gray-900 bg-gray-100">
+                  {day.name}
+                </td>
+                {MealInDayList.map((meal) => (
+                  <td key={meal.id} className="px-6 py-4 ">
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      {!isAddButtonHidden(day.DayInWeek, meal.value) && (
+                        <Popover
+                          open={
+                            openPopover === `${day.DayInWeek}-${meal.value}`
+                          }
+                          onOpenChange={(isOpen) => {
+                            if (isOpen) {
+                              setOpenPopover(`${day.DayInWeek}-${meal.value}`);
+                            } else {
+                              setOpenPopover(null);
+                            }
+                          }}
+                        >
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedMeal(meal.value);
+                                setSelectedDay(day.DayInWeek);
+                                setOpenPopover(
+                                  `${day.DayInWeek}-${meal.value}`
+                                );
+                              }}
                             >
-                              {day.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                name={`recipeIds.${index}.mealInDay`}
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Meal In Day</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={(value) => {
-                          const numberValue = parseInt(value, 10);
-                          setValue(`recipeIds.${index}.mealInDay`, numberValue);
-                        }}
-                        value={
-                          watch(`recipeIds.${index}.mealInDay`)?.toString() ||
-                          ""
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Meal In Day" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {MealInDayList.map((meal) => (
-                            <SelectItem
-                              key={meal.id}
-                              value={meal.value.toString()}
+                              <CirclePlus />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="space-y-5 w-fit"
+                            align="start"
+                          >
+                            <Select
+                              value={selectedRecipe || ""}
+                              onValueChange={setSelectedRecipe}
                             >
-                              {meal.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a recipe" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  <SelectLabel>Recipes</SelectLabel>
+                                  {recipes?.data.map((recipe) => (
+                                    <SelectItem
+                                      key={recipe.id}
+                                      value={recipe.id}
+                                    >
+                                      {recipe.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
 
-            <Button
-              variant="outline"
-              size="icon"
-              type="button"
-              className="mt-4"
-              onClick={() => remove(index)}
-            >
-              <CircleMinus className="size-12" />
-            </Button>
-          </div>
-        ))}
-      </ScrollArea>
+                            <Input
+                              type="number"
+                              placeholder="Quantity"
+                              value={quantity}
+                              onChange={(e) =>
+                                setQuantity(Number(e.target.value) || "")
+                              }
+                              className="w-full"
+                            />
 
-      <Button
-        variant="outline"
-        size="icon"
-        type="button"
-        className="mt-4"
-        onClick={() => {
-          append({
-            recipeId: "",
-            quantity: undefined,
-            dayInWeek: undefined,
-            mealInDay: undefined,
-          });
-        }}
-      >
-        <CirclePlus className="size-12" />
-      </Button>
+                            <Button onClick={handleAddRecipe}>Submit</Button>
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                      <div className="mt-2">
+                        {renderRecipesForCell(day.DayInWeek, meal.value)}
+                      </div>
+                    </div>
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </ScrollArea>
+      </table>
     </div>
   );
 };

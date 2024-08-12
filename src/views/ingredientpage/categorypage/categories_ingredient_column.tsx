@@ -70,19 +70,21 @@ export const CategoriesIngredientColumn = (
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={async () => {
-                const result =
+                const result: Response<null> =
                   await IngredientApi.category.changeStatusCategory(
                     category.id,
                     category.status.toLocaleLowerCase() === "unavailable"
                       ? 0
                       : 1
                   );
-                if (result) {
-                  onToast(true, "Delete category successfully");
+
+                console.log(result);
+
+                if (result.statusCode === 200) {
+                  onToast(true, result.message);
                   refetch();
                 } else {
-                  onToast(false, "Delete category failed");
-                  refetch();
+                  onToast(false, result.message);
                 }
               }}
             >

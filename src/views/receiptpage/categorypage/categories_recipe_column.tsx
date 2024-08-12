@@ -139,6 +139,7 @@ export const CategoriesRecipeColumns = (
                   id: catogory.id,
                   name: catogory.name,
                   description: catogory.description,
+                  type: catogory.type,
                 });
               }}
             >

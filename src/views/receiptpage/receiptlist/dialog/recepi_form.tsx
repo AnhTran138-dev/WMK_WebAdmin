@@ -23,7 +23,6 @@ import GeneralInfoForm from "../tab/GeneralInfoForm";
 import IngredientInfoForm from "../tab/IngredientInfoForm";
 import ReciptStepForm from "../tab/ReciptStepForm";
 
-// Define utility functions for validation
 const validateFields = <T,>(values: T, requiredKeys: Array<keyof T>): boolean =>
   requiredKeys.every((key) => values[key] !== "" && values[key] !== undefined);
 
@@ -109,13 +108,11 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
     }
 
     try {
-      // Handle image upload
       let imgURL = values.img;
       if (imgURL instanceof File) {
         imgURL = await utilApi.uploadFile(imgURL);
       }
 
-      // Handle step image uploads
       const stepFiles = await Promise.all(
         values.steps.map((step) => {
           console.log("step", step.imageLink);
@@ -126,8 +123,6 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
           return step.imageLink;
         })
       );
-
-      // console.log("stepFiles", stepFiles);
 
       const payload = {
         ...values,

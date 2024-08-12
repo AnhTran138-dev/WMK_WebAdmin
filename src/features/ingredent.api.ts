@@ -103,7 +103,7 @@ export const IngredientApi = {
     createCategory: async (data: CategoryRequest): Promise<Response<null>> => {
       try {
         const respone = await axiosInstance.post(
-          "/api/ingredientcategories/create",
+          "/api/ingredientcategories/create-new",
           data
         );
         return respone.data;
@@ -127,18 +127,29 @@ export const IngredientApi = {
     changeStatusCategory: async (
       id: string,
       status: number
-    ): Promise<boolean> => {
+    ): Promise<Response<null>> => {
       try {
-        await axiosInstance.put(
+        const response = await axiosInstance.put(
           `/api/ingredientcategories/change-status/${id}`,
           {
             status,
           }
         );
-        return true;
+        return response.data;
       } catch (error) {
-        console.log("Failed to change status category:", error);
-        return false;
+        if (axios.isAxiosError(error)) {
+          return {
+            data: null,
+            message: error.response?.data.message || error.message,
+            statusCode: error.response?.data.statusCode,
+          };
+        } else {
+          return {
+            data: null,
+            message: "An unexpected error occurred.",
+            statusCode: 500,
+          };
+        }
       }
     },
 
