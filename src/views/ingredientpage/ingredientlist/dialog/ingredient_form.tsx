@@ -112,7 +112,6 @@ const IngredientForm: React.FC<IngredientFormProps> = ({
     }
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       const imageIngredient = await utilApi.uploadFile(
         new File([values.img], "image.jpg")
       );

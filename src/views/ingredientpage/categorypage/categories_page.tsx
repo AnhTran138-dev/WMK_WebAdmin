@@ -9,8 +9,7 @@ import { CategoriesIngredient, Response } from "@/models/responses";
 import { useState } from "react";
 import CategoriesForm from "../../categorypopup/categories_form";
 import { CategoriesIngredientColumn } from "./categories_ingredient_column";
-import Show from "../../../lib/show";
-// import MessageChanging from "./dialog/message_changing";
+import Show from "@/lib/show";
 
 const CategoriesPage = () => {
   const { toast } = useToast();
@@ -95,7 +94,7 @@ const CategoriesPage = () => {
         onClose={handleCloseDialog}
         children={
           <Show>
-            <Show.When isTrue={type === "detail"}>
+            <Show.When isTrue={type === "edit"}>
               <CategoriesForm
                 type="ingredient"
                 createCategory={createCategory}
