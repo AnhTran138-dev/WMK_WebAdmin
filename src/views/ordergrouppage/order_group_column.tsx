@@ -1,5 +1,4 @@
 import {
-  Badge,
   Button,
   DropdownMenu,
   DropdownMenuContent,
@@ -8,12 +7,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui";
+import { formatFromISOString, FormatType } from "@/lib";
+import Show from "@/lib/show";
+import { OrderGroupRequest } from "@/models/requests";
 import { OrderGroupList } from "@/models/responses/order_group_list";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, PencilLine, ReceiptText, Trash2 } from "lucide-react";
-import { formatFromISOString, FormatType } from "../../lib";
-import { OrderGroupRequest } from "../../models/requests";
-import Show from "../../lib/show";
+import {
+  MoreHorizontal,
+  PencilLine,
+  ReceiptText,
+  ShieldCheck,
+  ShieldX,
+  Trash2,
+} from "lucide-react";
 
 const OrderGroupColumn = (
   handleDialog: (type: string) => void,
@@ -44,15 +50,18 @@ const OrderGroupColumn = (
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.original.status;
-
-      if (parseInt(status) === 0) {
-        return <Badge variant="success">Available</Badge>;
-      }
-
-      if (parseInt(status) === 1) {
-        return <Badge variant="destructive">Unavailable</Badge>;
-      }
+      return (
+        <div>
+          <Show>
+            <Show.When isTrue={parseInt(row.original.status) === 0}>
+              <ShieldCheck className="text-green-500" />
+            </Show.When>
+            <Show.Else>
+              <ShieldX className="text-red-500" />
+            </Show.Else>
+          </Show>
+        </div>
+      );
     },
   },
   {
@@ -81,16 +90,16 @@ const OrderGroupColumn = (
                 >
                   Unvailable
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
               </Show.When>
-              <Show.When isTrue={parseInt(order_group.status) === 1}>
+              {/* <Show.When isTrue={parseInt(order_group.status) === 1}>
                 <DropdownMenuItem
                   onClick={() => changeStatus(order_group.id, 0)}
                 >
                   Available
                 </DropdownMenuItem>
-              </Show.When>
+              </Show.When> */}
             </Show>
-            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
                 handleDialog("detail");

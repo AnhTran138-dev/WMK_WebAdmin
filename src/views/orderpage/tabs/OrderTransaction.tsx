@@ -16,7 +16,7 @@ import DialogCustom from "../../../components/common/dialog";
 import ConfimRefund from "../../ordergrouppage/dialog/ConfimRefund";
 
 interface OrderTransactionProps {
-  transactions: Transaction[];
+  transactions: Transaction;
   orderId: string;
   onClose: () => void;
   refetch: () => void;
@@ -62,68 +62,66 @@ const OrderTransaction: React.FC<OrderTransactionProps> = ({
   return (
     <div className="space-y-4">
       <ScrollArea className=" h-96">
-        {transactions.map((transaction) => (
-          <Card
-            key={transaction.id}
-            className="mb-2 border border-gray-200 shadow-sm"
-          >
-            <CardHeader className="flex flex-row items-baseline justify-between w-full">
-              <CardTitle className="text-lg font-medium">
-                Transaction Details
-              </CardTitle>
-              <Show>
-                <Show.When
-                  isTrue={transaction.status === "RefundZaloPayPending"}
+        <Card
+          key={transactions.id}
+          className="mb-2 border border-gray-200 shadow-sm"
+        >
+          <CardHeader className="flex flex-row items-baseline justify-between w-full">
+            <CardTitle className="text-lg font-medium">
+              Transaction Details
+            </CardTitle>
+            <Show>
+              <Show.When
+                isTrue={transactions.status === "RefundZaloPayPending"}
+              >
+                <Button
+                  onClick={() =>
+                    handleRefund({
+                      idOrder: orderId,
+                      idTransaction: transactions.id,
+                      zpTransId: transactions.signature ?? "",
+                      description: "REFUND1",
+                    })
+                  }
                 >
-                  <Button
-                    onClick={() =>
-                      handleRefund({
-                        idOrder: orderId,
-                        idTransaction: transaction.id,
-                        zpTransId: transaction.signature ?? "",
-                        description: "REFUND1",
-                      })
-                    }
-                  >
-                    <CircleDollarSign /> &nbsp; Refund
-                  </Button>
-                </Show.When>
-              </Show>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col space-y-2">
-                <div className="flex justify-between">
-                  <span className="font-semibold">Transaction ID:</span>
-                  <span>{transaction.id}</span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="font-semibold">Type:</span>
-                  <span>{transaction.type}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-semibold">Amount:</span>
-                  <span>
-                    {transaction.amount.toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-semibold">Transaction Date:</span>
-                  <span>
-                    {new Date(transaction.transactionDate).toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-semibold">Status:</span>
-                  <span>{transaction.status}</span>
-                </div>
+                  <CircleDollarSign /> &nbsp; Refund
+                </Button>
+              </Show.When>
+            </Show>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col space-y-2">
+              <div className="flex justify-between">
+                <span className="font-semibold">Transaction ID:</span>
+                <span>{transactions.id}</span>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+
+              <div className="flex justify-between">
+                <span className="font-semibold">Type:</span>
+                <span>{transactions.type}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold">Amount:</span>
+                <span>
+                  {transactions.amount.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold">Transactions Date:</span>
+                <span>
+                  {new Date(transactions.transactionDate).toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold">Status:</span>
+                <span>{transactions.status}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </ScrollArea>
       <DialogCustom
         isOpen={isDialogOpen}

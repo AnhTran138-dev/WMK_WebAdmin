@@ -19,15 +19,6 @@ const menuItems = [
   { name: "Home", icon: Home, link: "/" },
   { name: "User", icon: LucideUser, link: "/user" },
   {
-    name: "Recipe",
-    icon: LucideCookingPot,
-    hasSubmenu: true,
-    submenu: [
-      { name: "All Recipes", link: "/recipe" },
-      { name: "Category Recipe", link: "/recipe-categories" },
-    ],
-  },
-  {
     name: "Ingredient",
     icon: LucideClipboardList,
     hasSubmenu: true,
@@ -37,6 +28,18 @@ const menuItems = [
     ],
   },
   {
+    name: "Recipe",
+    icon: LucideCookingPot,
+    hasSubmenu: true,
+    submenu: [
+      { name: "All Recipes", link: "/recipe" },
+      { name: "Category Recipe", link: "/recipe-categories" },
+    ],
+  },
+
+  { name: "Weekly Plan", icon: LucideCalendar, link: "/weekly-plan" },
+  { name: "Notification", icon: LucideBell, link: "/notification" },
+  {
     name: "Order",
     icon: LucideBox,
     hasSubmenu: true,
@@ -45,8 +48,6 @@ const menuItems = [
       { name: "Order Group", link: "/order-group" },
     ],
   },
-  { name: "Weekly Plan", icon: LucideCalendar, link: "/weekly-plan" },
-  { name: "Notification", icon: LucideBell, link: "/notification" },
   { name: "Settings", icon: Settings, link: "/setting" },
 ];
 

@@ -1,8 +1,4 @@
 import React from "react";
-import { OrderGroupRequest } from "../../../models/requests";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { OrderGroupSchema } from "../../../schemas/order_group";
 import {
   AlertDialogCancel,
   AlertDialogDescription,
@@ -15,17 +11,22 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  Input,
+  Label,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../components/ui";
-import useFetch from "../../../hooks/useFetch";
-import { Response, User } from "../../../models/responses";
-import Show from "../../../lib/show";
-import { OrderGroupApi } from "../../../features/order_group";
+} from "@/components/ui";
+import { OrderGroupApi } from "@/features/order_group";
+import useFetch from "@/hooks/useFetch";
+import Show from "@/lib/show";
+import { OrderGroupRequest } from "@/models/requests";
+import { Response, User } from "@/models/responses";
+import { OrderGroupSchema } from "@/schemas/order_group";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Map } from "@vis.gl/react-google-maps";
 
 interface OrderGroupFormProps {
   onClose: () => void;
@@ -40,13 +41,14 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
   refetch,
   onToast,
 }) => {
-  const { data: user } = useFetch<Response<User[]>>("/api/user/get-all");
+  const { data: users } = useFetch<Response<User[]>>("/api/user/get-all");
+
   const form = useForm<z.infer<typeof OrderGroupSchema>>({
     defaultValues: {
       shipperId: orderGroup?.shipperId || "",
       location: orderGroup?.location || "",
-      longitude: orderGroup?.longitude || 0,
-      latitude: orderGroup?.latitude || 0,
+      longitude: orderGroup?.longitude || 10.762622,
+      latitude: orderGroup?.latitude || 106.660172,
     },
   });
 
@@ -80,90 +82,56 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
           </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogDescription>
-          <FormField
-            control={form.control}
-            name="shipperId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Shipper</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select shipper" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {user?.data.map((user) => (
-                        <Show key={user.id}>
-                          <Show.When
-                            isTrue={user.role.toLowerCase() === "shipper"}
-                          >
-                            <SelectItem value={user.id}>
-                              {user.userName}
-                            </SelectItem>
-                          </Show.When>
-                        </Show>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder="Location"
-                    className="input"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <div className="flex flex-row items-center gap-6 mt-2">
-            <FormField
-              control={form.control}
-              name="longitude"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Longitude</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="Longitude"
-                      className="input"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="latitude"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Latitude</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="Latitude"
-                      className="input"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+          <div className="flex flex-col gap-4 mb-6">
+            <div className="flex flex-row gap-4">
+              <FormField
+                control={form.control}
+                name="shipperId"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Shipper</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select shipper" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {users?.data.map((user) => (
+                            <Show key={user.id}>
+                              <Show.When
+                                isTrue={user.role.toLowerCase() === "shipper"}
+                              >
+                                <SelectItem value={user.id}>
+                                  {user.userName}
+                                </SelectItem>
+                              </Show.When>
+                            </Show>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <div className="flex-1 space-y-2">
+                <Label>Location</Label>
+              </div>
+            </div>
+            <div className="mt-4 h-72">
+              <Map
+                style={{ width: "100%", height: "100%" }}
+                defaultCenter={{ lat: 22.54992, lng: 0 }}
+                defaultZoom={3}
+                gestureHandling={"greedy"}
+                disableDefaultUI={true}
+              />
+            </div>
           </div>
         </AlertDialogDescription>
-        <AlertDialogFooter className="mt-5">
+        <AlertDialogFooter className="flex justify-end gap-4 mt-6">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <Button type="submit">{orderGroup ? "Update" : "Submit"}</Button>
         </AlertDialogFooter>

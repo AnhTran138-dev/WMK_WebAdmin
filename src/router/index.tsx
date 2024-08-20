@@ -55,11 +55,9 @@ const routes = createBrowserRouter([
       {
         path: "user",
         element: (
-          <ProtectRoute roles={["Admin", "Manager"]}>
-            <Suspense fallback={<Loading />}>
-              <UserPage />
-            </Suspense>
-          </ProtectRoute>
+          <Suspense fallback={<Loading />}>
+            <UserPage />
+          </Suspense>
         ),
       },
       {

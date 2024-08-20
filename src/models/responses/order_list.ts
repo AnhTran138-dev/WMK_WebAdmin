@@ -1,3 +1,5 @@
+import { Transaction } from "./order_detail";
+
 export interface OrderList {
   id: string;
   orderCode: number;
@@ -131,14 +133,14 @@ export enum Unit {
   Quả = "quả",
 }
 
-export interface Transaction {
-  id: string;
-  orderId: string;
-  type: string;
-  amount: number;
-  transactionDate: Date;
-  notice: null;
-  extraData: null;
-  signature: null;
-  status: string;
-}
+// export interface Transaction {
+//   id: string;
+//   orderId: string;
+//   type: string;
+//   amount: number;
+//   transactionDate: Date;
+//   notice: null;
+//   extraData: null;
+//   signature: null;
+//   status: string;
+// }

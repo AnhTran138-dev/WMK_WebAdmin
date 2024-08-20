@@ -27,11 +27,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Response } from "../../models/responses";
 
 interface UserFormProps {
   reFresh: () => void;
   user: UserRequest | null;
   onClose: () => void;
+  role: string;
 }
 
 const roleList = [
@@ -42,22 +44,32 @@ const roleList = [
   { id: 4, name: "Customer" },
 ];
 
-const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
+const UserForm: React.FC<UserFormProps> = ({
+  reFresh,
+  onClose,
+  user,
+  role,
+}) => {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      userName: "" || user?.userName,
-      email: "" || user?.email,
-      firstName: "" || user?.firstName,
-      lastName: "" || user?.lastName,
-      address: "" || user?.address,
-      gender: 0 || user?.gender,
-      role: "",
-      phone: "" || user?.phone,
+      userName: user?.userName || "",
+      email: user?.email || "",
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      address: user?.address || "",
+      gender: user?.gender || 0,
+      role: user?.role?.toString() || "",
+      phone: user?.phone || "",
     },
   });
+
+  const availableRoles =
+    role === "Manager"
+      ? roleList.filter((r) => r.id === 3 || r.id === 4)
+      : roleList;
 
   const onSubmit = async (values: z.infer<typeof userSchema>) => {
     const newUser: UserRequest = {
@@ -70,26 +82,22 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
       gender: values.gender,
     };
 
-    try {
-      if (user) {
-        await UserApi.updateUser(user.id ?? "", newUser);
-      } else {
-        await UserApi.createUser({
-          ...values,
-          role: parseInt(values.role),
-        });
-      }
+    const response: Response<null> = user
+      ? await UserApi.updateUser(user.id ?? "", newUser)
+      : await UserApi.createUser({ ...values, role: parseInt(values.role) });
+
+    if (response.statusCode === 200) {
       reFresh();
       onClose();
       toast({
         title: "Success",
-        description: user ? "User updated" : "User created",
+        description: response.message,
         duration: 5000,
       });
-    } catch (error) {
+    } else {
       toast({
         title: "Error",
-        description: "Something went wrong",
+        description: response.message,
         duration: 5000,
       });
     }
@@ -169,7 +177,7 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
               <FormField
                 control={form.control}
                 name="role"
-              render={({ field }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Role</FormLabel>
                     <FormControl>
@@ -181,7 +189,7 @@ const UserForm: React.FC<UserFormProps> = ({ reFresh, onClose, user }) => {
                           <SelectValue placeholder="Select role" />
                         </SelectTrigger>
                         <SelectContent>
-                          {roleList.map((role) => (
+                          {availableRoles.map((role) => (
                             <SelectItem
                               key={role.id}
                               value={role.id.toString()}

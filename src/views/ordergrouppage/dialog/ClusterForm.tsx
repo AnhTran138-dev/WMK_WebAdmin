@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   AlertDialogCancel,
   AlertDialogDescription,
@@ -6,7 +6,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
-  Input,
   useToast,
 } from "../../../components/ui";
 import { OrderGroupApi } from "../../../features/order_group";
@@ -19,27 +18,28 @@ interface ClusterFormProps {
 
 const ClusterForm: React.FC<ClusterFormProps> = ({ onClose, refetch }) => {
   const { toast } = useToast();
-  const [radius, setRadius] = useState<number>(0);
+  // const [radius, setRadius] = useState<number>(0);
   return (
     <div>
       <AlertDialogHeader>
-        <AlertDialogTitle>Cluster</AlertDialogTitle>
+        <AlertDialogTitle>
+          Are you sure you want to cluster this order group?
+        </AlertDialogTitle>
       </AlertDialogHeader>
       <AlertDialogDescription>
-        Are you sure you want to cluster this order group?
-        <Input
+        {/* <Input
           value={radius}
           placeholder="Input Radius"
           onChange={(e) => setRadius(parseInt(e.target.value))}
           type="number"
-        />
+        /> */}
       </AlertDialogDescription>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
         <Button
           onClick={async () => {
             const response: Response<null> =
-              await OrderGroupApi.clusterOrderGroup(radius);
+              await OrderGroupApi.clusterOrderGroup();
 
             if (response.statusCode === 200) {
               toast({
@@ -59,7 +59,7 @@ const ClusterForm: React.FC<ClusterFormProps> = ({ onClose, refetch }) => {
             }
           }}
         >
-          Save Changes
+          Confirm
         </Button>
       </AlertDialogFooter>
     </div>

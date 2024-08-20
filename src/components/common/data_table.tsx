@@ -1,20 +1,6 @@
 "use client";
 
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-  VisibilityState,
-} from "@tanstack/react-table";
-
-import { useState } from "react";
-import {
   Button,
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -28,6 +14,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui";
+import { TokenResponse } from "@/models/responses";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
+import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,6 +37,8 @@ interface DataTableProps<TData, TValue> {
   handleCreate?: () => void;
   handleCluster?: () => void;
   handleReset?: () => void;
+  sortUser?: (role: string, selected: boolean) => void;
+  selectedRoles?: string[];
 }
 
 export function DataTable<TData, TValue>({
@@ -45,10 +48,13 @@ export function DataTable<TData, TValue>({
   handleCreate,
   handleCluster,
   handleReset,
+  sortUser,
+  selectedRoles = [],
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [role, setRole] = useState<string>("");
 
   const table = useReactTable({
     data,
@@ -66,6 +72,39 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
+
+  useEffect(() => {
+    const token: TokenResponse = jwtDecode(
+      localStorage.getItem("token") as string
+    );
+
+    if (token) {
+      setRole(
+        token["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
+      );
+    }
+  }, []);
+
+  const renderRoleMenuItems = () => {
+    const availableRoles =
+      role === "Staff"
+        ? ["Shipper", "Customer"]
+        : role === "Manager"
+        ? ["Staff", "Shipper", "Customer"]
+        : ["Shipper", "Customer", "Staff"];
+
+    return availableRoles.map((role) => (
+      <DropdownMenuCheckboxItem
+        key={role}
+        checked={selectedRoles.includes(role)}
+        onCheckedChange={(isChecked) => {
+          if (sortUser) sortUser(role, isChecked);
+        }}
+      >
+        {role}
+      </DropdownMenuCheckboxItem>
+    ));
+  };
 
   return (
     <div>
@@ -86,6 +125,18 @@ export function DataTable<TData, TValue>({
           {handleReset && <Button onClick={handleReset}>Reset</Button>}
           {handleCluster && <Button onClick={handleCluster}>Cluster</Button>}
           {handleCreate && <Button onClick={handleCreate}>Create New</Button>}
+          {sortUser && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="ml-auto">
+                  Role
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {renderRoleMenuItems()}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
@@ -96,20 +147,18 @@ export function DataTable<TData, TValue>({
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -119,23 +168,21 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row, index) => (
                 <TableRow
                   key={row.id}
@@ -144,7 +191,7 @@ export function DataTable<TData, TValue>({
                       ? "bg-gray-100 hover:bg-gray-100"
                       : "bg-white"
                   }
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() ? "selected" : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

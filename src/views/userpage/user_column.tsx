@@ -19,14 +19,18 @@ import { UserList } from "@/models/responses/user_list";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
+  BadgeCheck,
+  CircleX,
   MailCheck,
   MoreHorizontal,
   PencilLine,
   ShieldCheck,
   ShieldX,
   Trash2,
+  User,
   UserPen,
 } from "lucide-react";
+import { Response } from "../../models/responses";
 
 const roleList = [
   { id: 0, name: "Admin" },
@@ -47,7 +51,9 @@ const convertRoleToNumber = (role: string) => {
 
 const UserColumn = (
   handleEdit: (user: UserRequest) => void,
-  onToast: (success: boolean, description: string) => void
+  onToast: (success: boolean, description: string) => void,
+  refetch: () => void,
+  role: string
 ): ColumnDef<UserList>[] => [
   {
     header: "No.",
@@ -94,6 +100,20 @@ const UserColumn = (
         </Button>
       );
     },
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center justify-center w-full h-full">
+          <Show>
+            <Show.When isTrue={row.original.emailConfirm === "Confirm"}>
+              <BadgeCheck className="text-green-500" />
+            </Show.When>
+            <Show.Else>
+              <CircleX className="text-red-500" />
+            </Show.Else>
+          </Show>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "firstName",
@@ -107,6 +127,20 @@ const UserColumn = (
   {
     accessorKey: "gender",
     header: "Gender",
+    cell: ({ row }) => {
+      return (
+        <div>
+          <Show>
+            <Show.When isTrue={row.original.gender === "Male"}>
+              <User className="text-blue-500" />
+            </Show.When>
+            <Show.Else>
+              <User className="text-red-500" />
+            </Show.Else>
+          </Show>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "phone",
@@ -143,11 +177,29 @@ const UserColumn = (
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      return (
+        <div>
+          <Show>
+            <Show.When isTrue={row.original.status === "Available"}>
+              <ShieldCheck className="text-green-500" />
+            </Show.When>
+            <Show.Else>
+              <ShieldX className="text-red-500" />
+            </Show.Else>
+          </Show>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const user = row.original;
+
+      if (role === "Staff") {
+        return null;
+      }
 
       return (
         <DropdownMenu>
@@ -162,8 +214,15 @@ const UserColumn = (
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={async () => {
-                await UserApi.changeUserStatus(user.id);
-                onToast(true, "Change status");
+                const response: Response<null> = await UserApi.changeUserStatus(
+                  user.id
+                );
+                if (response.statusCode === 200) {
+                  onToast(true, "Change user status success");
+                  refetch();
+                } else {
+                  onToast(false, "Change user status failed");
+                }
               }}
             >
               <Show>
@@ -190,36 +249,41 @@ const UserColumn = (
                 </DropdownMenuItem>
               </Show.When>
             </Show>
-            <DropdownMenuGroup>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <UserPen className="mr-2 size-4" /> Role
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    {roleList.map((role) => (
-                      <DropdownMenuItem
-                        key={role.id}
-                        onClick={async () => {
-                          await UserApi.changeUserRoles(user.id, role.id)
-
-                            .then((res) => {
-                              if (res.data.statusCode === 200) {
-                                onToast(true, "Change role success");
-                              } else {
-                                onToast(false, "Change role failed");
-                              }
-                            })
-                            .catch(() => onToast(false, "Change role failed"));
-                        }}
-                      >
-                        {role.name}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-            </DropdownMenuGroup>
+            <Show>
+              <Show.When isTrue={role !== "Manager"}>
+                <DropdownMenuGroup>
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <UserPen className="mr-2 size-4" /> Role
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuPortal>
+                      <DropdownMenuSubContent>
+                        {roleList.map((role) => (
+                          <DropdownMenuItem
+                            key={role.id}
+                            onClick={async () => {
+                              await UserApi.changeUserRoles(user.id, role.id)
+                                .then((res) => {
+                                  if (res.data.statusCode === 200) {
+                                    onToast(true, "Change role success");
+                                  } else {
+                                    onToast(false, "Change role failed");
+                                  }
+                                })
+                                .catch(() =>
+                                  onToast(false, "Change role failed")
+                                );
+                            }}
+                          >
+                            {role.name}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuSubContent>
+                    </DropdownMenuPortal>
+                  </DropdownMenuSub>
+                </DropdownMenuGroup>
+              </Show.When>
+            </Show>
             <DropdownMenuItem
               onClick={() => {
                 handleEdit({
@@ -238,15 +302,19 @@ const UserColumn = (
               <PencilLine className="mr-2 size-4" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={async () => {
-                const success = await UserApi.deleteUser(user.id);
-                onToast(success, "Delete user");
-              }}
-            >
-              <Trash2 className="mr-2 size-4" />
-              Detele
-            </DropdownMenuItem>
+            <Show>
+              <Show.When isTrue={role !== "Manager"}>
+                <DropdownMenuItem
+                  onClick={async () => {
+                    const success = await UserApi.deleteUser(user.id);
+                    onToast(success, "Delete user");
+                  }}
+                >
+                  <Trash2 className="mr-2 size-4" />
+                  Delete
+                </DropdownMenuItem>
+              </Show.When>
+            </Show>
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/common/data_table";
-import DataRender from "@/components/data_render";
+// import DataRender from "@/components/data_render";
 import { useToast } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
 import { Response } from "@/models/responses";
@@ -14,7 +14,7 @@ import ClusterForm from "./dialog/ClusterForm";
 import DeleteOrderGroup from "./dialog/DeleteOrderGroup";
 import { OrderGroupRequest } from "../../models/requests";
 import ChangeStatus from "./dialog/ChangeStatus";
-import ResetAllGroup from "./dialog/ResetAllGroup";
+// import ResetAllGroup from "./dialog/ResetAllGroup";
 
 const OrderGroupPage = () => {
   const { toast } = useToast();
@@ -27,8 +27,8 @@ const OrderGroupPage = () => {
 
   const {
     data: orderGroup,
-    loading,
-    error,
+    // loading,
+    // error,
     refetch,
   } = useFetch<Response<OrderGroupList[]>>("/api/order-group/get-all");
 
@@ -81,10 +81,10 @@ const OrderGroupPage = () => {
     setStatus(status);
   };
 
-  const handleReset = () => {
-    setType("reset");
-    setIsDialogOpen(true);
-  };
+  // const handleReset = () => {
+  //   setType("reset");
+  //   setIsDialogOpen(true);
+  // };
 
   return (
     <div>
@@ -100,7 +100,7 @@ const OrderGroupPage = () => {
         handleCreate={handleCreate}
         handleCluster={handleCluster}
         searchColumn="shipperUserName"
-        handleReset={handleReset}
+        // handleReset={handleReset}
       />
       {/* </DataRender> */}
       <DialogCustom
@@ -140,13 +140,13 @@ const OrderGroupPage = () => {
                 status={status}
               />
             </Show.When>
-            <Show.When isTrue={type === "reset"}>
+            {/* <Show.When isTrue={type === "reset"}>
               <ResetAllGroup
                 onClose={handleCloseDialog}
                 refetch={refetch}
                 onToast={handleToast}
               />
-            </Show.When>
+            </Show.When> */}
           </Show>
         }
       />

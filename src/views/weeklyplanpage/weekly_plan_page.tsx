@@ -69,14 +69,14 @@ const WeeklyPlanPage = () => {
 
   return (
     <div>
-      {/* <DataRender className="my-4 h-fit" isLoading={loading} error={error}> */}
-      <DataTable
-        columns={WeeklyPlanColumn(handleEdit, handleID, handleType)}
-        data={weeklyplans?.data ?? []}
-        searchColumn="title"
-        handleCreate={handleCreate}
-      />
-      {/* </DataRender> */}
+      <DataRender className="my-4 h-fit" isLoading={loading} error={error}>
+        <DataTable
+          columns={WeeklyPlanColumn(handleEdit, handleID, handleType)}
+          data={weeklyplans?.data ?? []}
+          searchColumn="title"
+          handleCreate={handleCreate}
+        />
+      </DataRender>
       <DialogCustom
         className="max-w-4xl"
         isOpen={isDialogOpen}

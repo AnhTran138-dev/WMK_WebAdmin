@@ -7,6 +7,7 @@ import {
 } from "../../../components/ui";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import { OrderApi } from "../../../features";
+import { OrderStatus } from "../../../models/requests";
 
 interface StatusAccessProps {
   editStatus: { id: string; status: number };
@@ -17,16 +18,24 @@ interface StatusAccessProps {
 
 const statusLabel = (status: number) => {
   switch (status) {
-    case 0:
-      return "Pending";
-    case 1:
+    case OrderStatus.Processing:
+      return "Processing";
+    case OrderStatus.Confirm:
+      return "Confirm";
+    case OrderStatus.Shipping:
       return "Shipping";
-    case 5:
+    case OrderStatus.Shipped:
+      return "Shipped";
+    case OrderStatus.UnShipped:
+      return "UnShipped";
+    case OrderStatus.Delivered:
+      return "Delivered";
+    case OrderStatus.Refund:
       return "Refund";
-    case 6:
+    case OrderStatus.Canceled:
       return "Canceled";
     default:
-      return "Unknown";
+      return "Processing";
   }
 };
 

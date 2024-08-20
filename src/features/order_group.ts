@@ -111,12 +111,11 @@ export const OrderGroupApi = {
     }
   },
 
-  clusterOrderGroup: async (radius: number): Promise<Response<null>> => {
+  clusterOrderGroup: async (): Promise<Response<null>> => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await axiosInstance.put<Response<null>>(
-        `/api/order-group/cluster`,
-        { radius }
+        `/api/order-group/cluster`
       );
       return response?.data;
     } catch (error) {

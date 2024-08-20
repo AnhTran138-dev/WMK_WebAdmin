@@ -25,16 +25,22 @@ import { OrderList } from "@/models/responses/order_list";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
+  CircleAlert,
   CircleX,
   Group,
   MoreHorizontal,
   ReceiptText,
-  Trash2,
+  SquareCheck,
   Truck,
 } from "lucide-react";
 import { OrderStatus } from "../../models/requests/order_request";
 
 const statusList = [
+  {
+    value: OrderStatus.Confirm,
+    label: "Confirm",
+    icon: <SquareCheck className="mr-4 size-4" />,
+  },
   {
     value: OrderStatus.Shipping,
     label: "Shipping",
@@ -192,12 +198,20 @@ const OrderColum = (
       if (status === "shipped") {
         return <Badge variant="success">Shipped</Badge>;
       }
+      if (status === "delivered") {
+        return <Badge variant="destructive">Delivered</Badge>;
+      }
+      if (status === "confirm") {
+        return <Badge variant="success">Confirm</Badge>;
+      }
+      return null;
     },
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const order = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -234,7 +248,12 @@ const OrderColum = (
             <DropdownMenuSeparator />
             {/* <DropdownMenuGroup> */}
             <Show>
-              <Show.When isTrue={order.status.toLowerCase() === "processing"}>
+              <Show.When
+                isTrue={
+                  order.status.toLowerCase() === "processing" ||
+                  order.status.toLowerCase() === "confirm"
+                }
+              >
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>
                     <Group className="w-4 h-4 mr-4" />
@@ -281,10 +300,16 @@ const OrderColum = (
                   </DropdownMenuSubContent>
                 </DropdownMenuSub>
               </Show.When>
+              <Show.Else>
+                <DropdownMenuItem disabled>
+                  <CircleAlert className="w-4 h-4 mr-4" />
+                  No Group
+                </DropdownMenuItem>
+              </Show.Else>
             </Show>
             {/* </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={async () => {
                 const response: Response<null> = await OrderApi.deleteOrder(
                   order.id
@@ -302,7 +327,7 @@ const OrderColum = (
             >
               <Trash2 className="w-4 h-4 mr-4" />
               Delete
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

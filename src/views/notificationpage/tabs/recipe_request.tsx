@@ -80,137 +80,139 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
 
   return (
     <ScrollArea className="h-full p-4 bg-background">
-      {/* <DataRender isLoading={loading} error={error}> */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {recipes?.data.map((recipe) => (
-          <Show key={recipe.id}>
-            <Show.When
-              isTrue={
-                recipe.processStatus.toLowerCase() === "processing" &&
-                (role === "Admin" || role === "Manager")
-              }
-            >
-              <Card className="flex flex-col overflow-hidden transition-shadow duration-300 rounded-lg shadow-lg bg-card hover:shadow-xl">
-                <img
-                  src={recipe.img}
-                  alt={recipe.name}
-                  className="object-cover w-full h-48"
-                />
-                <div className="flex flex-col flex-1 p-4">
-                  <CardHeader className="mb-2">
-                    <CardTitle className="text-lg font-bold text-primary">
-                      {recipe.name}
-                    </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
-                      {recipe.createdBy} -{" "}
-                      {formatFromISOString(recipe.createdAt, FormatType.DATE)}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardFooter className="flex flex-col mt-auto sm:flex-row sm:gap-2">
-                    <Button
-                      variant="success"
-                      onClick={() =>
-                        handleChangeStatus(
-                          {
+      <DataRender isLoading={loading} error={error}>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {recipes?.data.map((recipe) => (
+            <Show key={recipe.id}>
+              <Show.When
+                isTrue={
+                  recipe.processStatus.toLowerCase() === "processing" &&
+                  (role === "Admin" || role === "Manager")
+                }
+              >
+                <Card className="flex flex-col overflow-hidden transition-shadow duration-300 rounded-lg shadow-lg bg-card hover:shadow-xl">
+                  <img
+                    src={recipe.img}
+                    alt={recipe.name}
+                    className="object-cover w-full h-48"
+                  />
+                  <div className="flex flex-col flex-1 p-4">
+                    <CardHeader className="mb-2">
+                      <CardTitle className="text-lg font-bold text-primary">
+                        {recipe.name}
+                      </CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground">
+                        {recipe.createdBy} -{" "}
+                        {formatFromISOString(recipe.createdAt, FormatType.DATE)}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardFooter className="flex flex-col mt-auto sm:flex-row sm:gap-2">
+                      <Button
+                        variant="success"
+                        onClick={() =>
+                          handleChangeStatus(
+                            {
+                              id: recipe.id,
+                              status: 1,
+                              type: "recipe",
+                              author: "access",
+                            },
+                            refetch
+                          )
+                        }
+                      >
+                        Access
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() =>
+                          handleChangeStatus(
+                            {
+                              id: recipe.id,
+                              status: 2,
+                              type: "recipe",
+                              author: "deny",
+                            },
+                            refetch
+                          )
+                        }
+                      >
+                        Deny
+                      </Button>
+                    </CardFooter>
+                  </div>
+                </Card>
+              </Show.When>
+              <Show.When
+                isTrue={
+                  recipe.processStatus.toLowerCase() === "denied" &&
+                  role === "Staff"
+                }
+              >
+                <Card className="flex flex-col overflow-hidden transition-shadow duration-300 rounded-lg shadow-lg bg-card hover:shadow-xl">
+                  <img
+                    src={recipe.img}
+                    alt={recipe.name}
+                    className="object-cover w-full h-48"
+                  />
+                  <div className="flex flex-col flex-1 p-4">
+                    <CardHeader className="mb-2">
+                      <CardTitle className="text-lg font-bold text-primary">
+                        {recipe.name} -{" "}
+                        <Badge variant="secondary">
+                          {recipe.processStatus}
+                        </Badge>
+                      </CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground">
+                        {recipe.createdBy} -{" "}
+                        {formatFromISOString(recipe.createdAt, FormatType.DATE)}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardFooter className="flex flex-col mt-auto sm:flex-row sm:gap-2 sm:justify-end">
+                      <Button
+                        onClick={() =>
+                          handleUpdate({
                             id: recipe.id,
-                            status: 1,
-                            type: "recipe",
-                            author: "access",
-                          },
-                          refetch
-                        )
-                      }
-                    >
-                      Access
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={() =>
-                        handleChangeStatus(
-                          {
-                            id: recipe.id,
-                            status: 2,
-                            type: "recipe",
-                            author: "deny",
-                          },
-                          refetch
-                        )
-                      }
-                    >
-                      Deny
-                    </Button>
-                  </CardFooter>
-                </div>
-              </Card>
-            </Show.When>
-            <Show.When
-              isTrue={
-                recipe.processStatus.toLowerCase() === "denied" &&
-                role === "Staff"
-              }
-            >
-              <Card className="flex flex-col overflow-hidden transition-shadow duration-300 rounded-lg shadow-lg bg-card hover:shadow-xl">
-                <img
-                  src={recipe.img}
-                  alt={recipe.name}
-                  className="object-cover w-full h-48"
-                />
-                <div className="flex flex-col flex-1 p-4">
-                  <CardHeader className="mb-2">
-                    <CardTitle className="text-lg font-bold text-primary">
-                      {recipe.name} -{" "}
-                      <Badge variant="secondary">{recipe.processStatus}</Badge>
-                    </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
-                      {recipe.createdBy} -{" "}
-                      {formatFromISOString(recipe.createdAt, FormatType.DATE)}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardFooter className="flex flex-col mt-auto sm:flex-row sm:gap-2 sm:justify-end">
-                    <Button
-                      onClick={() =>
-                        handleUpdate({
-                          id: recipe.id,
-                          name: recipe.name,
-                          description: recipe.description,
-                          recipeIngredientsList: recipe.recipeIngredients.map(
-                            (ingredient) => {
+                            name: recipe.name,
+                            description: recipe.description,
+                            recipeIngredientsList: recipe.recipeIngredients.map(
+                              (ingredient) => {
+                                return {
+                                  ingredientId: ingredient.ingredientId,
+                                  amount: ingredient.amount,
+                                };
+                              }
+                            ),
+                            img: recipe.img,
+                            servingSize: recipe.servingSize,
+                            cookingTime: recipe.cookingTime,
+                            difficulty: recipe.difficulty,
+                            categoryIds: recipe.recipeCategories.map(
+                              (category) => category.categoryId
+                            ),
+                            steps: recipe.recipeSteps.map((step) => {
                               return {
-                                ingredientId: ingredient.ingredientId,
-                                amount: ingredient.amount,
+                                id: step.id,
+                                index: step.index,
+                                name: step.name,
+                                mediaURL: step.imageLink,
+                                description: step.description,
+                                imageLink: step.imageLink,
                               };
-                            }
-                          ),
-                          img: recipe.img,
-                          servingSize: recipe.servingSize,
-                          cookingTime: recipe.cookingTime,
-                          difficulty: recipe.difficulty,
-                          categoryIds: recipe.recipeCategories.map(
-                            (category) => category.categoryId
-                          ),
-                          steps: recipe.recipeSteps.map((step) => {
-                            return {
-                              id: step.id,
-                              index: step.index,
-                              name: step.name,
-                              mediaURL: step.imageLink,
-                              description: step.description,
-                              imageLink: step.imageLink,
-                            };
-                          }),
-                        })
-                      }
-                    >
-                      Update
-                    </Button>
-                  </CardFooter>
-                </div>
-              </Card>
-            </Show.When>
-          </Show>
-        ))}
-      </div>
-      {/* </DataRender> */}
+                            }),
+                          })
+                        }
+                      >
+                        Update
+                      </Button>
+                    </CardFooter>
+                  </div>
+                </Card>
+              </Show.When>
+            </Show>
+          ))}
+        </div>
+      </DataRender>
       <DialogCustom
         className="max-w-5xl p-6 "
         isOpen={isDialogOpen}

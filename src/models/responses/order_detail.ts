@@ -15,7 +15,7 @@ export interface OrderDetailDialog {
   totalPrice: number;
   status: string;
   weeklyPlan: null;
-  transactions: Transaction[];
+  transaction: Transaction;
   orderDetails: OrderDetailElement[];
 }
 

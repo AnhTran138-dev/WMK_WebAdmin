@@ -30,10 +30,11 @@ export interface UpdateOrderRequest {
 
 export enum OrderStatus {
   Processing = 0,
-  Shipping = 1,
-  Shipped = 2,
-  Delivered = 3,
+  Confirm = 1,
+  Shipping = 2,
+  Shipped = 3,
   UnShipped = 4,
-  Refund = 5,
-  Canceled = 6,
+  Delivered = 5,
+  Refund = 6,
+  Canceled = 7,
 }

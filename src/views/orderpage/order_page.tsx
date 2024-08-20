@@ -1,5 +1,4 @@
 import { DataTable } from "@/components/common/data_table";
-import DataRender from "@/components/data_render";
 import { useToast } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
 import { OrderGroupList, OrderList, Response } from "@/models/responses";
@@ -9,6 +8,7 @@ import DialogCustom from "../../components/common/dialog";
 import StatusAccess from "./dialog/status_access";
 import Show from "../../lib/show";
 import OrderDetail from "./dialog/order_detail";
+import DataRender from "../../components/data_render";
 
 const OrderPage = () => {
   const { toast } = useToast();
@@ -68,19 +68,19 @@ const OrderPage = () => {
 
   return (
     <div>
-      {/* <DataRender className="my-4 h-fit" isLoading={loading} error={error}> */}
-      <DataTable
-        columns={OrderColum(
-          refetch,
-          handleDialog,
-          handleToast,
-          handleDetail,
-          orderGroup?.data ?? []
-        )}
-        data={sortedData ?? []}
-        searchColumn="address"
-      />
-      {/* </DataRender> */}
+      <DataRender className="my-4 h-fit" isLoading={loading} error={error}>
+        <DataTable
+          columns={OrderColum(
+            refetch,
+            handleDialog,
+            handleToast,
+            handleDetail,
+            orderGroup?.data ?? []
+          )}
+          data={sortedData ?? []}
+          searchColumn="address"
+        />
+      </DataRender>
       <DialogCustom
         className="max-w-5xl p-6"
         isOpen={isDialogOpen}

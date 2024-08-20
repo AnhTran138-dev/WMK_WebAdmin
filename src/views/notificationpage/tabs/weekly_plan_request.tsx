@@ -1,5 +1,4 @@
 import DialogCustom from "@/components/common/dialog";
-import DataRender from "@/components/data_render";
 import { useToast } from "@/components/ui";
 import { useDebounce } from "@/hooks";
 import useFetch from "@/hooks/useFetch";
@@ -39,12 +38,7 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
     return { params };
   }, [titleDebounce]);
 
-  const {
-    data: weeklyplans,
-    loading,
-    error,
-    refetch,
-  } = useFetch<Response<WeeklyPlanList[]>>(
+  const { data: weeklyplans, refetch } = useFetch<Response<WeeklyPlanList[]>>(
     "/api/weeklyplan/get-all-filter",
     options
   );

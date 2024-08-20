@@ -3,7 +3,7 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from "@/components/ui";
-import { cn } from "../../lib";
+import { cn } from "@/lib";
 
 interface DialogCustomProps {
   children: React.ReactNode;
