@@ -59,17 +59,6 @@ const RecipeForm = () => {
   const [quantity, setQuantity] = useState<number | "">("");
   const [openPopover, setOpenPopover] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   if (fields.length === 0) {
-  //     append({
-  //       recipeId: "",
-  //       quantity: undefined,
-  //       dayInWeek: undefined,
-  //       mealInDay: undefined,
-  //     });
-  //   }
-  // }, [fields, append]);
-
   const handleAddRecipe = () => {
     if (selectedRecipe && selectedMeal && selectedDay && quantity) {
       const currentRecipes = getValues("recipeIds") || [];
@@ -106,16 +95,18 @@ const RecipeForm = () => {
     }
   };
 
-  const handleRemoveRecipe = (index: number) => {
+  const handleRemoveRecipe = (recipeId: string) => {
     const currentRecipes = getValues("recipeIds") || [];
-    const updatedRecipes = currentRecipes.filter((_, i) => i !== index);
+    const updatedRecipes = currentRecipes.filter(
+      (recipe) => recipe.recipeId !== recipeId
+    );
     setValue("recipeIds", updatedRecipes);
   };
 
   const renderRecipesForCell = (day: DayInWeek, meal: MealInDay) => {
     return fields
       .filter((field) => field.dayInWeek === day && field.mealInDay === meal)
-      .map((field, index) => (
+      .map((field) => (
         <div
           key={field.recipeId}
           className="flex flex-row items-center justify-end "
@@ -133,7 +124,7 @@ const RecipeForm = () => {
               </TooltipContent>
             </Tooltip>
             <CircleX
-              onClick={() => handleRemoveRecipe(index)}
+              onClick={() => handleRemoveRecipe(field.recipeId!)}
               size={18}
               className="ml-2 text-red-500 transition duration-200 hover:text-red-700"
             />
@@ -152,13 +143,18 @@ const RecipeForm = () => {
 
   return (
     <div className="max-w-4xl px-4 py-6 mx-auto space-y-4">
-      <table className="min-w-full divide-y divide-gray-200">
+      <table className="min-w-full border border-gray-300 divide-y divide-gray-200">
         <ScrollArea className="h-96">
           <thead>
             <tr>
-              <th className="px-6 py-3 text-left bg-gray-100">Meal/Day</th>
+              <th className="px-6 py-3 text-left bg-gray-100 border border-gray-300">
+                Meal/Day
+              </th>
               {MealInDayList.map((meal) => (
-                <th key={meal.id} className="px-6 py-3 text-center bg-gray-50">
+                <th
+                  key={meal.id}
+                  className="px-6 py-3 text-center border border-gray-300 bg-gray-50"
+                >
                   {meal.name}
                 </th>
               ))}
@@ -167,11 +163,14 @@ const RecipeForm = () => {
           <tbody>
             {DayInWeekList.map((day) => (
               <tr key={day.id}>
-                <td className="px-6 py-4 font-medium text-gray-900 bg-gray-100">
+                <td className="px-6 py-4 font-medium text-gray-900 bg-gray-100 border border-gray-300">
                   {day.name}
                 </td>
                 {MealInDayList.map((meal) => (
-                  <td key={meal.id} className="px-6 py-4 ">
+                  <td
+                    key={meal.id}
+                    className="px-6 py-4 border border-gray-300"
+                  >
                     <div className="flex flex-col items-center justify-center gap-1">
                       {!isAddButtonHidden(day.DayInWeek, meal.value) && (
                         <Popover
