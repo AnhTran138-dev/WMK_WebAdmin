@@ -54,7 +54,11 @@ const WeeklyPlanForm: React.FC<WeeklyPlanFormProps> = ({
   });
 
   const onSubmit = async (values: z.infer<typeof WeeklyPlanRequestSchema>) => {
-    const image = await utilApi.uploadFile(values.urlImage as File);
+    const image =
+      values.urlImage instanceof File
+        ? await utilApi.uploadFile(values.urlImage)
+        : values.urlImage;
+
     const newValue: WeeklyPlanRequest = {
       ...values,
       urlImage: image,
