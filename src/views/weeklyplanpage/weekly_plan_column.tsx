@@ -191,6 +191,7 @@ const WeeklyPlanColumn = (
             <DropdownMenuItem
               onClick={() => {
                 onEdit({
+                  id: weeklyplan.id,
                   title: weeklyplan.title,
                   description: weeklyplan.description,
                   urlImage: weeklyplan.urlImage,

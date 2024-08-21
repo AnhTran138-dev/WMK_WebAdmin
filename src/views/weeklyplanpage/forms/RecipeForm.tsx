@@ -120,22 +120,24 @@ const RecipeForm = () => {
           key={field.recipeId}
           className="flex flex-row items-center justify-end "
         >
-          <Badge className="mb-1 text-center">
+          <Badge className="flex items-center justify-between p-3 mb-2 text-center rounded-md shadow-md bg-slate-300">
             <Tooltip>
-              <TooltipTrigger className="flex">
-                <div className="overflow-hidden max-w-32 text-nowrap text-ellipsis">
+              <TooltipTrigger className="flex items-center space-x-2">
+                <div className="overflow-hidden max-w-[120px] text-nowrap text-ellipsis font-semibold text-gray-800">
                   {recipes?.data.find((r) => r.id === field.recipeId)?.name}
                 </div>
-                <div>( x{field.quantity})</div>
+                <div className="text-gray-600">( x{field.quantity})</div>
               </TooltipTrigger>
               <TooltipContent>
                 {recipes?.data.find((r) => r.id === field.recipeId)?.name}
               </TooltipContent>
             </Tooltip>
+            <CircleX
+              onClick={() => handleRemoveRecipe(index)}
+              size={18}
+              className="ml-2 text-red-500 transition duration-200 hover:text-red-700"
+            />
           </Badge>
-          <Button variant="ghost" onClick={() => handleRemoveRecipe(index)}>
-            <CircleX />
-          </Button>
         </div>
       ));
   };
