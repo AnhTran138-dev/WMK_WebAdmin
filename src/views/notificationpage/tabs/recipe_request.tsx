@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import DataRender from "@/components/data_render";
+// import DataRender from "@/components/data_render";
 import {
   Badge,
   Button,
@@ -20,6 +20,7 @@ import DialogCustom from "@/components/common/dialog";
 import RecepiForm from "../../receiptpage/receiptlist/dialog/recepi_form";
 import { useDebounce } from "../../../hooks";
 import { SelectType } from "../notification_page";
+import { AlertCircle } from "lucide-react";
 
 interface RecipeRequestProps {
   role: string;
@@ -47,12 +48,10 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
     }
     return { params };
   }, [nameDebounce]);
-  const {
-    data: recipes,
-    refetch,
-    loading,
-    error,
-  } = useFetch<Response<RecipeList[]>>(`/api/recipes/get-all`, options);
+  const { data: recipes, refetch } = useFetch<Response<RecipeList[]>>(
+    `/api/recipes/get-all`,
+    options
+  );
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
@@ -80,7 +79,15 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
 
   return (
     <ScrollArea className="h-full p-4 bg-background">
-      <DataRender isLoading={loading} error={error}>
+      {/* <DataRender isLoading={loading} error={error}> */}
+      {!recipes || recipes.data.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-full py-10">
+          <AlertCircle className="w-16 h-16 mb-4 text-gray-400" />
+          <p className="text-lg font-medium text-center text-gray-500">
+            No Recipe Request Found
+          </p>
+        </div>
+      ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {recipes?.data.map((recipe) => (
             <Show key={recipe.id}>
@@ -212,7 +219,8 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
             </Show>
           ))}
         </div>
-      </DataRender>
+      )}
+      {/* </DataRender> */}
       <DialogCustom
         className="max-w-5xl p-6 "
         isOpen={isDialogOpen}

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DataTable } from "../../components/common/data_table";
 import DialogCustom from "../../components/common/dialog";
-import DataRender from "../../components/data_render";
 import useFetch from "../../hooks/useFetch";
 import { Response } from "../../models/responses";
 import { WeeklyPlanList } from "../../models/responses/weekly_plan";
@@ -20,12 +19,9 @@ const WeeklyPlanPage = () => {
   const [id, setId] = useState<string>("");
   const [weeklyPlanEdit, setWeeklyPlanEdit] =
     useState<WeeklyPlanRequest | null>(null);
-  const {
-    data: weeklyplans,
-    loading,
-    error,
-    refetch,
-  } = useFetch<Response<WeeklyPlanList[]>>("/api/weeklyplan/get-all-filter");
+  const { data: weeklyplans, refetch } = useFetch<Response<WeeklyPlanList[]>>(
+    "/api/weeklyplan/get-all-filter"
+  );
 
   const handleCreate = () => {
     setType("edit");
@@ -69,14 +65,14 @@ const WeeklyPlanPage = () => {
 
   return (
     <div>
-      <DataRender className="my-4 h-fit" isLoading={loading} error={error}>
-        <DataTable
-          columns={WeeklyPlanColumn(handleEdit, handleID, handleType)}
-          data={weeklyplans?.data ?? []}
-          searchColumn="title"
-          handleCreate={handleCreate}
-        />
-      </DataRender>
+      {/* <DataRender className="my-4 h-fit" isLoading={loading} error={error}> */}
+      <DataTable
+        columns={WeeklyPlanColumn(handleEdit, handleID, handleType)}
+        data={weeklyplans?.data ?? []}
+        searchColumn="title"
+        handleCreate={handleCreate}
+      />
+      {/* </DataRender> */}
       <DialogCustom
         className="max-w-4xl"
         isOpen={isDialogOpen}

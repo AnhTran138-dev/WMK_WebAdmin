@@ -8,7 +8,6 @@ import DialogCustom from "../../components/common/dialog";
 import StatusAccess from "./dialog/status_access";
 import Show from "../../lib/show";
 import OrderDetail from "./dialog/order_detail";
-import DataRender from "../../components/data_render";
 
 const OrderPage = () => {
   const { toast } = useToast();
@@ -20,12 +19,8 @@ const OrderPage = () => {
     status: 0,
   });
 
-  const {
-    data: orders,
-    loading,
-    error,
-    refetch,
-  } = useFetch<Response<OrderList[]>>("/api/order/get-all");
+  const { data: orders, refetch } =
+    useFetch<Response<OrderList[]>>("/api/order/get-all");
 
   const sortedData = orders?.data?.sort((a, b) => {
     return new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime();
@@ -68,19 +63,17 @@ const OrderPage = () => {
 
   return (
     <div>
-      <DataRender className="my-4 h-fit" isLoading={loading} error={error}>
-        <DataTable
-          columns={OrderColum(
-            refetch,
-            handleDialog,
-            handleToast,
-            handleDetail,
-            orderGroup?.data ?? []
-          )}
-          data={sortedData ?? []}
-          searchColumn="address"
-        />
-      </DataRender>
+      <DataTable
+        columns={OrderColum(
+          refetch,
+          handleDialog,
+          handleToast,
+          handleDetail,
+          orderGroup?.data ?? []
+        )}
+        data={sortedData ?? []}
+        searchColumn="address"
+      />
       <DialogCustom
         className="max-w-5xl p-6"
         isOpen={isDialogOpen}

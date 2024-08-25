@@ -1,3 +1,4 @@
+import React, { useMemo, useState } from "react";
 import DialogCustom from "@/components/common/dialog";
 import { useToast } from "@/components/ui";
 import { useDebounce } from "@/hooks";
@@ -6,10 +7,10 @@ import Show from "@/lib/show";
 import type { WeeklyPlanRequest } from "@/models/requests";
 import { Response } from "@/models/responses";
 import { WeeklyPlanList } from "@/models/responses/weekly_plan";
-import React, { useMemo, useState } from "react";
-import WeeklyPlanForm from "../../weeklyplanpage/dialog/weekly_plan_form";
 import { SelectType } from "../notification_page";
 import WeeklyPlanItem from "./weekly_plan_item";
+import WeeklyPlanForm from "../../weeklyplanpage/dialog/weekly_plan_form";
+import { AlertCircle } from "lucide-react";
 
 interface WeeklyPlanRequestProps {
   role: string;
@@ -93,54 +94,65 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
 
   return (
     <div>
-      <Show>
-        <Show.When isTrue={role !== "Staff"}>
-          {weeklyplans?.data
-            .filter((plan) => plan.processStatus.toLowerCase() === "processing")
-            .map((plan) => (
-              <WeeklyPlanItem
-                key={plan.id}
-                plan={plan}
-                onApprove={() => handleApprove(plan.id)}
-                onDeny={() => handleDeny(plan.id)}
-                onEdit={() =>
-                  handleEdit({
-                    id: plan.id,
-                    title: plan.title,
-                    urlImage: plan.urlImage,
-                    description: plan.description,
-                    recipeIds: plan.recipePLans,
-                  })
-                }
-                isStaff={false}
-              />
-            ))}
-        </Show.When>
-        <Show.Else>
-          {weeklyplans?.data
-            .filter((plan) => plan.processStatus.toLowerCase() === "denied")
-            .map((plan) => (
-              <WeeklyPlanItem
-                key={plan.id}
-                plan={plan}
-                onApprove={() => handleApprove(plan.id)}
-                onDeny={() => handleDeny(plan.id)}
-                onEdit={() =>
-                  handleEdit({
-                    id: plan.id,
-                    title: plan.title,
-                    urlImage: plan.urlImage,
-                    description: plan.description,
-                    recipeIds: plan.recipePLans,
-                  })
-                }
-                isStaff={true}
-              />
-            ))}
-        </Show.Else>
-      </Show>
+      {!weeklyplans || weeklyplans.data.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-full py-10">
+          <AlertCircle className="w-16 h-16 mb-4 text-gray-400" />
+          <p className="text-lg font-medium text-center text-gray-500">
+            No Weekly Plan Request Found
+          </p>
+        </div>
+      ) : (
+        <Show>
+          <Show.When isTrue={role !== "Staff"}>
+            {weeklyplans.data
+              .filter(
+                (plan) => plan.processStatus.toLowerCase() === "processing"
+              )
+              .map((plan) => (
+                <WeeklyPlanItem
+                  key={plan.id}
+                  plan={plan}
+                  onApprove={() => handleApprove(plan.id)}
+                  onDeny={() => handleDeny(plan.id)}
+                  onEdit={() =>
+                    handleEdit({
+                      id: plan.id,
+                      title: plan.title,
+                      urlImage: plan.urlImage,
+                      description: plan.description,
+                      recipeIds: plan.recipePLans,
+                    })
+                  }
+                  isStaff={false}
+                />
+              ))}
+          </Show.When>
+          <Show.Else>
+            {weeklyplans.data
+              .filter((plan) => plan.processStatus.toLowerCase() === "denied")
+              .map((plan) => (
+                <WeeklyPlanItem
+                  key={plan.id}
+                  plan={plan}
+                  onApprove={() => handleApprove(plan.id)}
+                  onDeny={() => handleDeny(plan.id)}
+                  onEdit={() =>
+                    handleEdit({
+                      id: plan.id,
+                      title: plan.title,
+                      urlImage: plan.urlImage,
+                      description: plan.description,
+                      recipeIds: plan.recipePLans,
+                    })
+                  }
+                  isStaff={true}
+                />
+              ))}
+          </Show.Else>
+        </Show>
+      )}
       <DialogCustom
-        className="max-w-5xl p-6 "
+        className="max-w-5xl p-6"
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         children={
@@ -153,8 +165,6 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
         }
       />
     </div>
-    // <DataRender className="p-4" isLoading={loading} error={error}>
-    // </DataRender>
   );
 };
 

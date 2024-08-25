@@ -1,6 +1,5 @@
 import { DataTable } from "@/components/common/data_table";
 import DialogCustom from "@/components/common/dialog";
-import DataRender from "@/components/data_render";
 import { useToast } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
 import { UserRequest } from "@/models/requests/user_request";
@@ -20,12 +19,8 @@ const UserPage = () => {
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [role, setRole] = useState<string>("");
 
-  const {
-    data: user,
-    loading,
-    error,
-    refetch,
-  } = useFetch<Response<UserList[]>>("/api/user/get-all");
+  const { data: user, refetch } =
+    useFetch<Response<UserList[]>>("/api/user/get-all");
 
   useEffect(() => {
     if (user?.data) {
@@ -96,18 +91,18 @@ const UserPage = () => {
 
   return (
     <div>
-      <DataRender className="my-4 h-fit" isLoading={loading} error={error}>
-        <DataTable
-          columns={UserColumn(handleEdit, handleToast, refetch, role)}
-          data={userList.length === 0 ? user?.data ?? [] : userList}
-          searchColumn="userName"
-          handleCreate={
-            role === "Manager" || role === "Admin" ? handleCreate : undefined
-          }
-          sortUser={sortUser}
-          selectedRoles={selectedRoles}
-        />
-      </DataRender>
+      {/* <DataRender className="my-4 h-fit" isLoading={loading} error={error}> */}
+      <DataTable
+        columns={UserColumn(handleEdit, handleToast, refetch, role)}
+        data={userList.length === 0 ? user?.data ?? [] : userList}
+        searchColumn="userName"
+        handleCreate={
+          role === "Manager" || role === "Admin" ? handleCreate : undefined
+        }
+        sortUser={sortUser}
+        selectedRoles={selectedRoles}
+      />
+      {/* </DataRender> */}
       <DialogCustom
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}

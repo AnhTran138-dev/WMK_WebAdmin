@@ -1,6 +1,5 @@
 import { DataTable } from "@/components/common/data_table";
 import DialogCustom from "@/components/common/dialog";
-import DataRender from "@/components/data_render";
 import useFetch from "@/hooks/useFetch";
 import { RecipeRequest } from "@/models/requests";
 import { Response } from "@/models/responses";
@@ -18,12 +17,9 @@ const ReceiptPage = () => {
   const [recipeEdit, setRecipeEdit] = useState<RecipeRequest | null>(null);
   const [id, setId] = useState<string>("");
   const [type, setType] = useState<string>("");
-  const {
-    data: recipes,
-    loading,
-    error,
-    refetch,
-  } = useFetch<Response<RecipeList[]>>("/api/recipes/get-all");
+  const { data: recipes, refetch } = useFetch<Response<RecipeList[]>>(
+    "/api/recipes/get-all"
+  );
 
   const handleCreate = () => {
     setType("edit");
@@ -63,14 +59,14 @@ const ReceiptPage = () => {
   };
   return (
     <div>
-      <DataRender className="my-4 h-fit" isLoading={loading} error={error}>
-        <DataTable
-          columns={RecipeColumn(refetch, handleEdit, handleToast, handleDetail)}
-          data={recipes?.data ?? []}
-          searchColumn="name"
-          handleCreate={handleCreate}
-        />
-      </DataRender>
+      {/* <DataRender className="my-4 h-fit" isLoading={loading} error={error}> */}
+      <DataTable
+        columns={RecipeColumn(refetch, handleEdit, handleToast, handleDetail)}
+        data={recipes?.data ?? []}
+        searchColumn="name"
+        handleCreate={handleCreate}
+      />
+      {/* </DataRender> */}
       <DialogCustom
         className="max-w-5xl p-6 "
         isOpen={isDialogOpen}

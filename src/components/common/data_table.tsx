@@ -28,6 +28,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { jwtDecode } from "jwt-decode";
+import { AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
@@ -209,7 +210,12 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  <div className="flex flex-col items-center justify-center h-full py-10">
+                    <AlertCircle className="w-16 h-16 mb-4 text-gray-400" />
+                    <p className="text-lg font-medium text-center text-gray-500">
+                      No Data Found
+                    </p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

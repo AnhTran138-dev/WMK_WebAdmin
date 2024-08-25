@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/common/data_table";
-import DataRender from "@/components/data_render";
+// import DataRender from "@/components/data_render";
 import useFetch from "@/hooks/useFetch";
 import { CategoriesRecipe, Response } from "@/models/responses";
 import { CategoriesRecipeColumns } from "./categories_recipe_column";
@@ -19,8 +19,8 @@ const CategoriesPage = () => {
 
   const {
     data: categories,
-    loading,
-    error,
+    // loading,
+    // error,
     refetch,
   } = useFetch<Response<CategoriesRecipe[]>>("/api/categories/get-all");
 
@@ -65,14 +65,14 @@ const CategoriesPage = () => {
 
   return (
     <div>
-      <DataRender isLoading={loading} error={error}>
-        <DataTable
-          columns={CategoriesRecipeColumns(handleEdit, handleToast, refetch)}
-          data={categories?.data || []}
-          searchColumn="name"
-          handleCreate={handleCreate}
-        />
-      </DataRender>
+      {/* <DataRender isLoading={loading} error={error}> */}
+      <DataTable
+        columns={CategoriesRecipeColumns(handleEdit, handleToast, refetch)}
+        data={categories?.data || []}
+        searchColumn="name"
+        handleCreate={handleCreate}
+      />
+      {/* </DataRender> */}
       <DialogCustom
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}

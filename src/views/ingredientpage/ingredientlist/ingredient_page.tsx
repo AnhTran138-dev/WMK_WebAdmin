@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/common/data_table";
 import DialogCustom from "@/components/common/dialog";
-import DataRender from "@/components/data_render";
+// import DataRender from "@/components/data_render";
 import { useToast } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
 import { IngredientRequest } from "@/models/requests";
@@ -21,11 +21,12 @@ const IngredientPage = () => {
   );
   const {
     data: ingredient,
-
-    loading,
-    error,
+    // loading,
+    // error,
     refetch,
   } = useFetch<Response<IngredientsList[]>>("/api/ingredients/get-all");
+
+  console.log(ingredient);
 
   const handleCreate = () => {
     setType("edit");
@@ -66,19 +67,19 @@ const IngredientPage = () => {
 
   return (
     <div>
-      <DataRender isLoading={loading} error={error}>
-        <DataTable
-          data={ingredient?.data ?? []}
-          columns={IngredientColumn(
-            handleEdit,
-            handleToast,
-            refetch,
-            handleDetail
-          )}
-          searchColumn="name"
-          handleCreate={handleCreate}
-        />
-      </DataRender>
+      {/* <DataRender isLoading={loading} error={error}> */}
+      <DataTable
+        data={ingredient?.data ?? []}
+        columns={IngredientColumn(
+          handleEdit,
+          handleToast,
+          refetch,
+          handleDetail
+        )}
+        searchColumn="name"
+        handleCreate={handleCreate}
+      />
+      {/* </DataRender> */}
       <DialogCustom
         className="max-w-5xl p-6"
         isOpen={isDialogOpen}
