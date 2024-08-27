@@ -19,7 +19,7 @@ import { useFormContext } from "react-hook-form";
 const GeneralInfoForm: React.FC = () => {
   const { register, setValue, watch } = useFormContext();
   const ingredientCategoryId = watch("ingredientCategoryId");
-  const [imagePreview, setImagePreview] = useState<string | null>(watch("img"));
+  const [imagePreview, setImagePreview] = useState<string>(watch("img"));
 
   const { data: categories } = useFetch<Response<CategoriesIngredient[]>>(
     "/api/ingredientcategories/get-all"
@@ -27,7 +27,7 @@ const GeneralInfoForm: React.FC = () => {
 
   useEffect(() => {
     setImagePreview(watch("img")); // Initialize with existing image URL if any
-  }, [watch("img")]);
+  }, [watch]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -61,7 +61,7 @@ const GeneralInfoForm: React.FC = () => {
                   }}
                 >
                   <SelectTrigger>
-                     <SelectValue placeholder="Select Category" />
+                    <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories?.data.map((category) => (

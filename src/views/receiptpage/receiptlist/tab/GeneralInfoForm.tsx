@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { recipeSchema } from "@/schemas/recipe";
-import { z } from "zod";
 import {
   FormField,
   FormLabel,
@@ -40,11 +38,8 @@ const listDifficulties = [
 ];
 
 const GeneralInfoForm: React.FC = () => {
-  const { register, setValue, getValues, watch } =
-    useFormContext<z.infer<typeof recipeSchema>>();
-  const [imagePreview, setImagePreview] = useState<string | File | null>(
-    watch("img")
-  );
+  const { register, setValue, getValues, watch } = useFormContext();
+  const [imagePreview, setImagePreview] = useState<string>(watch("img"));
   const recipeCategoryIDs = watch("categoryIds");
 
   const { data: categories } = useFetch<Response<CategoriesRecipe[]>>(
@@ -53,7 +48,7 @@ const GeneralInfoForm: React.FC = () => {
 
   useEffect(() => {
     setImagePreview(watch("img"));
-  }, [watch("img")]);
+  }, [watch]);
 
   const categoryTypes = [
     { id: 1, name: "Nation", type: "Nation" },
@@ -61,8 +56,6 @@ const GeneralInfoForm: React.FC = () => {
     { id: 3, name: "Meal in day", type: "Meal in day" },
     { id: 4, name: "Cooking Method", type: "Cooking Method" },
   ];
-
-  const categoryTypesSet = new Set(categoryTypes.map((ct) => ct.type));
 
   const handleSelectChange = (type: string, value: string) => {
     const currentCategories = getValues("categoryIds") || [];
@@ -72,7 +65,7 @@ const GeneralInfoForm: React.FC = () => {
     }
 
     const updatedCategories = currentCategories.filter(
-      (item) =>
+      (item: string) =>
         !categories?.data.some((cat) => cat.id === item && cat.type === type)
     );
     setValue("categoryIds", [...updatedCategories, value]);
@@ -99,7 +92,7 @@ const GeneralInfoForm: React.FC = () => {
       <div className="col-span-full">
         <Label className="block mb-2">Category</Label>
         <div className="flex flex-wrap gap-4">
-          {categoryTypes.map((category, index) => {
+          {categoryTypes.map((category) => {
             return (
               <FormField
                 key={category.id}
@@ -109,13 +102,12 @@ const GeneralInfoForm: React.FC = () => {
                     <FormControl>
                       <Select
                         value={
-                          categories?.data
-                            .filter(
-                              (item) =>
-                                categoryTypesSet.has(item.type) &&
-                                recipeCategoryIDs.includes(item.id)
-                            )
-                            .map((item) => item.id)[index]
+                          categories?.data.find((item) => {
+                            return (
+                              item.type === category.type &&
+                              recipeCategoryIDs.includes(item.id)
+                            );
+                          })?.id
                         }
                         onValueChange={(value) => {
                           handleSelectChange(category.type, value);
@@ -163,7 +155,7 @@ const GeneralInfoForm: React.FC = () => {
               </FormControl>
               {imagePreview && (
                 <img
-                  src={imagePreview as string}
+                  src={imagePreview}
                   alt="Selected"
                   className="object-cover mt-2 max-h-40"
                 />

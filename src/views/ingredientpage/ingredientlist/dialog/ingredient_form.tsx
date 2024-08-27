@@ -112,7 +112,12 @@ const IngredientForm: React.FC<IngredientFormProps> = ({
     }
 
     try {
-      const imageIngredient = await utilApi.uploadFile(values.img as File);
+      let imageIngredient: string;
+      if (typeof values.img === "string") {
+        imageIngredient = values.img;
+      } else {
+        imageIngredient = await utilApi.uploadFile(values.img);
+      }
 
       const response: Response<null> = ingredient
         ? await IngredientApi.updateIngredient(ingredient.id ?? "", {

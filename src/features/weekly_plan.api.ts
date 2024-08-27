@@ -8,7 +8,6 @@ export const weeklyPlanApi = {
     data: WeeklyPlanRequest
   ): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.post("/api/weeklyplan/create", data);
       return response.data;
     } catch (error) {
@@ -33,7 +32,6 @@ export const weeklyPlanApi = {
     data: WeeklyPlanRequest
   ): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.put(
         `/api/weeklyplan/update/${id}`,
         data
@@ -62,8 +60,6 @@ export const weeklyPlanApi = {
     note: string
   ): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       const response = await axiosInstance.put(
         `/api/weeklyplan/change-status/${id}`,
         { processStatus, note }
@@ -88,7 +84,6 @@ export const weeklyPlanApi = {
 
   deleteWeeklyPlan: async (id: string): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await axiosInstance.delete(
         `/api/weeklyplan/delete/${id}`
       );

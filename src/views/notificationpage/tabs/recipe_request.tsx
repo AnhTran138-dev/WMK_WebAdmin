@@ -77,10 +77,19 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
     }
   };
 
+  const recipeRequest = recipes?.data.filter((recipe) => {
+    if (role === "Admin" || role === "Manager") {
+      return recipe.processStatus.toLowerCase() === "processing";
+    }
+    if (role === "Staff") {
+      return recipe.processStatus.toLowerCase() === "denied";
+    }
+  });
+
   return (
     <ScrollArea className="h-full p-4 bg-background">
       {/* <DataRender isLoading={loading} error={error}> */}
-      {!recipes || recipes.data.length === 0 ? (
+      {recipes === undefined || recipeRequest?.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full py-10">
           <AlertCircle className="w-16 h-16 mb-4 text-gray-400" />
           <p className="text-lg font-medium text-center text-gray-500">
@@ -144,7 +153,7 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
                           )
                         }
                       >
-                        Deny
+                        Reason denied
                       </Button>
                     </CardFooter>
                   </div>

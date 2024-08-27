@@ -7,16 +7,13 @@ import {
   Input,
   Textarea,
 } from "@/components/ui";
-import { WeeklyPlanRequestSchema } from "@/schemas/weeklyplan";
 import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { z } from "zod";
 
 const GeneralForm: React.FC = () => {
-  const { setValue, register, watch } =
-    useFormContext<z.infer<typeof WeeklyPlanRequestSchema>>();
+  const { setValue, register, watch } = useFormContext();
 
-  const [imagePreview, setImagePreview] = useState<string | File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>(watch("urlImage"));
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file: File | null = event.target.files?.[0] || null;
@@ -29,7 +26,7 @@ const GeneralForm: React.FC = () => {
 
   useEffect(() => {
     setImagePreview(watch("urlImage"));
-  }, [watch("urlImage")]);
+  }, [watch]);
 
   return (
     <div className="max-w-4xl px-4 py-6 mx-auto">
@@ -100,94 +97,6 @@ const GeneralForm: React.FC = () => {
             )}
           />
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-2 md:gap-8">
-        {/* Begin Date Field */}
-        {/* <FormField
-          name="beginDate"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel htmlFor="beginDate">Begin Date</FormLabel>
-                <FormControl>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          <span>
-                            {formatFromISOString(field.value, FormatType.DATE)}
-                          </span>
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={getValues("beginDate")}
-                        onSelect={field.onChange}
-                        initialFocus
-                        // disabled={(date) => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        /> */}
-
-        {/* End Date Field */}
-        {/* <FormField
-          name="endDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel htmlFor="endDate">End Date</FormLabel>
-              <FormControl>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        <span>
-                          {formatFromISOString(field.value, FormatType.DATE)}
-                        </span>
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      // disabled={(date) => date < new Date()}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
       </div>
     </div>
   );

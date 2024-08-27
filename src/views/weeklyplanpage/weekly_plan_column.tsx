@@ -113,43 +113,43 @@ const WeeklyPlanColumn = (
       return null;
     },
   },
-  {
-    accessorKey: "updatedBy",
-    header: "Update By",
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Update At",
-    cell: ({ row }) => {
-      if (
-        row.original.updatedAt ||
-        typeof row.original.updatedAt === "string"
-      ) {
-        return formatFromISOString(row.original.updatedAt, FormatType.DATETIME);
-      }
-      return null;
-    },
-  },
-  {
-    accessorKey: "approvedBy",
-    header: "Approve By",
-  },
-  {
-    accessorKey: "approvedAt",
-    header: "Approve At",
-    cell: ({ row }) => {
-      if (
-        row.original.approvedAt ||
-        typeof row.original.approvedAt === "string"
-      ) {
-        return formatFromISOString(
-          row.original.approvedAt,
-          FormatType.DATETIME
-        );
-      }
-      return null;
-    },
-  },
+  // {
+  //   accessorKey: "updatedBy",
+  //   header: "Update By",
+  // },
+  // {
+  //   accessorKey: "updatedAt",
+  //   header: "Update At",
+  //   cell: ({ row }) => {
+  //     if (
+  //       row.original.updatedAt ||
+  //       typeof row.original.updatedAt === "string"
+  //     ) {
+  //       return formatFromISOString(row.original.updatedAt, FormatType.DATETIME);
+  //     }
+  //     return null;
+  //   },
+  // },
+  // {
+  //   accessorKey: "approvedBy",
+  //   header: "Approve By",
+  // },
+  // {
+  //   accessorKey: "approvedAt",
+  //   header: "Approve At",
+  //   cell: ({ row }) => {
+  //     if (
+  //       row.original.approvedAt ||
+  //       typeof row.original.approvedAt === "string"
+  //     ) {
+  //       return formatFromISOString(
+  //         row.original.approvedAt,
+  //         FormatType.DATETIME
+  //       );
+  //     }
+  //     return null;
+  //   },
+  // },
   {
     accessorKey: "processStatus",
     header: ({ column }) => {

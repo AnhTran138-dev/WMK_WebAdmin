@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { Input, Tabs, TabsList, TabsTrigger } from "../../components/ui";
+import DialogCustom from "@/components/common/dialog";
+import { Input, Tabs, TabsList, TabsTrigger } from "@/components/ui";
+import { getItem, setItem } from "@/lib";
+import { TokenResponse } from "@/models/responses";
 import { TabsContent } from "@radix-ui/react-tabs";
+import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
+import Note from "./dialog.tsx/note";
 import RecipeRequest from "./tabs/recipe_request";
 import WeeklyPlanRequest from "./tabs/weekly_plan_request";
-import { TokenResponse } from "../../models/responses";
-import { jwtDecode } from "jwt-decode";
-import { getItem } from "../../lib";
-import DialogCustom from "../../components/common/dialog";
-import Note from "./dialog.tsx/note";
 
 export interface SelectType {
   id: string;
@@ -36,6 +36,15 @@ const NotificationPage = () => {
     );
   }, []);
 
+  useEffect(() => {
+    const storedTab = getItem("activeTab");
+    if (storedTab) {
+      setIsTabActive(storedTab);
+    } else {
+      setIsTabActive("recipe");
+    }
+  }, []);
+
   const handleChangeStatus = (data: SelectType, refetch: () => void) => {
     setChooseNotification(data);
     setIsOpened(true);
@@ -51,8 +60,14 @@ const NotificationPage = () => {
       <div className="text-lg font-semibold text-gray-500 uppercase ">
         Notification Request
       </div>
-      <Tabs value={isTabActive} onValueChange={setIsTabActive}>
-        <div className="flex justify-between">
+      <Tabs
+        value={isTabActive}
+        onValueChange={(value) => {
+          setIsTabActive(value);
+          setItem("activeTab", value);
+        }}
+      >
+        <div className="flex justify-between mb-3">
           <TabsList>
             <TabsTrigger value="recipe">Recipe</TabsTrigger>
             <TabsTrigger value="weeklyplan">Weekly Plan</TabsTrigger>

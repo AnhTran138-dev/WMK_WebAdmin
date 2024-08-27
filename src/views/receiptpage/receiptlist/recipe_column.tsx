@@ -99,7 +99,7 @@ const RecipeColumn = (
   },
   {
     accessorKey: "price",
-    header: "Price",
+    header: "Price (VNĐ)",
   },
 
   {
@@ -110,7 +110,7 @@ const RecipeColumn = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Serving Size
+          Serving Size (person)
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );
@@ -123,7 +123,7 @@ const RecipeColumn = (
   },
   {
     accessorKey: "cookingTime",
-    header: "Time",
+    header: "Time (minutes)",
   },
   {
     accessorKey: "createdBy",

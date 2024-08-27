@@ -13,6 +13,7 @@ import {
 } from "@/components/ui";
 import { recipeApi } from "@/features";
 import { utilApi } from "@/features/util.api";
+import Show from "@/lib/show";
 import { RecipeRequest } from "@/models/requests";
 import { Response } from "@/models/responses";
 import { recipeSchema } from "@/schemas/recipe";
@@ -22,7 +23,6 @@ import { z } from "zod";
 import GeneralInfoForm from "../tab/GeneralInfoForm";
 import IngredientInfoForm from "../tab/IngredientInfoForm";
 import ReciptStepForm from "../tab/ReciptStepForm";
-import Show from "../../../../lib/show";
 
 const validateFields = <T,>(values: T, requiredKeys: Array<keyof T>): boolean =>
   requiredKeys.every((key) => values[key] !== "" && values[key] !== undefined);
@@ -188,7 +188,11 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
                     >
                       <span className="text-sm">Add New Ingredient</span>
                     </Button>
-                    <Button>
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
                       <span className="text-sm">Check Ingredents</span>
                     </Button>
                   </div>

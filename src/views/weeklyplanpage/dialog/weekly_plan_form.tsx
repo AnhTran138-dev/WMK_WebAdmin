@@ -91,7 +91,7 @@ const WeeklyPlanForm: React.FC<WeeklyPlanFormProps> = ({
             <div className="flex flex-row items-center justify-between w-full">
               <AlertDialogHeader>
                 <AlertDialogTitle>
-                  {weeklyplan ? "Update Weekly Plan" : "Create Weekly Plan"}
+                  {weeklyplan ? "Weekly Plan Change" : "New Weekly Plan"}
                 </AlertDialogTitle>
               </AlertDialogHeader>
               <TabsList>
@@ -110,7 +110,7 @@ const WeeklyPlanForm: React.FC<WeeklyPlanFormProps> = ({
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <Button type="submit">
-                {weeklyplan ? "Save Changes" : "Create"}
+                {weeklyplan ? "Save Changes" : "Create New Weekly Plan"}
               </Button>
             </AlertDialogFooter>
           </Tabs>

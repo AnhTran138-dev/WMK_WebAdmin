@@ -92,9 +92,17 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
     setIsDialogOpen(true);
   };
 
+  const weeklyPlanRequest = weeklyplans?.data.filter((wps) => {
+    if (role === "Staff") {
+      return wps.processStatus.toLowerCase() === "denied";
+    } else {
+      return wps.processStatus.toLowerCase() === "processing";
+    }
+  });
+
   return (
     <div>
-      {!weeklyplans || weeklyplans.data.length === 0 ? (
+      {weeklyplans === undefined || weeklyPlanRequest?.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full py-10">
           <AlertCircle className="w-16 h-16 mb-4 text-gray-400" />
           <p className="text-lg font-medium text-center text-gray-500">
@@ -104,7 +112,7 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
       ) : (
         <Show>
           <Show.When isTrue={role !== "Staff"}>
-            {weeklyplans.data
+            {weeklyplans?.data
               .filter(
                 (plan) => plan.processStatus.toLowerCase() === "processing"
               )
@@ -128,7 +136,7 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
               ))}
           </Show.When>
           <Show.Else>
-            {weeklyplans.data
+            {weeklyplans?.data
               .filter((plan) => plan.processStatus.toLowerCase() === "denied")
               .map((plan) => (
                 <WeeklyPlanItem

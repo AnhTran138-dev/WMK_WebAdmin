@@ -13,44 +13,56 @@ const NutritionalInfoForm: React.FC = () => {
   const { register } = useFormContext();
 
   const nutrientFields = [
-    "calories",
-    "fat",
-    "saturatedFat",
-    "sugar",
-    "carbonhydrate",
-    "dietaryFiber",
-    "protein",
-    "sodium",
+    { name: "calories", unit: "kcal" },
+    { name: "fat", unit: "g" },
+    { name: "saturatedFat", unit: "g" },
+    { name: "sugar", unit: "g" },
+    { name: "carbohydrate", unit: "g" },
+    { name: "dietaryFiber", unit: "g" },
+    { name: "protein", unit: "g" },
+    { name: "sodium", unit: "mg" },
   ];
+
+  const formatFieldName = (field: string) => {
+    switch (field) {
+      case "saturatedFat":
+        return "Saturated Fat";
+      case "dietaryFiber":
+        return "Dietary Fiber";
+      default:
+        return field
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase());
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {nutrientFields.map((field) => (
+      {nutrientFields.map(({ name, unit }) => (
         <FormField
-          key={field}
-          name={`nutrientInfo.${field}`}
-          render={() => (
-            <FormItem>
-              <FormLabel>
-                {field
-                  .replace(/([A-Z])/g, " ")
-                  .replace(/^./, (str) => str.toUpperCase())}
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="any"
-                  placeholder={field
-                    .replace(/([A-Z])/g, " ")
-                    .replace(/^./, (str) => str.toUpperCase())}
-                  {...register(`nutrientInfo.${field}`, {
-                    valueAsNumber: true,
-                  })}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          key={name}
+          name={`nutrientInfo.${name}`}
+          render={() => {
+            const label = formatFieldName(name);
+            return (
+              <FormItem>
+                <FormLabel>
+                  {formatFieldName(name)} ({unit})
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    step="any"
+                    placeholder={label}
+                    {...register(`nutrientInfo.${name}`, {
+                      valueAsNumber: true,
+                    })}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
       ))}
     </div>

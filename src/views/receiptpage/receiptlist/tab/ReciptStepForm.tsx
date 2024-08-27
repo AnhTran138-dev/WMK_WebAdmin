@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
-import { recipeSchema } from "@/schemas/recipe";
-import { z } from "zod";
 import {
   Button,
   Input,
@@ -16,8 +14,7 @@ import {
 import { CircleMinus, CirclePlus } from "lucide-react";
 
 const ReciptStepForm: React.FC = () => {
-  const { control, register, watch, setValue } =
-    useFormContext<z.infer<typeof recipeSchema>>();
+  const { control, register, watch, setValue } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "steps",
@@ -41,7 +38,7 @@ const ReciptStepForm: React.FC = () => {
       <ScrollArea className="border rounded-lg shadow-sm h-96">
         {fields.map((field, index) => {
           const mediaURL = watch(`steps.${index}.mediaURL`);
-          const imageLink = watch(`steps.${index}.imageLink`);
+          let imageLink: string;
 
           // Function to determine if the URL is a video
           const isVideo = (url: string | undefined) => {
@@ -58,9 +55,10 @@ const ReciptStepForm: React.FC = () => {
               const reader = new FileReader();
               reader.onloadend = () => {
                 if (reader.result) {
-                  console.log("file", file);
-
                   setValue(`steps.${index}.imageLink`, file);
+                  imageLink = reader.result as string;
+                } else {
+                  imageLink = watch(`steps.${index}.imageLink`);
                 }
               };
               reader.readAsDataURL(file);

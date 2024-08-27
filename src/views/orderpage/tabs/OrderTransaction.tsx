@@ -1,4 +1,4 @@
-import React from "react";
+import DialogCustom from "@/components/common/dialog";
 import {
   Button,
   Card,
@@ -8,11 +8,11 @@ import {
   ScrollArea,
   useToast,
 } from "@/components/ui";
-import { Transaction } from "../../../models/responses/order_detail";
-import Show from "../../../lib/show";
+import Show from "@/lib/show";
+import { TransactionRequest } from "@/models/requests";
+import { Transaction } from "@/models/responses/order_detail";
 import { CircleDollarSign } from "lucide-react";
-import { TransactionRequest } from "../../../models/requests";
-import DialogCustom from "../../../components/common/dialog";
+import React from "react";
 import ConfimRefund from "../../ordergrouppage/dialog/ConfimRefund";
 
 interface OrderTransactionProps {
