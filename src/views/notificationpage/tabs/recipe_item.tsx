@@ -9,32 +9,28 @@ import {
 } from "@/components/ui";
 import { formatFromISOString, FormatType } from "@/lib";
 import Show from "@/lib/show";
-import { WeeklyPlanList } from "@/models/responses/weekly_plan";
 import { ProcessStatus } from "@/models/responses/weekly_plan_list";
 import { CheckCircle, Pencil, XCircle, Calendar, User } from "lucide-react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { RecipeList } from "@/models/responses";
 
-interface WeeklyPlanItemProps {
-  plan: WeeklyPlanList;
+interface RecipeItemProps {
+  recipe: RecipeList;
   onApprove: () => void;
   onDeny: () => void;
   onEdit: () => void;
+  onDetail: (id: string) => void;
   isStaff: boolean;
 }
 
-const WeeklyPlanItem: React.FC<WeeklyPlanItemProps> = ({
-  plan,
+const RecipeItem: React.FC<RecipeItemProps> = ({
+  recipe,
   onApprove,
   onDeny,
   onEdit,
+  onDetail,
   isStaff,
 }) => {
-  const navigate = useNavigate();
-  const handleOnClick = () => {
-    navigate(`/weekly-plan/${plan.id}`);
-  };
-
   const renderStatus = (status: string) => {
     switch (status) {
       case ProcessStatus.Denied:
@@ -49,26 +45,26 @@ const WeeklyPlanItem: React.FC<WeeklyPlanItemProps> = ({
   return (
     <Card
       className="flex flex-col overflow-hidden transition-shadow duration-300 bg-white shadow-md rounded-xl hover:shadow-lg hover:cursor-pointer"
-      onClick={handleOnClick}
+      onClick={() => onDetail(recipe.id)}
     >
       <img
-        src={plan.urlImage}
-        alt={plan.title}
+        src={recipe.img}
+        alt={recipe.name}
         className="object-cover w-full h-48 rounded-t-xl"
       />
       <CardHeader className="px-4 pt-4">
         <CardTitle className="text-xl font-semibold text-gray-800">
-          {plan.title} - {renderStatus(plan.processStatus)}
+          {recipe.name} - {renderStatus(recipe.processStatus)}
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4 pb-4">
         <div className="flex items-center space-x-2 text-sm text-gray-600">
           <User className="w-4 h-4 text-gray-500" />
-          <span>{plan.createdBy}</span>
+          <span>{recipe.createdBy}</span>
         </div>
         <div className="flex items-center mt-1 space-x-2 text-sm text-gray-600">
           <Calendar className="w-4 h-4 text-gray-500" />
-          <span>{formatFromISOString(plan.createAt, FormatType.DATE)}</span>
+          <span>{formatFromISOString(recipe.createdAt, FormatType.DATE)}</span>
         </div>
       </CardContent>
       <CardFooter className="px-4 pb-4 mt-auto">
@@ -117,4 +113,4 @@ const WeeklyPlanItem: React.FC<WeeklyPlanItemProps> = ({
   );
 };
 
-export default WeeklyPlanItem;
+export default RecipeItem;

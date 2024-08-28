@@ -10,10 +10,11 @@ import { useToast } from "../../components/ui";
 import { WeeklyPlanRequest } from "../../models/requests";
 import Show from "../../lib/show";
 import DeleteWeeklyPlan from "./dialog/delete_weekly_plan";
-import DetailWeeklyPlan from "./dialog/detail_weekly_plan";
+import { useNavigate } from "react-router-dom";
 
 const WeeklyPlanPage = () => {
   const { toast } = useToast();
+  const navigation = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [type, setType] = useState<string>("");
   const [id, setId] = useState<string>("");
@@ -63,11 +64,15 @@ const WeeklyPlanPage = () => {
     }
   };
 
+  const handleDetail = (id: string) => {
+    navigation(`/weekly-plan/${id}`);
+  };
+
   return (
     <div>
       {/* <DataRender className="my-4 h-fit" isLoading={loading} error={error}> */}
       <DataTable
-        columns={WeeklyPlanColumn(handleEdit, handleID, handleType)}
+        columns={WeeklyPlanColumn(handleEdit, handleID, handleType, handleDetail)}
         data={weeklyplans?.data ?? []}
         searchColumn="title"
         handleCreate={handleCreate}
@@ -94,9 +99,9 @@ const WeeklyPlanPage = () => {
                 onToast={handleToast}
               />
             </Show.When>
-            <Show.When isTrue={type === "detail"}>
+            {/* <Show.When isTrue={type === "detail"}>
               <DetailWeeklyPlan id={id} />
-            </Show.When>
+            </Show.When> */}
           </Show>
         }
       />

@@ -17,6 +17,8 @@ export interface WeekplanList {
 
 export enum ProcessStatus {
   Approved = "Approved",
+  Denied = "Denied",
+  Processing = "Processing",
 }
 
 export interface RecipePLAN {

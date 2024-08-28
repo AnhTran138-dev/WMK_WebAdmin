@@ -112,50 +112,54 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
       ) : (
         <Show>
           <Show.When isTrue={role !== "Staff"}>
-            {weeklyplans?.data
-              .filter(
-                (plan) => plan.processStatus.toLowerCase() === "processing"
-              )
-              .map((plan) => (
-                <WeeklyPlanItem
-                  key={plan.id}
-                  plan={plan}
-                  onApprove={() => handleApprove(plan.id)}
-                  onDeny={() => handleDeny(plan.id)}
-                  onEdit={() =>
-                    handleEdit({
-                      id: plan.id,
-                      title: plan.title,
-                      urlImage: plan.urlImage,
-                      description: plan.description,
-                      recipeIds: plan.recipePLans,
-                    })
-                  }
-                  isStaff={false}
-                />
-              ))}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              {weeklyplans?.data
+                .filter(
+                  (plan) => plan.processStatus.toLowerCase() === "processing"
+                )
+                .map((plan) => (
+                  <WeeklyPlanItem
+                    key={plan.id}
+                    plan={plan}
+                    onApprove={() => handleApprove(plan.id)}
+                    onDeny={() => handleDeny(plan.id)}
+                    onEdit={() =>
+                      handleEdit({
+                        id: plan.id,
+                        title: plan.title,
+                        urlImage: plan.urlImage,
+                        description: plan.description,
+                        recipeIds: plan.recipePLans,
+                      })
+                    }
+                    isStaff={false}
+                  />
+                ))}
+            </div>
           </Show.When>
           <Show.Else>
-            {weeklyplans?.data
-              .filter((plan) => plan.processStatus.toLowerCase() === "denied")
-              .map((plan) => (
-                <WeeklyPlanItem
-                  key={plan.id}
-                  plan={plan}
-                  onApprove={() => handleApprove(plan.id)}
-                  onDeny={() => handleDeny(plan.id)}
-                  onEdit={() =>
-                    handleEdit({
-                      id: plan.id,
-                      title: plan.title,
-                      urlImage: plan.urlImage,
-                      description: plan.description,
-                      recipeIds: plan.recipePLans,
-                    })
-                  }
-                  isStaff={true}
-                />
-              ))}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              {weeklyplans?.data
+                .filter((plan) => plan.processStatus.toLowerCase() === "denied")
+                .map((plan) => (
+                  <WeeklyPlanItem
+                    key={plan.id}
+                    plan={plan}
+                    onApprove={() => handleApprove(plan.id)}
+                    onDeny={() => handleDeny(plan.id)}
+                    onEdit={() =>
+                      handleEdit({
+                        id: plan.id,
+                        title: plan.title,
+                        urlImage: plan.urlImage,
+                        description: plan.description,
+                        recipeIds: plan.recipePLans,
+                      })
+                    }
+                    isStaff={true}
+                  />
+                ))}
+            </div>
           </Show.Else>
         </Show>
       )}

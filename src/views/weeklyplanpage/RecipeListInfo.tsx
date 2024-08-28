@@ -1,7 +1,7 @@
 import Show from "@/lib/show";
 import { RecipePLAN } from "@/models/responses/weekly_plan";
 import React from "react";
-import Recipe from "../according/recipe";
+import Recipe from "./according/recipe";
 
 interface RecipeListInfoProps {
   recipePlans: RecipePLAN[];

@@ -25,6 +25,7 @@ import { CirclePlus, CircleX } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
+import Show from "../../../lib/show";
 
 const MealInDayList = [
   { id: 1, name: "Breakfast", value: MealInDay.Breakfast },
@@ -214,12 +215,18 @@ const RecipeForm = () => {
                                 <SelectGroup>
                                   <SelectLabel>Recipes</SelectLabel>
                                   {recipes?.data.map((recipe) => (
-                                    <SelectItem
-                                      key={recipe.id}
-                                      value={recipe.id}
-                                    >
-                                      {recipe.name}
-                                    </SelectItem>
+                                    <Show key={recipe.id}>
+                                      <Show.When
+                                        isTrue={
+                                          recipe.processStatus.toLowerCase() ===
+                                          "approved"
+                                        }
+                                      >
+                                        <SelectItem value={recipe.id}>
+                                          {recipe.name}
+                                        </SelectItem>
+                                      </Show.When>
+                                    </Show>
                                   ))}
                                 </SelectGroup>
                               </SelectContent>

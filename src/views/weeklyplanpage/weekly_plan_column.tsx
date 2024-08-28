@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   DropdownMenu,
   DropdownMenuContent,
@@ -18,11 +19,13 @@ import {
   ReceiptText,
   Trash2,
 } from "lucide-react";
+import { ProcessStatus } from "../../models/responses/weekly_plan_list";
 
 const WeeklyPlanColumn = (
   onEdit: (weeklyplan: WeeklyPlanRequest) => void,
   handleID: (id: string) => void,
-  handleType: (type: string) => void
+  handleType: (type: string) => void,
+  handleDetail: (id: string) => void
 ): ColumnDef<WeeklyPlanList>[] => [
   {
     header: "No.",
@@ -53,49 +56,49 @@ const WeeklyPlanColumn = (
       );
     },
   },
-  {
-    accessorKey: "beginDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Begin Date
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      if (
-        row.original.beginDate ||
-        typeof row.original.beginDate === "string"
-      ) {
-        return formatFromISOString(row.original.beginDate, FormatType.DATETIME);
-      }
-      return null;
-    },
-  },
-  {
-    accessorKey: "endDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          End Date
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      if (row.original.endDate || typeof row.original.endDate === "string") {
-        return formatFromISOString(row.original.endDate, FormatType.DATETIME);
-      }
-      return null;
-    },
-  },
+  // {
+  //   accessorKey: "beginDate",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         Begin Date
+  //         <ArrowUpDown className="w-4 h-4 ml-2" />
+  //       </Button>
+  //     );
+  //   },
+  //   cell: ({ row }) => {
+  //     if (
+  //       row.original.beginDate ||
+  //       typeof row.original.beginDate === "string"
+  //     ) {
+  //       return formatFromISOString(row.original.beginDate, FormatType.DATETIME);
+  //     }
+  //     return null;
+  //   },
+  // },
+  // {
+  //   accessorKey: "endDate",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         End Date
+  //         <ArrowUpDown className="w-4 h-4 ml-2" />
+  //       </Button>
+  //     );
+  //   },
+  //   cell: ({ row }) => {
+  //     if (row.original.endDate || typeof row.original.endDate === "string") {
+  //       return formatFromISOString(row.original.endDate, FormatType.DATETIME);
+  //     }
+  //     return null;
+  //   },
+  // },
   {
     accessorKey: "createdBy",
     header: "Create By",
@@ -113,43 +116,6 @@ const WeeklyPlanColumn = (
       return null;
     },
   },
-  // {
-  //   accessorKey: "updatedBy",
-  //   header: "Update By",
-  // },
-  // {
-  //   accessorKey: "updatedAt",
-  //   header: "Update At",
-  //   cell: ({ row }) => {
-  //     if (
-  //       row.original.updatedAt ||
-  //       typeof row.original.updatedAt === "string"
-  //     ) {
-  //       return formatFromISOString(row.original.updatedAt, FormatType.DATETIME);
-  //     }
-  //     return null;
-  //   },
-  // },
-  // {
-  //   accessorKey: "approvedBy",
-  //   header: "Approve By",
-  // },
-  // {
-  //   accessorKey: "approvedAt",
-  //   header: "Approve At",
-  //   cell: ({ row }) => {
-  //     if (
-  //       row.original.approvedAt ||
-  //       typeof row.original.approvedAt === "string"
-  //     ) {
-  //       return formatFromISOString(
-  //         row.original.approvedAt,
-  //         FormatType.DATETIME
-  //       );
-  //     }
-  //     return null;
-  //   },
-  // },
   {
     accessorKey: "processStatus",
     header: ({ column }) => {
@@ -163,11 +129,26 @@ const WeeklyPlanColumn = (
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const status = row.original.processStatus;
+      console.log(status);
+      switch (status) {
+        case ProcessStatus.Approved:
+          return <Badge variant="success">{status}</Badge>;
+        case ProcessStatus.Denied:
+          return <Badge variant="destructive">{status}</Badge>;
+        case ProcessStatus.Processing:
+          return <Badge className="bg-blue-400">{status}</Badge>;
+        default:
+          return <Badge>{status}</Badge>;
+      }
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const weeklyplan = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -181,8 +162,7 @@ const WeeklyPlanColumn = (
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                handleID(weeklyplan.id);
-                handleType("detail");
+                handleDetail(weeklyplan.id);
               }}
             >
               <ReceiptText className="w-4 h-4 mr-2" />

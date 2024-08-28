@@ -28,6 +28,9 @@ const OrderGroupPage = lazy(
 const WeeklyPlanPage = lazy(
   () => import("@/views/weeklyplanpage/weekly_plan_page")
 );
+const WeeklyPlanDetailPage = lazy(
+  () => import("@/views/weeklyplanpage/dialog/detail_weekly_plan")
+);
 const NotificationPage = lazy(
   () => import("@/views/notificationpage/notification_page")
 );
@@ -101,6 +104,14 @@ const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Loading />}>
             <WeeklyPlanPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "weekly-plan/:id",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <WeeklyPlanDetailPage />
           </Suspense>
         ),
       },

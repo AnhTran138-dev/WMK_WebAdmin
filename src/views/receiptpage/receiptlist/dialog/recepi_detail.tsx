@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import useFetch from "../../../../hooks/useFetch";
 import { RecipeList, Response } from "../../../../models/responses";
 import {
+  AlertDialogCancel,
   AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -9,6 +10,7 @@ import {
   ScrollArea,
 } from "../../../../components/ui";
 import DataRender from "../../../../components/data_render";
+import { XCircle } from "lucide-react";
 
 interface RecepiDetailProps {
   id: string;
@@ -62,6 +64,9 @@ const RecepiDetail: React.FC<RecepiDetailProps> = ({ id }) => {
                   ))}
                 </div>
               </div>
+              <AlertDialogCancel className="border-none hover:bg-white">
+                <XCircle className="ml-2 cursor-pointer size-6" />
+              </AlertDialogCancel>
             </AlertDialogHeader>
 
             <div className="mt-6">
