@@ -1,6 +1,4 @@
-import React, { useMemo } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
-import { z } from "zod";
+import DialogCustom from "@/components/common/dialog";
 import {
   Checkbox,
   FormControl,
@@ -16,8 +14,10 @@ import useFetch from "@/hooks/useFetch";
 import Show from "@/lib/show";
 import { IngredientsList, Response } from "@/models/responses";
 import { recipeSchema } from "@/schemas/recipe";
-import DialogCustom from "../../../../components/common/dialog";
-import IngredientForm from "../../../ingredientpage/ingredientlist/dialog/ingredient_form";
+import IngredientForm from "@/views/ingredientpage/ingredientlist/dialog/ingredient_form";
+import React, { useMemo } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { z } from "zod";
 
 type RecipeFormValues = z.infer<typeof recipeSchema>;
 

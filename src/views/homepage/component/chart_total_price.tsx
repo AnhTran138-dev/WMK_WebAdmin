@@ -1,22 +1,21 @@
-import { useState, useEffect } from "react";
-import useFetch from "../../../hooks/useFetch";
+import { Button } from "@/components/ui";
+import useFetch from "@/hooks/useFetch";
+import { Order, Response } from "@/models/responses";
+import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
-import { Response, Order } from "../../../models/responses";
-import DataRender from "../../../components/data_render";
+import { useEffect, useState } from "react";
 import {
-  LineChart,
+  Area,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  Area,
 } from "recharts";
-import { Button } from "@/components/ui";
-import ChartAlertDialog from "./chart_modal";
 import ChangeDisplay from "./change_display";
-import dayjs from "dayjs";
+import ChartAlertDialog from "./chart_modal";
 
 dayjs.extend(isBetween);
 
@@ -37,11 +36,8 @@ const ChartTotalPrice = () => {
   >([]);
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
-  const {
-    data: ordersResponse,
-    loading,
-    error,
-  } = useFetch<Response<Order[]>>("/api/order/get-all");
+  const { data: ordersResponse } =
+    useFetch<Response<Order[]>>("/api/order/get-all");
 
   useEffect(() => {
     if (!ordersResponse?.data) return;
@@ -133,7 +129,7 @@ const ChartTotalPrice = () => {
   //   );
 
   return (
-    <DataRender isLoading={loading} error={error}>
+    <div>
       <div className="container flex flex-col flex-wrap items-center p-4 mx-auto lg:flex-row">
         <div className="flex-1 min-w-0 lg:w-[40%] p-2 mx-auto">
           <div className="p-4 rounded-md shadow-md">
@@ -215,7 +211,7 @@ const ChartTotalPrice = () => {
         onClose={() => setIsAlertDialogOpen(false)}
         data={previousWeekData}
       />
-    </DataRender>
+    </div>
   );
 };
 

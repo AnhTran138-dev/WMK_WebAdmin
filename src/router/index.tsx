@@ -29,7 +29,7 @@ const WeeklyPlanPage = lazy(
   () => import("@/views/weeklyplanpage/weekly_plan_page")
 );
 const WeeklyPlanDetailPage = lazy(
-  () => import("@/views/weeklyplanpage/dialog/detail_weekly_plan")
+  () => import("@/views/weeklyplanpage/detail_weekly_plan")
 );
 const NotificationPage = lazy(
   () => import("@/views/notificationpage/notification_page")

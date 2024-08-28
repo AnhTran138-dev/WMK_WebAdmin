@@ -107,10 +107,7 @@ const WeeklyPlanColumn = (
     accessorKey: "createAt",
     header: "Create At",
     cell: ({ row }) => {
-      if (
-        row.original.createAt ||
-        typeof row.original.approvedAt === "string"
-      ) {
+      if (row.original.createAt) {
         return formatFromISOString(row.original.createAt, FormatType.DATETIME);
       }
       return null;

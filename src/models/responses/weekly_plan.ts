@@ -1,16 +1,10 @@
 export interface WeeklyPlanList {
   id: string;
-  beginDate: Date;
-  endDate: Date;
   urlImage: string;
   title: string;
   description: string;
   createAt: Date;
   createdBy: string;
-  approvedAt: null;
-  approvedBy: null;
-  updatedAt: null;
-  updatedBy: string;
   processStatus: string;
   recipePLans: RecipePLAN[];
 }
@@ -31,7 +25,7 @@ interface Recipe {
   name: string;
   servingSize: number;
   cookingTime: number;
-  difficulty: number;
+  difficulty: string;
   description: string;
   notice: null | string;
   img: string;
@@ -45,7 +39,7 @@ interface Recipe {
   approvedBy: string;
   updatedAt: Date;
   updatedBy: string;
-  recipeIngredients: RecipeIngredient[];
+  recipeIngredients: RecipeIngredientItem[];
   recipeCategories: RecipeCategory[];
   recipeNutrient: Nutrient | null;
   recipeSteps: RecipeStep[];
@@ -66,7 +60,7 @@ interface Category {
   status: string;
 }
 
-interface RecipeIngredient {
+export interface RecipeIngredientItem {
   id: string;
   recipeId: string;
   ingredientId: string;

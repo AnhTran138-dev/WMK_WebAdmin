@@ -1,6 +1,5 @@
 import * as React from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
-// import useFetch from "../../../hooks/useFetch";
 import { RecipeList } from "@/models/responses";
 import useFetch from "@/hooks/useFetchRecipe";
 
