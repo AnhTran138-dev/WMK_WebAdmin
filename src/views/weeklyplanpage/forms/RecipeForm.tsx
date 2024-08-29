@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
+import Show from "@/lib/show";
 import { DayInWeek, MealInDay } from "@/models/requests";
 import { RecipeList, Response } from "@/models/responses";
 import { WeeklyPlanRequestSchema } from "@/schemas/weeklyplan";
@@ -25,7 +26,6 @@ import { CirclePlus, CircleX } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
-import Show from "../../../lib/show";
 
 const MealInDayList = [
   { id: 1, name: "Breakfast", value: MealInDay.Breakfast },
@@ -57,12 +57,14 @@ const RecipeForm = () => {
   const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
   const [selectedMeal, setSelectedMeal] = useState<MealInDay | null>(null);
   const [selectedDay, setSelectedDay] = useState<DayInWeek | null>(null);
-  const [quantity, setQuantity] = useState<number | "">("");
   const [openPopover, setOpenPopover] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState<number | "">("");
 
   const handleAddRecipe = () => {
     if (selectedRecipe && selectedMeal && selectedDay && quantity) {
       const currentRecipes = getValues("recipeIds") || [];
+
+      // Check if the recipe already exists
       const existingEntry = currentRecipes.find(
         (r) =>
           r.dayInWeek === selectedDay &&
@@ -70,16 +72,25 @@ const RecipeForm = () => {
           r.recipeId === selectedRecipe
       );
 
+      // If the recipe already exists, update the quantity
       if (existingEntry) {
-        return; // Recipe already added for this cell
+        existingEntry.quantity = quantity + existingEntry.quantity!;
+        setValue("recipeIds", currentRecipes);
+        setSelectedRecipe(null);
+        setSelectedMeal(null);
+        setSelectedDay(null);
+        setQuantity("");
+        setOpenPopover(null);
+        return;
       }
 
-      if (
-        currentRecipes.filter(
-          (r) => r.dayInWeek === selectedDay && r.mealInDay === selectedMeal
-        ).length >= 4
-      ) {
-        return; // Limit to 4 recipes per cell
+      // Limit to 4 recipes per meal
+      const limit = currentRecipes.filter(
+        (r) => r.dayInWeek === selectedDay && r.mealInDay === selectedMeal
+      );
+
+      if (limit.length >= 4) {
+        return;
       }
 
       append({
@@ -92,16 +103,27 @@ const RecipeForm = () => {
       setSelectedMeal(null);
       setSelectedDay(null);
       setQuantity("");
-      setOpenPopover(null); // Close the Popover
+      setOpenPopover(null);
     }
   };
 
-  const handleRemoveRecipe = (recipeId: string) => {
+  const handleRemoveRecipe = (recipeId: string, day: number, meal: number) => {
     const currentRecipes = getValues("recipeIds") || [];
-    const updatedRecipes = currentRecipes.filter(
-      (recipe) => recipe.recipeId !== recipeId
+
+    // Find the recipe in the list
+    const findRecipe = currentRecipes.findIndex(
+      (recipe) =>
+        recipe.recipeId === recipeId &&
+        recipe.dayInWeek === day &&
+        recipe.mealInDay === meal
     );
-    setValue("recipeIds", updatedRecipes);
+
+    // Remove the recipe from the list
+    if (findRecipe !== -1) {
+      currentRecipes.splice(findRecipe, 1);
+    }
+
+    setValue("recipeIds", currentRecipes);
   };
 
   const renderRecipesForCell = (day: DayInWeek, meal: MealInDay) => {
@@ -125,7 +147,7 @@ const RecipeForm = () => {
               </TooltipContent>
             </Tooltip>
             <CircleX
-              onClick={() => handleRemoveRecipe(field.recipeId!)}
+              onClick={() => handleRemoveRecipe(field.recipeId!, day, meal)}
               size={18}
               className="ml-2 text-red-500 transition duration-200 hover:text-red-700"
             />

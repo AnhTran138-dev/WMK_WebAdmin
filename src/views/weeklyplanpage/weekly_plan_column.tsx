@@ -128,7 +128,6 @@ const WeeklyPlanColumn = (
     },
     cell: ({ row }) => {
       const status = row.original.processStatus;
-      console.log(status);
       switch (status) {
         case ProcessStatus.Approved:
           return <Badge variant="success">{status}</Badge>;

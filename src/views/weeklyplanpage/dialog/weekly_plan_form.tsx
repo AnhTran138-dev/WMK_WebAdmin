@@ -11,6 +11,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
+import { utilApi } from "@/features/util.api";
+import { weeklyPlanApi } from "@/features/weekly_plan.api";
 import { WeeklyPlanRequest } from "@/models/requests";
 import { Response } from "@/models/responses";
 import { WeeklyPlanRequestSchema } from "@/schemas/weeklyplan";
@@ -20,8 +22,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import GeneralForm from "../forms/GeneralForm";
 import RecipeForm from "../forms/RecipeForm";
-import { utilApi } from "../../../features/util.api";
-import { weeklyPlanApi } from "../../../features/weekly_plan.api";
 
 interface WeeklyPlanFormProps {
   onClose: () => void;
