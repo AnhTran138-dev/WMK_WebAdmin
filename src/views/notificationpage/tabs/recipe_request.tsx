@@ -106,6 +106,18 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
     }
   });
 
+  const returnNumberDifficulty = (difficulty: string) => {
+    if (difficulty === "Normal") {
+      return 0;
+    }
+    if (difficulty === "Medinum") {
+      return 1;
+    }
+    if (difficulty === "Hard") {
+      return 2;
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -147,7 +159,9 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
                         img: recipe.img,
                         servingSize: recipe.servingSize,
                         cookingTime: recipe.cookingTime,
-                        difficulty: recipe.difficulty,
+                        difficulty: returnNumberDifficulty(
+                          recipe.difficulty
+                        ) as number,
                         categoryIds: recipe.recipeCategories.map(
                           (category) => category.categoryId
                         ),
@@ -195,7 +209,9 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
                         img: recipe.img,
                         servingSize: recipe.servingSize,
                         cookingTime: recipe.cookingTime,
-                        difficulty: recipe.difficulty,
+                        difficulty: returnNumberDifficulty(
+                          recipe.difficulty
+                        ) as number,
                         categoryIds: recipe.recipeCategories.map(
                           (category) => category.categoryId
                         ),
