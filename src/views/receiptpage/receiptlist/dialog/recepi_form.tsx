@@ -63,19 +63,6 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
     },
   });
 
-  const convertDifficult = (value: string) => {
-    switch (value) {
-      case "Normal":
-        return 0;
-      case "Medinum":
-        return 1;
-      case "Hard":
-        return 2;
-      default:
-        return;
-    }
-  };
-
   const onSubmit = async (values: z.infer<typeof recipeSchema>) => {
     if (activeTab === "general") {
       const requiredGeneralKeys: Array<keyof typeof values> = [
@@ -134,7 +121,7 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
       const payload = {
         ...values,
         img: imgURL,
-        difficulty: convertDifficult(values.difficulty.toString()) ?? 0,
+        difficulty: values.difficulty,
         steps: values.steps.map((step, index) => ({
           ...step,
           imageLink: stepFiles[index],

@@ -11,6 +11,7 @@ import { SelectType } from "../notification_page";
 import WeeklyPlanItem from "./weekly_plan_item";
 import WeeklyPlanForm from "../../weeklyplanpage/dialog/weekly_plan_form";
 import { AlertCircle } from "lucide-react";
+import { Loading } from "../../../components/loading";
 
 interface WeeklyPlanRequestProps {
   role: string;
@@ -39,7 +40,11 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
     return { params };
   }, [titleDebounce]);
 
-  const { data: weeklyplans, refetch } = useFetch<Response<WeeklyPlanList[]>>(
+  const {
+    data: weeklyplans,
+    loading,
+    refetch,
+  } = useFetch<Response<WeeklyPlanList[]>>(
     "/api/weeklyplan/get-all-filter",
     options
   );
@@ -100,6 +105,10 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
     }
   });
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div>
       {weeklyplans === undefined || weeklyPlanRequest?.length === 0 ? (
@@ -112,7 +121,7 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
       ) : (
         <Show>
           <Show.When isTrue={role !== "Staff"}>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5">
               {weeklyplans?.data
                 .filter(
                   (plan) => plan.processStatus.toLowerCase() === "processing"
@@ -138,7 +147,7 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
             </div>
           </Show.When>
           <Show.Else>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5">
               {weeklyplans?.data
                 .filter((plan) => plan.processStatus.toLowerCase() === "denied")
                 .map((plan) => (

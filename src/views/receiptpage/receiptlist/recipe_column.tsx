@@ -3,18 +3,15 @@ import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
-  // DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  // DropdownMenuPortal,
   DropdownMenuSeparator,
-  // DropdownMenuSub,
-  // DropdownMenuSubContent,
-  // DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui";
 import { recipeApi } from "@/features";
+import Show from "@/lib/show";
 import { RecipeRequest } from "@/models/requests";
+import { Response } from "@/models/responses";
 import { RecipeList } from "@/models/responses/recipe_list";
 import { ColumnDef } from "@tanstack/react-table";
 import {
@@ -26,16 +23,6 @@ import {
   ScanEye,
   Trash2,
 } from "lucide-react";
-import Show from "../../../lib/show";
-import { Response } from "../../../models/responses";
-
-// const statusList = [
-//   { id: 0, name: "Processing" },
-//   // { id: 1, name: "Approved" },
-//   // { id: 2, name: "Denied" },
-//   // { id: 3, name: "Customer" },
-//   { id: 4, name: "Cancel" },
-// ];
 
 const RecipeColumn = (
   refetch: () => void,
@@ -139,20 +126,6 @@ const RecipeColumn = (
       );
     },
   },
-  // {
-  //   accessorKey: "approvedBy",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Approved By
-  //         <ArrowUpDown className="w-4 h-4 ml-2" />
-  //       </Button>
-  //     );
-  //   },
-  // },
   {
     accessorKey: "popularity",
     header: ({ column }) => {
@@ -251,6 +224,19 @@ const RecipeColumn = (
     id: "actions",
     cell: ({ row }) => {
       const recipe: RecipeList = row.original;
+
+      const returnNumberDifficulty = (difficulty: string) => {
+        if (difficulty === "Normal") {
+          return 0;
+        }
+        if (difficulty === "Medinum") {
+          return 1;
+        }
+        if (difficulty === "Hard") {
+          return 2;
+        }
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -303,40 +289,7 @@ const RecipeColumn = (
                 </Show.Else>
               </Show>
             </DropdownMenuItem>
-            {/* <DropdownMenuGroup>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <PencilLine className="w-4 h-4 mr-2" />
-                  Status
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    {statusList.map((status) => (
-                      <DropdownMenuItem
-                        key={status.id}
-                        onClick={async () => {
-                          const result = await recipeApi.changeStatusRecipe(
-                            recipe.id,
-                            status.id,
-                            "123"
-                          );
 
-                          if (!result) {
-                            handleToast(false, "Change status failed");
-                            refetch();
-                          } else {
-                            handleToast(true, "Change status successfully");
-                            refetch();
-                          }
-                        }}
-                      >
-                        {status.name}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-            </DropdownMenuGroup> */}
             <DropdownMenuItem
               onClick={() => {
                 handleEdit({
@@ -354,7 +307,9 @@ const RecipeColumn = (
                   img: recipe.img,
                   servingSize: recipe.servingSize,
                   cookingTime: recipe.cookingTime,
-                  difficulty: recipe.difficulty,
+                  difficulty: returnNumberDifficulty(
+                    recipe.difficulty
+                  ) as number,
                   categoryIds: recipe.recipeCategories.map(
                     (category) => category.categoryId
                   ),

@@ -22,12 +22,12 @@ import {
 } from "@/components/ui";
 import { UserApi } from "@/features";
 import { UserRequest } from "@/models/requests/user_request";
+import { Response } from "@/models/responses";
 import { userSchema } from "@/schemas/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Response } from "../../models/responses";
 
 interface UserFormProps {
   reFresh: () => void;

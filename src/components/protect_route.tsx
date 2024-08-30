@@ -67,7 +67,7 @@ const ProtectRoute = ({ children, roles = [] }: PrivateRouteProps) => {
 
   if (roles.length > 0 && !roles.includes(userRole)) {
     return (
-      <div className="font-semibold text-center text-gray-400 h-96">
+      <div className="font-semibold text-center text-gray-400 h-fit">
         <div className="text-4xl">Access Denied</div>
         <div>403 Forbidden</div>
       </div>

@@ -5,7 +5,7 @@ export interface RecipeList {
   name: string; //recipe name
   servingSize: number; //servings
   cookingTime: number;
-  difficulty: number;
+  difficulty: string;
   description: string;
   notice: null | string;
   img: string;

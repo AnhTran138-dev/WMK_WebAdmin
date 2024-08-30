@@ -1,5 +1,5 @@
 import DialogCustom from "@/components/common/dialog";
-import { ScrollArea, useToast } from "@/components/ui";
+import { useToast } from "@/components/ui";
 import { useDebounce } from "@/hooks";
 import useFetch from "@/hooks/useFetch";
 import Show from "@/lib/show";
@@ -11,6 +11,7 @@ import RecepiDetail from "../../receiptpage/receiptlist/dialog/recepi_detail";
 import RecepiForm from "../../receiptpage/receiptlist/dialog/recepi_form";
 import { SelectType } from "../notification_page";
 import RecipeItem from "./recipe_item";
+import { Loading } from "../../../components/loading";
 
 interface RecipeRequestProps {
   role: string;
@@ -41,10 +42,11 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
     return { params };
   }, [nameDebounce]);
 
-  const { data: recipes, refetch } = useFetch<Response<RecipeList[]>>(
-    `/api/recipes/get-all`,
-    options
-  );
+  const {
+    data: recipes,
+    loading,
+    refetch,
+  } = useFetch<Response<RecipeList[]>>(`/api/recipes/get-all`, options);
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
@@ -104,8 +106,12 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
     }
   });
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
-    <ScrollArea className="h-full p-6 bg-background">
+    <div className="h-full ">
       {recipes === undefined || recipeRequest?.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full py-10">
           <AlertCircle className="w-16 h-16 mb-4 text-gray-400" />
@@ -116,7 +122,7 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
       ) : (
         <Show>
           <Show.When isTrue={role === "Staff"}>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5">
               {recipes?.data
                 .filter((recipe) => recipe.processStatus === "Denied")
                 .map((recipe) => (
@@ -164,7 +170,7 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
             </div>
           </Show.When>
           <Show.Else>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5">
               {recipes?.data
                 .filter((recipe) => recipe.processStatus === "Processing")
                 .map((recipe) => (
@@ -233,7 +239,7 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
           </Show>
         }
       />
-    </ScrollArea>
+    </div>
   );
 };
 

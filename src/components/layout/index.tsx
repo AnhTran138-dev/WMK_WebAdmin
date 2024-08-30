@@ -6,15 +6,21 @@ import SiderBar from "./siderbar";
 const DashboardLayout = () => {
   return (
     <div className="flex flex-col justify-between w-full min-h-screen">
+      {/* Header */}
       <Header />
-      <div className="flex flex-1 w-full h-fit ">
+
+      {/* Main Content Area */}
+      <div className="flex flex-1 w-full">
+        {/* Sidebar */}
         <SiderBar />
-        <div className="w-full h-full px-3">
-          <main>
-            <Outlet />
-          </main>
+
+        {/* Main Content */}
+        <div className="flex-1 px-3 py-4 bg-white md:px-6 md:py-8">
+          <Outlet />
         </div>
       </div>
+
+      {/* Footer */}
       <Footer />
     </div>
   );

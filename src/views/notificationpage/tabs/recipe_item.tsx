@@ -10,7 +10,14 @@ import {
 import { formatFromISOString, FormatType } from "@/lib";
 import Show from "@/lib/show";
 import { ProcessStatus } from "@/models/responses/weekly_plan_list";
-import { CheckCircle, Pencil, XCircle, Calendar, User } from "lucide-react";
+import {
+  CheckCircle,
+  Pencil,
+  XCircle,
+  Calendar,
+  User,
+  CircleDollarSign,
+} from "lucide-react";
 import React from "react";
 import { RecipeList } from "@/models/responses";
 
@@ -34,17 +41,25 @@ const RecipeItem: React.FC<RecipeItemProps> = ({
   const renderStatus = (status: string) => {
     switch (status) {
       case ProcessStatus.Denied:
-        return <Badge variant="destructive">{status}</Badge>;
+        return (
+          <Badge className="text-3xl" variant="destructive">
+            {status}
+          </Badge>
+        );
       case ProcessStatus.Processing:
         return <Badge className="bg-blue-400">{status}</Badge>;
       default:
-        return <Badge variant="success">{status}</Badge>;
+        return (
+          <Badge className="text-3xl" variant="success">
+            {status}
+          </Badge>
+        );
     }
   };
 
   return (
     <Card
-      className="flex flex-col overflow-hidden transition-shadow duration-300 bg-white shadow-md rounded-xl hover:shadow-lg hover:cursor-pointer"
+      className="flex flex-col overflow-hidden transition-transform duration-300 bg-white shadow-md rounded-xl hover:shadow-lg hover:cursor-pointer"
       onClick={() => onDetail(recipe.id)}
     >
       <img
@@ -53,8 +68,14 @@ const RecipeItem: React.FC<RecipeItemProps> = ({
         className="object-cover w-full h-48 rounded-t-xl"
       />
       <CardHeader className="px-4 pt-4">
-        <CardTitle className="text-xl font-semibold text-gray-800">
-          {recipe.name} - {renderStatus(recipe.processStatus)}
+        <CardTitle>
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2 text-2xl">
+              <CircleDollarSign /> {recipe.price}
+            </span>
+            {renderStatus(recipe.processStatus)}
+          </div>
+          <span className="mt-4 text-xl">{recipe.name}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4 pb-4">

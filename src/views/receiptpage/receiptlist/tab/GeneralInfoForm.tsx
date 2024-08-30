@@ -27,7 +27,7 @@ const listDifficulties = [
   },
   {
     id: 2,
-    name: "Medinum",
+    name: "Medium",
     value: 1,
   },
   {
@@ -41,6 +41,7 @@ const GeneralInfoForm: React.FC = () => {
   const { register, setValue, getValues, watch } = useFormContext();
   const [imagePreview, setImagePreview] = useState<string>(watch("img"));
   const recipeCategoryIDs = watch("categoryIds");
+  const difficulty = watch("difficulty");
 
   const { data: categories } = useFetch<Response<CategoriesRecipe[]>>(
     "/api/categories/get-all"
@@ -228,11 +229,16 @@ const GeneralInfoForm: React.FC = () => {
       <div className="md:col-span-1">
         <FormField
           name="difficulty"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>Difficulty</FormLabel>
               <FormControl>
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select
+                  value={difficulty.toString()}
+                  onValueChange={(value) =>
+                    setValue("difficulty", parseInt(value))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Difficulty" />
                   </SelectTrigger>
@@ -242,7 +248,7 @@ const GeneralInfoForm: React.FC = () => {
                       {listDifficulties.map((difficulty) => (
                         <SelectItem
                           key={difficulty.id}
-                          value={difficulty.name.toString()}
+                          value={difficulty.value.toString()}
                         >
                           {difficulty.name}
                         </SelectItem>
@@ -251,14 +257,6 @@ const GeneralInfoForm: React.FC = () => {
                   </SelectContent>
                 </Select>
               </FormControl>
-
-              {/* <Input
-                  id="difficulty"
-                  type="number"
-                  placeholder="Difficulty"
-                  {...register("difficulty", { valueAsNumber: true })}
-                  className="w-full"
-                /> */}
             </FormItem>
           )}
         />
