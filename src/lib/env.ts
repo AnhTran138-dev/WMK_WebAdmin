@@ -7,5 +7,5 @@ const envSchema = z.object({
 
 export const env = envSchema.parse({
   VITE_API_URL_BE: import.meta.env.VITE_API_URL_BE as string,
-  VITE_API_KEY_GOOGLE_MAPS: import.meta.env.VITE_API_KEY_GOOGLE_MAPS as string,
+  VITE_API_KEY_GOOGLE_MAPS: import.meta.env.VITE_API_KEY_GEO as string,
 });

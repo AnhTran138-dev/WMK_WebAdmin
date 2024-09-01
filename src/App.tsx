@@ -5,8 +5,6 @@ import { Toaster } from "./components/ui";
 import { TooltipProvider } from "./components/ui/tooltip";
 import routes from "./router";
 import useThemeStore from "./states/local/theme";
-import { APIProvider } from "@vis.gl/react-google-maps";
-import { env } from "./lib";
 
 const queryClient = new QueryClient();
 
@@ -18,14 +16,12 @@ function App() {
   }, [theme]);
 
   return (
-    <APIProvider apiKey={env.VITE_API_KEY_GOOGLE_MAPS}>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <RouterProvider router={routes} />
-          <Toaster />
-        </TooltipProvider>
-      </QueryClientProvider>
-    </APIProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <RouterProvider router={routes} />
+        <Toaster />
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 

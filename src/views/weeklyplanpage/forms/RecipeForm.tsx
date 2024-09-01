@@ -241,7 +241,8 @@ const RecipeForm = () => {
                                       <Show.When
                                         isTrue={
                                           recipe.processStatus.toLowerCase() ===
-                                          "approved"
+                                            "approved" &&
+                                          recipe.baseStatus === "Available"
                                         }
                                       >
                                         <SelectItem value={recipe.id}>

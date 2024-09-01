@@ -1,4 +1,4 @@
-import React from "react";
+import Map from "@/components/common/map";
 import {
   AlertDialogCancel,
   AlertDialogDescription,
@@ -11,7 +11,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  Label,
   Select,
   SelectContent,
   SelectItem,
@@ -20,13 +19,41 @@ import {
 } from "@/components/ui";
 import { OrderGroupApi } from "@/features/order_group";
 import useFetch from "@/hooks/useFetch";
+import useFetchAddress from "@/hooks/useFetchAddress";
 import Show from "@/lib/show";
 import { OrderGroupRequest } from "@/models/requests";
 import { Response, User } from "@/models/responses";
 import { OrderGroupSchema } from "@/schemas/order_group";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Map } from "@vis.gl/react-google-maps";
+// import useFetchAddress from "@/hooks/useFetchAddress";
+// import { useDebounce } from "@/hooks";
+
+const area = [
+  { id: 1, name: "Quận 1", value: "Quận 1" },
+  { id: 3, name: "Quận 3", value: "Quận 3" },
+  { id: 4, name: "Quận 4", value: "Quận 4" },
+  { id: 5, name: "Quận 5", value: "Quận 5" },
+  { id: 6, name: "Quận 6", value: "Quận 6" },
+  { id: 7, name: "Quận 7", value: "Quận 7" },
+  { id: 8, name: "Quận 8", value: "Quận 8" },
+  { id: 10, name: "Quận 10", value: "Quận 10" },
+  { id: 11, name: "Quận 11", value: "Quận 11" },
+  { id: 12, name: "Quận 12", value: "Quận 12" },
+  { id: 13, name: "Quận Bình Thạnh", value: "Quận Bình Thạnh" },
+  { id: 14, name: "Quận Bình Tân", value: "Quận Bình Tân" },
+  { id: 15, name: "Quận Gò Vấp" },
+  { id: 16, name: "Quận Phú Nhuận" },
+  { id: 17, name: "Quận Tân Bình" },
+  { id: 18, name: "Quận Tân Phú" },
+  { id: 19, name: "Quận Thủ Đức", value: "Thủ Đức" },
+  { id: 20, name: "Huyện Bình Chánh" },
+  { id: 21, name: "Huyện Cần Giờ", value: "Cần Giờ" },
+  { id: 22, name: "Huyện Củ Chi" },
+  { id: 23, name: "Huyện Hóc Môn" },
+  { id: 24, name: "Huyện Nhà Bè" },
+];
 
 interface OrderGroupFormProps {
   onClose: () => void;
@@ -41,7 +68,10 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
   refetch,
   onToast,
 }) => {
+  const [location, setLocation] = useState<string>("");
+
   const { data: users } = useFetch<Response<User[]>>("/api/user/get-all");
+  const { data: options } = useFetchAddress(location);
 
   const form = useForm<z.infer<typeof OrderGroupSchema>>({
     defaultValues: {
@@ -52,17 +82,17 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof OrderGroupSchema>) => {
-    let response: Response<null>;
-
-    if (orderGroup) {
-      response = await OrderGroupApi.updateOrderGroup(
-        orderGroup.id ?? "",
-        values
-      );
-    } else {
-      response = await OrderGroupApi.createOrderGroup(values);
+  useEffect(() => {
+    if (location.length > 0 && options.length > 0 && location === undefined) {
+      form.setValue("longitude", options[0].properties.lon);
+      form.setValue("latitude", options[0].properties.lat);
     }
+  }, [location, options, form]);
+
+  const onSubmit = async (values: z.infer<typeof OrderGroupSchema>) => {
+    const response: Response<null> = orderGroup
+      ? await OrderGroupApi.updateOrderGroup(orderGroup.id ?? "", values)
+      : await OrderGroupApi.createOrderGroup(values);
 
     if (response.statusCode === 200) {
       onToast(true, response.message);
@@ -71,6 +101,11 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
     } else {
       onToast(false, response.message);
     }
+  };
+
+  const handleChangeLocation = (location: string) => {
+    setLocation(location);
+    form.setValue("location", location);
   };
 
   return (
@@ -82,7 +117,7 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
           </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogDescription>
-          <div className="flex flex-col gap-4 mb-6">
+          <div className="relative flex flex-col gap-4 mb-6">
             <div className="flex flex-row gap-4">
               <FormField
                 control={form.control}
@@ -116,17 +151,41 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
                   </FormItem>
                 )}
               />
-              <div className="flex-1 space-y-2">
-                <Label>Location</Label>
+              <div className="relative z-10 flex-1 space-y-2">
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Regional location</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={handleChangeLocation}
+                          value={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select regional location" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {area.map((area) => (
+                              <SelectItem key={area.id} value={area.name}>
+                                {area.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
-            <div className="mt-4 h-72">
+            <div className="z-0 mt-4 h-72">
+              {/* Lower z-index to keep the map below the Autocomplete suggestions */}
+              {/* <IsolineMap /> */}
+
               <Map
-                style={{ width: "100%", height: "100%" }}
-                defaultCenter={{ lat: 22.54992, lng: 0 }}
-                defaultZoom={3}
-                gestureHandling={"greedy"}
-                disableDefaultUI={true}
+                id={options.length === 0 ? "" : options[0].properties.place_id}
               />
             </div>
           </div>
