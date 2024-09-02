@@ -87,6 +87,7 @@ const CategoriesPage = () => {
           columns={CategoriesIngredientColumn(handleEdit, handleToast, refetch)}
           data={ingredient?.data || []}
           handleCreate={handleCreate}
+          searchColumn="name"
         />
       </DataRender>
       <DialogCustom
