@@ -27,8 +27,6 @@ import { OrderGroupSchema } from "@/schemas/order_group";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-// import useFetchAddress from "@/hooks/useFetchAddress";
-// import { useDebounce } from "@/hooks";
 
 const area = [
   { id: 1, name: "Quận 1", value: "Quận 1" },
@@ -40,19 +38,19 @@ const area = [
   { id: 8, name: "Quận 8", value: "Quận 8" },
   { id: 10, name: "Quận 10", value: "Quận 10" },
   { id: 11, name: "Quận 11", value: "Quận 11" },
-  { id: 12, name: "Quận 12", value: "Quận 12" },
-  { id: 13, name: "Quận Bình Thạnh", value: "Quận Bình Thạnh" },
-  { id: 14, name: "Quận Bình Tân", value: "Quận Bình Tân" },
-  { id: 15, name: "Quận Gò Vấp" },
-  { id: 16, name: "Quận Phú Nhuận" },
-  { id: 17, name: "Quận Tân Bình" },
-  { id: 18, name: "Quận Tân Phú" },
+  { id: 12, name: "Quận 12", value: "quan 12" },
+  { id: 13, name: "Quận Bình Thạnh", value: "Bình Thạnh District" },
+  { id: 14, name: "Quận Bình Tân", value: "binh tan district" },
+  { id: 15, name: "Quận Gò Vấp", value: "go vap district" },
+  { id: 16, name: "Quận Phú Nhuận", value: "Quận Phú Nhuận" },
+  { id: 17, name: "Quận Tân Bình", value: "tan binh district" },
+  { id: 18, name: "Quận Tân Phú", value: "tan phu dis" },
   { id: 19, name: "Quận Thủ Đức", value: "Thủ Đức" },
-  { id: 20, name: "Huyện Bình Chánh" },
-  { id: 21, name: "Huyện Cần Giờ", value: "Cần Giờ" },
-  { id: 22, name: "Huyện Củ Chi" },
-  { id: 23, name: "Huyện Hóc Môn" },
-  { id: 24, name: "Huyện Nhà Bè" },
+  { id: 20, name: "Huyện Bình Chánh", value: "Huyện Bình Chánh " },
+  { id: 21, name: "Huyện Cần Giờ", value: "Can Gio District, ho" },
+  { id: 22, name: "Huyện Củ Chi", value: "Huyện Củ Chi" },
+  { id: 23, name: "Huyện Hóc Môn", value: "Huyện Hóc Môn" },
+  { id: 24, name: "Huyện Nhà Bè", value: "Huyện Nhà Bè" },
 ];
 
 interface OrderGroupFormProps {
@@ -104,9 +102,20 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
   };
 
   const handleChangeLocation = (location: string) => {
-    setLocation(location);
+    const selectedLocation = area.find((area) => area.name === location)?.value;
+
+    setLocation(selectedLocation || "");
     form.setValue("location", location);
   };
+
+  useEffect(() => {
+    if (orderGroup) {
+      const selectdLocation = area.find(
+        (area) => area.value === orderGroup.location
+      )?.value;
+      setLocation(selectdLocation || "");
+    }
+  }, [orderGroup]);
 
   return (
     <Form {...form}>
@@ -181,9 +190,6 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
               </div>
             </div>
             <div className="z-0 mt-4 h-72">
-              {/* Lower z-index to keep the map below the Autocomplete suggestions */}
-              {/* <IsolineMap /> */}
-
               <Map
                 id={options.length === 0 ? "" : options[0].properties.place_id}
               />
