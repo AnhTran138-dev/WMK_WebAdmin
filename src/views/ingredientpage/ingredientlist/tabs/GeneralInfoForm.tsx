@@ -16,6 +16,15 @@ import { CategoriesIngredient, Response } from "@/models/responses";
 import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
+const unitList = [
+  { value: "kg", label: "Kilogram" },
+  { value: "g", label: "Gram" },
+  { value: "l", label: "Liter" },
+  { value: "ml", label: "Mililiter" },
+  { value: "tuber", label: "Tuber" },
+  { value: "fruit", label: "Fruit" },
+];
+
 const GeneralInfoForm: React.FC = () => {
   const { register, setValue, watch } = useFormContext();
   const ingredientCategoryId = watch("ingredientCategoryId");
@@ -26,7 +35,7 @@ const GeneralInfoForm: React.FC = () => {
   );
 
   useEffect(() => {
-    setImagePreview(watch("img")); // Initialize with existing image URL if any
+    setImagePreview(watch("img"));
   }, [watch]);
 
   const handleFileChange = async (
@@ -121,6 +130,7 @@ const GeneralInfoForm: React.FC = () => {
                   <Input
                     type="number"
                     placeholder="Price"
+                    min={0}
                     {...register("price", { valueAsNumber: true })}
                   />
                 </FormControl>
@@ -135,7 +145,21 @@ const GeneralInfoForm: React.FC = () => {
             <FormItem>
               <FormLabel>Unit</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="Unit" {...field} />
+                <Select
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Unit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {unitList.map((unit) => (
+                      <SelectItem key={unit.value} value={unit.value}>
+                        {unit.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>

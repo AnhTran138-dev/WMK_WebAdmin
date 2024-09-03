@@ -1,7 +1,4 @@
-import React from "react";
-import useFetch from "../../../../hooks/useFetch";
-import { Ingredient, Response } from "../../../../models/responses";
-import DataRender from "../../../../components/data_render";
+import DataRender from "@/components/data_render";
 import {
   AlertDialogDescription,
   AlertDialogHeader,
@@ -10,11 +7,21 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "../../../../components/ui";
+} from "@/components/ui";
+import useFetch from "@/hooks/useFetch";
+import { Ingredient, Response } from "@/models/responses";
+import React from "react";
 
 interface IngredientDetailProps {
   id: string;
 }
+
+const formatVND = (amount: number) => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(amount);
+};
 
 const IngredientDetail: React.FC<IngredientDetailProps> = ({ id }) => {
   const {
@@ -62,8 +69,8 @@ const IngredientDetail: React.FC<IngredientDetailProps> = ({ id }) => {
               <AlertDialogDescription className="text-muted-foreground">
                 <span className="font-semibold">Price:</span>{" "}
                 {ingredientDetail.data.price
-                  ? `${ingredientDetail.data.price} /${ingredientDetail.data.unit}`
-                  : "N/A"}
+                  ? `${formatVND(ingredientDetail.data.price)} `
+                  : "0"}
               </AlertDialogDescription>
               <h3 className="mt-6 text-xl font-semibold">
                 Nutritional Information
@@ -72,41 +79,41 @@ const IngredientDetail: React.FC<IngredientDetailProps> = ({ id }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <AlertDialogDescription className="text-muted-foreground">
                     <span className="font-semibold">Calories:</span>{" "}
-                    {ingredientDetail.data.ingredientNutrient.calories || "N/A"}
+                    {ingredientDetail.data.ingredientNutrient.calories || "0"}
                   </AlertDialogDescription>
                   <AlertDialogDescription className="text-muted-foreground">
                     <span className="font-semibold">Fat:</span>{" "}
-                    {ingredientDetail.data.ingredientNutrient.fat || "N/A"}g
+                    {ingredientDetail.data.ingredientNutrient.fat || "0"}g
                   </AlertDialogDescription>
                   <AlertDialogDescription className="text-muted-foreground">
                     <span className="font-semibold">Saturated Fat:</span>{" "}
                     {ingredientDetail.data.ingredientNutrient.saturatedFat ||
-                      "N/A"}
+                      "0"}
                     g
                   </AlertDialogDescription>
                   <AlertDialogDescription className="text-muted-foreground">
                     <span className="font-semibold">Sugar:</span>{" "}
-                    {ingredientDetail.data.ingredientNutrient.sugar || "N/A"}g
+                    {ingredientDetail.data.ingredientNutrient.sugar || "0"}g
                   </AlertDialogDescription>
                   <AlertDialogDescription className="text-muted-foreground">
                     <span className="font-semibold">Carbohydrate:</span>{" "}
                     {ingredientDetail.data.ingredientNutrient.carbonhydrate ||
-                      "N/A"}
+                      "0"}
                     g
                   </AlertDialogDescription>
                   <AlertDialogDescription className="text-muted-foreground">
                     <span className="font-semibold">Dietary Fiber:</span>{" "}
                     {ingredientDetail.data.ingredientNutrient.dietaryFiber ||
-                      "N/A"}
+                      "0"}
                     g
                   </AlertDialogDescription>
                   <AlertDialogDescription className="text-muted-foreground">
                     <span className="font-semibold">Protein:</span>{" "}
-                    {ingredientDetail.data.ingredientNutrient.protein || "N/A"}g
+                    {ingredientDetail.data.ingredientNutrient.protein || "0"}g
                   </AlertDialogDescription>
                   <AlertDialogDescription className="text-muted-foreground">
                     <span className="font-semibold">Sodium:</span>{" "}
-                    {ingredientDetail.data.ingredientNutrient.sodium || "N/A"}mg
+                    {ingredientDetail.data.ingredientNutrient.sodium || "0"}mg
                   </AlertDialogDescription>
                 </div>
               ) : (

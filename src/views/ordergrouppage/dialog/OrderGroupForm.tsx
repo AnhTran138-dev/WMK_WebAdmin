@@ -22,7 +22,8 @@ import useFetch from "@/hooks/useFetch";
 import useFetchAddress from "@/hooks/useFetchAddress";
 import Show from "@/lib/show";
 import { OrderGroupRequest } from "@/models/requests";
-import { Response, User } from "@/models/responses";
+import { Response } from "@/models/responses";
+import { UserList } from "@/models/responses/user_list";
 import { OrderGroupSchema } from "@/schemas/order_group";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -68,7 +69,7 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
 }) => {
   const [location, setLocation] = useState<string>("");
 
-  const { data: users } = useFetch<Response<User[]>>("/api/user/get-all");
+  const { data: users } = useFetch<Response<UserList[]>>("/api/user/get-all");
   const { data: options } = useFetchAddress(location);
 
   const form = useForm<z.infer<typeof OrderGroupSchema>>({
@@ -146,7 +147,10 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
                           {users?.data.map((user) => (
                             <Show key={user.id}>
                               <Show.When
-                                isTrue={user.role.toLowerCase() === "shipper"}
+                                isTrue={
+                                  user.role.toLowerCase() === "shipper" &&
+                                  user.status === "Available"
+                                }
                               >
                                 <SelectItem value={user.id}>
                                   {user.userName}

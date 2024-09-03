@@ -8,7 +8,7 @@ import {
   LucideMenu,
   LucideX,
   Home,
-  Settings,
+  // Settings,
   LucideCookingPot,
   LucideChevronDown,
   LucideChevronRight,
@@ -48,7 +48,7 @@ const menuItems = [
       { name: "Order Group", link: "/order-group" },
     ],
   },
-  { name: "Settings", icon: Settings, link: "/setting" },
+  // { name: "Settings", icon: Settings, link: "/setting" },
 ];
 
 const SiderBar = () => {
