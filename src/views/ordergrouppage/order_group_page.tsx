@@ -81,14 +81,8 @@ const OrderGroupPage = () => {
     setStatus(status);
   };
 
-  // const handleReset = () => {
-  //   setType("reset");
-  //   setIsDialogOpen(true);
-  // };
-
   return (
     <div>
-      {/* <DataRender isLoading={loading} error={error}> */}
       <DataTable
         columns={OrderGroupColumn(
           handleDialog,
@@ -100,9 +94,7 @@ const OrderGroupPage = () => {
         handleCreate={handleCreate}
         handleCluster={handleCluster}
         searchColumn="shipperUserName"
-        // handleReset={handleReset}
       />
-      {/* </DataRender> */}
       <DialogCustom
         className="flex-grow flex-shrink max-w-5xl p-6 "
         isOpen={isDialogOpen}
@@ -140,13 +132,6 @@ const OrderGroupPage = () => {
                 status={status}
               />
             </Show.When>
-            {/* <Show.When isTrue={type === "reset"}>
-              <ResetAllGroup
-                onClose={handleCloseDialog}
-                refetch={refetch}
-                onToast={handleToast}
-              />
-            </Show.When> */}
           </Show>
         }
       />

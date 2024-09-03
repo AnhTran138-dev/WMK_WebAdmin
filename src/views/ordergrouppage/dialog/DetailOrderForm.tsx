@@ -1,5 +1,6 @@
 import DataRender from "@/components/data_render";
 import {
+  AlertDialogCancel,
   Button,
   Card,
   CardContent,
@@ -14,7 +15,7 @@ import useFetch from "@/hooks/useFetch";
 import { formatFromISOString, FormatType } from "@/lib";
 import Show from "@/lib/show";
 import { OrderGroupList, Response } from "@/models/responses";
-import { Trash2 } from "lucide-react";
+import { Trash2, XCircle } from "lucide-react";
 import React from "react";
 
 interface DetailOrderFormProps {
@@ -31,7 +32,10 @@ const DetailOrderForm: React.FC<DetailOrderFormProps> = ({ id, onToast }) => {
   } = useFetch<Response<OrderGroupList>>(`/api/order-group/get-id/${id}`);
 
   return (
-    <div className="w-full p-4">
+    <div className="relative w-full p-4">
+      <AlertDialogCancel className="absolute top-0 right-0 border border-white">
+        <XCircle className="size-6" />
+      </AlertDialogCancel>
       <Show>
         <Show.When
           isTrue={
