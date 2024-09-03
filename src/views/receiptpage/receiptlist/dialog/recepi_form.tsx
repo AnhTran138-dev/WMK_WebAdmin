@@ -63,65 +63,59 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
     },
   });
 
+  const validateGeneralInfo = (values: z.infer<typeof recipeSchema>) => {
+    const requiredGeneralKeys: Array<keyof typeof values> = [
+      "name",
+      "servingSize",
+      "cookingTime",
+      "difficulty",
+      "description",
+      "img",
+      "categoryIds",
+    ];
+    return validateFields(values, requiredGeneralKeys);
+  };
+
+  const validateIngredientInfo = (values: z.infer<typeof recipeSchema>) =>
+    values.recipeIngredientsList.every((ingredient) =>
+      validateFields(ingredient, ["ingredientId", "amount"])
+    );
+
+  const validateStepInfo = (values: z.infer<typeof recipeSchema>) =>
+    values.steps.every((step) =>
+      validateFields(step, ["name", "description", "mediaURL", "imageLink"])
+    );
+
   const onSubmit = async (values: z.infer<typeof recipeSchema>) => {
-    if (activeTab === "general") {
-      const requiredGeneralKeys: Array<keyof typeof values> = [
-        "name",
-        "servingSize",
-        "cookingTime",
-        "difficulty",
-        "description",
-        "img",
-        "categoryIds",
-      ];
-      if (!validateFields(values, requiredGeneralKeys)) {
-        return onToast(false, "Please fill all required fields");
-      }
-      setActiveTab("ingredient");
-      return;
+    const tabValidationMap: Record<string, () => boolean> = {
+      general: () => validateGeneralInfo(values),
+      ingredient: () => validateIngredientInfo(values),
+      step: () => validateStepInfo(values),
+    };
+
+    if (!tabValidationMap[activeTab]()) {
+      return onToast(false, "Please fill all required fields");
     }
 
-    if (activeTab === "ingredient") {
-      if (
-        !values.recipeIngredientsList.every((ingredient) =>
-          validateFields(ingredient, ["ingredientId", "amount"])
-        )
-      ) {
-        return onToast(false, "Please fill all required fields");
-      }
-      setActiveTab("step");
-      return;
-    }
-
-    if (activeTab === "step") {
-      if (
-        !values.steps.every((step) =>
-          validateFields(step, ["name", "description", "mediaURL", "imageLink"])
-        )
-      ) {
-        return onToast(false, "Please fill all required fields");
-      }
-    }
+    if (activeTab === "general") return setActiveTab("ingredient");
+    if (activeTab === "ingredient") return setActiveTab("step");
 
     try {
-      let imgURL = values.img;
-      if (imgURL instanceof File) {
-        imgURL = await utilApi.uploadFile(imgURL);
-      }
-
+      const imgURL =
+        values.img instanceof File
+          ? await utilApi.uploadFile(values.img)
+          : values.img;
       const stepFiles = await Promise.all(
-        values.steps.map((step) => {
-          if (step.imageLink instanceof File) {
-            return utilApi.uploadFile(step.imageLink);
-          }
-          return step.imageLink;
-        })
+        values.steps.map((step) =>
+          step.imageLink instanceof File
+            ? utilApi.uploadFile(step.imageLink)
+            : step.imageLink
+        )
       );
 
       const payload = {
         ...values,
         img: imgURL,
-        difficulty: values.difficulty,
         steps: values.steps.map((step, index) => ({
           ...step,
           imageLink: stepFiles[index],
@@ -132,12 +126,10 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
         ? await recipeApi.updateRecipe(recipe.id ?? "", payload)
         : await recipeApi.createRecipe(payload);
 
+      onToast(response.statusCode === 200, response.message);
       if (response.statusCode === 200) {
-        onToast(true, response.message);
         refetch();
         onClose();
-      } else {
-        onToast(false, response.message);
       }
     } catch (error) {
       onToast(false, "An error occurred while processing your request.");
@@ -166,23 +158,14 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
               </TabsList>
               <Show>
                 <Show.When isTrue={activeTab === "ingredient"}>
-                  <div className="space-x-2">
-                    <Button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsDialogOpen(true);
-                      }}
-                    >
-                      <span className="text-sm">Add New Ingredient</span>
-                    </Button>
-                    <Button
-                      onClick={(e) => {
-                        e.preventDefault();
-                      }}
-                    >
-                      <span className="text-sm">Check Ingredents</span>
-                    </Button>
-                  </div>
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsDialogOpen(true);
+                    }}
+                  >
+                    <span className="text-sm">Add New Ingredient</span>
+                  </Button>
                 </Show.When>
               </Show>
             </div>

@@ -141,6 +141,7 @@ const IngredientInfoForm: React.FC<IngredientInfoFormProps> = ({
                           <Input
                             type="number"
                             value={amount}
+                            min={0}
                             onChange={(e) =>
                               handleAmountChange(
                                 ingredient.id,

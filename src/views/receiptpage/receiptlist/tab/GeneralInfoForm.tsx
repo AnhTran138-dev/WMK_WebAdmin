@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
 import {
-  FormField,
-  FormLabel,
   FormControl,
-  Input,
+  FormField,
   FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
   Label,
   Select,
   SelectContent,
@@ -14,10 +13,11 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-  FormMessage,
 } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
 import { CategoriesRecipe, Response } from "@/models/responses";
+import React, { useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 const listDifficulties = [
   {
@@ -136,6 +136,7 @@ const GeneralInfoForm: React.FC = () => {
                         </SelectContent>
                       </Select>
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -181,6 +182,7 @@ const GeneralInfoForm: React.FC = () => {
                   className="w-full"
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -197,10 +199,12 @@ const GeneralInfoForm: React.FC = () => {
                   id="servingSize"
                   type="number"
                   placeholder="Serving Size"
+                  min={0}
                   {...register("servingSize", { valueAsNumber: true })}
                   className="w-full"
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -216,11 +220,13 @@ const GeneralInfoForm: React.FC = () => {
                 <Input
                   id="cookingTime"
                   type="number"
+                  min={0}
                   placeholder="Cooking Time"
                   {...register("cookingTime", { valueAsNumber: true })}
                   className="w-full"
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -257,6 +263,7 @@ const GeneralInfoForm: React.FC = () => {
                   </SelectContent>
                 </Select>
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -277,6 +284,7 @@ const GeneralInfoForm: React.FC = () => {
                   className="w-full h-40 p-2 border border-gray-300 rounded-md"
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

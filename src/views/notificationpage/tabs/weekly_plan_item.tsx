@@ -57,8 +57,9 @@ const WeeklyPlanItem: React.FC<WeeklyPlanItemProps> = ({
         className="object-cover w-full h-48 rounded-t-xl"
       />
       <CardHeader className="px-4 pt-4">
-        <CardTitle className="text-xl font-semibold text-gray-800">
-          {plan.title} - {renderStatus(plan.processStatus)}
+        <CardTitle className="flex items-center justify-between text-xl font-semibold text-gray-800">
+          <span>{plan.title}</span>
+          <span>{renderStatus(plan.processStatus)}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4 pb-4">

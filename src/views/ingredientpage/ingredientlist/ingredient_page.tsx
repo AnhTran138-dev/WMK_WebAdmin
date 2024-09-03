@@ -1,6 +1,5 @@
 import { DataTable } from "@/components/common/data_table";
 import DialogCustom from "@/components/common/dialog";
-// import DataRender from "@/components/data_render";
 import { useToast } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
 import { IngredientRequest } from "@/models/requests";
@@ -8,7 +7,8 @@ import { IngredientsList, Response } from "@/models/responses";
 import { useState } from "react";
 import IngredientForm from "./dialog/ingredient_form";
 import IngredientColumn from "./ingredient_column";
-import Show from "../../../lib/show";
+
+import Show from "@/lib/show";
 import IngredientDetail from "./dialog/ingredient_detail";
 
 const IngredientPage = () => {
@@ -19,14 +19,9 @@ const IngredientPage = () => {
   const [ingredentEdit, setIngredentEdit] = useState<IngredientRequest | null>(
     null
   );
-  const {
-    data: ingredient,
-    // loading,
-    // error,
-    refetch,
-  } = useFetch<Response<IngredientsList[]>>("/api/ingredients/get-all");
-
-  console.log(ingredient);
+  const { data: ingredient, refetch } = useFetch<Response<IngredientsList[]>>(
+    "/api/ingredients/get-all"
+  );
 
   const handleCreate = () => {
     setType("edit");
@@ -67,7 +62,6 @@ const IngredientPage = () => {
 
   return (
     <div>
-      {/* <DataRender isLoading={loading} error={error}> */}
       <DataTable
         data={ingredient?.data ?? []}
         columns={IngredientColumn(
@@ -79,7 +73,6 @@ const IngredientPage = () => {
         searchColumn="name"
         handleCreate={handleCreate}
       />
-      {/* </DataRender> */}
       <DialogCustom
         className="max-w-5xl p-6"
         isOpen={isDialogOpen}

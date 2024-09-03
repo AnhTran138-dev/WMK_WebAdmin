@@ -87,28 +87,33 @@ const IngredientForm: React.FC<IngredientFormProps> = ({
   };
 
   const onSubmit = async (values: z.infer<typeof ingredientSchema>) => {
-    if (activeTab === "general") {
-      if (!validateGeneralInfo(values)) {
-        toast({
-          title: "Incomplete General Info",
-          description: "Please fill in all general information fields.",
-          duration: 5000,
-        });
-        return;
-      }
-      setActiveTab("nutritional");
+    const validationMessage = {
+      general: {
+        title: "Incomplete General Info",
+        description: "Please fill in all general information fields.",
+        isValid: validateGeneralInfo(values),
+      },
+      nutritional: {
+        title: "Incomplete Nutritional Info",
+        description: "Please fill in all nutritional information fields.",
+        isValid: validateNutritionalInfo(values),
+      },
+    };
+
+    const currentValidation =
+      validationMessage[activeTab as keyof typeof validationMessage];
+    if (!currentValidation.isValid) {
+      toast({
+        title: currentValidation.title,
+        description: currentValidation.description,
+        duration: 5000,
+      });
       return;
     }
 
-    if (activeTab === "nutritional") {
-      if (!validateNutritionalInfo(values)) {
-        toast({
-          title: "Incomplete Nutritional Info",
-          description: "Please fill in all nutritional information fields.",
-          duration: 5000,
-        });
-        return;
-      }
+    if (activeTab === "general") {
+      setActiveTab("nutritional");
+      return;
     }
 
     try {

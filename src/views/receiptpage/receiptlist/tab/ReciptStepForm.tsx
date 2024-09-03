@@ -20,7 +20,6 @@ const ReciptStepForm: React.FC = () => {
     name: "steps",
   });
 
-  // Ensure there is always at least one step initially
   useEffect(() => {
     if (fields.length === 0) {
       append({
@@ -40,7 +39,6 @@ const ReciptStepForm: React.FC = () => {
           const mediaURL = watch(`steps.${index}.mediaURL`);
           let imageLink: string;
 
-          // Function to determine if the URL is a video
           const isVideo = (url: string | undefined) => {
             if (!url) return false;
             const videoExtensions = [".mp4", ".webm", ".ogg"];
@@ -177,7 +175,7 @@ const ReciptStepForm: React.FC = () => {
                               type="file"
                               id={`steps.${index}.imageLink`}
                               placeholder="Image Link"
-                              // {...register(`steps.${index}.imageLink`)}
+                              {...register(`steps.${index}.imageLink`)}
                               onChange={handleFileChange}
                               className="focus:ring-indigo-500 focus:border-indigo-500"
                             />

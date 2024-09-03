@@ -17,7 +17,7 @@ const NutritionalInfoForm: React.FC = () => {
     { name: "fat", unit: "g" },
     { name: "saturatedFat", unit: "g" },
     { name: "sugar", unit: "g" },
-    { name: "carbohydrate", unit: "g" },
+    { name: "carbonhydrate", unit: "g" },
     { name: "dietaryFiber", unit: "g" },
     { name: "protein", unit: "g" },
     { name: "sodium", unit: "mg" },
@@ -52,6 +52,7 @@ const NutritionalInfoForm: React.FC = () => {
                 <FormControl>
                   <Input
                     type="number"
+                    min={0}
                     step="any"
                     placeholder={label}
                     {...register(`nutrientInfo.${name}`, {

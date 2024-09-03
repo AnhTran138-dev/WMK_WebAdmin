@@ -126,6 +126,7 @@ const WeeklyPlanColumn = (
         </Button>
       );
     },
+
     cell: ({ row }) => {
       const status = row.original.processStatus;
       switch (status) {
@@ -138,6 +139,29 @@ const WeeklyPlanColumn = (
         default:
           return <Badge>{status}</Badge>;
       }
+    },
+  },
+  {
+    accessorKey: "baseStatus",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Base Status
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const status = row.original.baseStatus;
+
+      return status === "Available" ? (
+        <Badge variant="success">{status}</Badge>
+      ) : (
+        <Badge variant="destructive">{status}</Badge>
+      );``
     },
   },
   {

@@ -20,8 +20,12 @@ export const ingredentsSchema = z.object({
 
 export const recipeSchema = z.object({
   name: z.string(),
-  servingSize: z.number(),
-  cookingTime: z.number(),
+  servingSize: z
+    .number()
+    .nonnegative({ message: "Serving size must be a non-negative number." }),
+  cookingTime: z
+    .number()
+    .nonnegative({ message: "Cooking time must be a non-negative number." }),
   difficulty: z.number().min(0).max(2),
   description: z.string(),
   img: z.union([
