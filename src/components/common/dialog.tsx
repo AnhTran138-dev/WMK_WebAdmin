@@ -4,6 +4,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui";
 import { cn } from "@/lib";
+import React, { useCallback, useEffect, useRef } from "react";
 
 interface DialogCustomProps {
   children: React.ReactNode;
@@ -20,15 +21,39 @@ const DialogCustom: React.FC<DialogCustomProps> = ({
   title,
   className,
 }) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      if (
+        dialogRef.current &&
+        !dialogRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, handleClickOutside]);
+
   return (
-    <div className={cn(className)}>
-      <AlertDialog open={isOpen} onOpenChange={onClose}>
-        <AlertDialogTrigger asChild>{title}</AlertDialogTrigger>
-        <AlertDialogContent className={cn(className)}>
-          {children}
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
+      <AlertDialogTrigger asChild>{title}</AlertDialogTrigger>
+      <AlertDialogContent ref={dialogRef} className={cn(className)}>
+        {children}
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
