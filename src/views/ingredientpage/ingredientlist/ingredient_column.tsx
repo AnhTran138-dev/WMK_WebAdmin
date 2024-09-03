@@ -126,7 +126,7 @@ const IngredientColumn = (
                     ingredent.status.toLocaleLowerCase() === "unavailable"
                   }
                 >
-                  <ScanEye className="w-4 h-4 mr-2" />
+                  <ScanEye className="mr-2 size-4" />
                   Available
                 </Show.When>
                 <Show.Else>

@@ -18,7 +18,7 @@ import { IngredientRequest } from "@/models/requests";
 import { Response } from "@/models/responses";
 import { ingredientSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import GeneralInfoForm from "../tabs/GeneralInfoForm";
@@ -61,6 +61,15 @@ const IngredientForm: React.FC<IngredientFormProps> = ({
       },
     },
   });
+
+  useEffect(() => {
+    const focusableElements = document.querySelectorAll(
+      "button, [href], input, select, textarea"
+    );
+    if (focusableElements.length > 0) {
+      (focusableElements[0] as HTMLElement).focus();
+    }
+  }, []);
 
   const validateGeneralInfo = (values: z.infer<typeof ingredientSchema>) => {
     const requiredKeys: Array<keyof typeof values> = [

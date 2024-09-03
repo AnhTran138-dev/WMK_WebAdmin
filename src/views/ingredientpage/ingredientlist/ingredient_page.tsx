@@ -7,7 +7,6 @@ import { IngredientsList, Response } from "@/models/responses";
 import { useState } from "react";
 import IngredientForm from "./dialog/ingredient_form";
 import IngredientColumn from "./ingredient_column";
-
 import Show from "@/lib/show";
 import IngredientDetail from "./dialog/ingredient_detail";
 

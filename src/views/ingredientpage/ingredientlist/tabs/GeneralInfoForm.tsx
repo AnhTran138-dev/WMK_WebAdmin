@@ -10,6 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Textarea,
 } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
 import { CategoriesIngredient, Response } from "@/models/responses";
@@ -56,58 +57,62 @@ const GeneralInfoForm: React.FC = () => {
 
   return (
     <div className="grid grid-cols-3 gap-4">
-      <div className="grid col-span-1 grid-rows-3 gap-4">
-        <FormField
-          name="ingredientCategoryId"
-          render={() => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <FormControl>
-                <Select
-                  defaultValue={ingredientCategoryId}
-                  onValueChange={(value) => {
-                    setValue("ingredientCategoryId", value);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories?.data.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <div className="grid col-span-1 ">
+        <div>
+          <FormField
+            name="ingredientCategoryId"
+            render={() => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <FormControl>
+                  <Select
+                    defaultValue={ingredientCategoryId}
+                    onValueChange={(value) => {
+                      setValue("ingredientCategoryId", value);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories?.data.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          name="img"
-          render={() => (
-            <FormItem>
-              <FormLabel>Image</FormLabel>
-              <FormControl>
-                <Input type="file" onChange={handleFileChange} />
-              </FormControl>
-              {imagePreview && (
-                <img
-                  src={imagePreview}
-                  alt="Selected"
-                  className="mt-2 max-h-40"
-                />
-              )}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            name="img"
+            render={() => (
+              <FormItem className="mt-4">
+                <FormLabel>Image</FormLabel>
+                <FormControl>
+                  <Input type="file" onChange={handleFileChange} />
+                </FormControl>
+                <div className="relative w-full ">
+                  {imagePreview && (
+                    <img
+                      src={imagePreview}
+                      alt="Selected"
+                      className="absolute object-cover w-full rounded-2xl h-60"
+                    />
+                  )}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
       </div>
 
-      <div className="grid col-span-2 grid-rows-6 gap-4">
+      <div className="grid col-span-2 gap-4">
         <FormField
           name="name"
           render={() => (
@@ -138,33 +143,34 @@ const GeneralInfoForm: React.FC = () => {
               </FormItem>
             )}
           />
+          <FormField
+            name="unit"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Unit</FormLabel>
+                <FormControl>
+                  <Select
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {unitList.map((unit) => (
+                        <SelectItem key={unit.value} value={unit.value}>
+                          {unit.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-        <FormField
-          name="unit"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Unit</FormLabel>
-              <FormControl>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Unit" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {unitList.map((unit) => (
-                      <SelectItem key={unit.value} value={unit.value}>
-                        {unit.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           name="packagingMethod"
           render={() => (
@@ -187,8 +193,8 @@ const GeneralInfoForm: React.FC = () => {
             <FormItem>
               <FormLabel>Preservation Method</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
+                <Textarea
+                  className="h-32"
                   placeholder="Preservation Method"
                   {...register("preservationMethod")}
                 />
