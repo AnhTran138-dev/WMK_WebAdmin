@@ -11,7 +11,14 @@ import { formatFromISOString, FormatType } from "@/lib";
 import Show from "@/lib/show";
 import { WeeklyPlanList } from "@/models/responses/weekly_plan";
 import { ProcessStatus } from "@/models/responses/weekly_plan_list";
-import { CheckCircle, Pencil, XCircle, Calendar, User } from "lucide-react";
+import {
+  CheckCircle,
+  Pencil,
+  XCircle,
+  Calendar,
+  User,
+  NotepadText,
+} from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -63,6 +70,14 @@ const WeeklyPlanItem: React.FC<WeeklyPlanItemProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4 pb-4">
+        <Show>
+          <Show.When isTrue={isStaff}>
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <NotepadText className="w-4 h-4 text-gray-500" />
+              <span>{plan.notice}</span>
+            </div>
+          </Show.When>
+        </Show>
         <div className="flex items-center space-x-2 text-sm text-gray-600">
           <User className="w-4 h-4 text-gray-500" />
           <span>{plan.createdBy}</span>

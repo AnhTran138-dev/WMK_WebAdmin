@@ -83,7 +83,7 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
 
   const validateStepInfo = (values: z.infer<typeof recipeSchema>) =>
     values.steps.every((step) =>
-      validateFields(step, ["name", "description", "mediaURL", "imageLink"])
+      validateFields(step, ["name", "description", "imageLink"])
     );
 
   const onSubmit = async (values: z.infer<typeof recipeSchema>) => {
@@ -112,7 +112,6 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
             : step.imageLink
         )
       );
-
       const payload = {
         ...values,
         img: imgURL,
@@ -121,11 +120,9 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
           imageLink: stepFiles[index],
         })),
       };
-
       const response: Response<null> = recipe
         ? await recipeApi.updateRecipe(recipe.id ?? "", payload)
         : await recipeApi.createRecipe(payload);
-
       onToast(response.statusCode === 200, response.message);
       if (response.statusCode === 200) {
         refetch();

@@ -12,6 +12,7 @@ import {
   Card,
 } from "@/components/ui";
 import { CircleMinus, CirclePlus } from "lucide-react";
+import { Step } from "@/models/requests";
 
 const ReciptStepForm: React.FC = () => {
   const { control, register, watch, setValue } = useFormContext();
@@ -19,6 +20,11 @@ const ReciptStepForm: React.FC = () => {
     control,
     name: "steps",
   });
+  const [imageLink, setImageLink] = React.useState<string[]>(
+    watch("steps").map((steps: Step) => steps.imageLink)
+  );
+
+  console.log("steps", watch("steps"));
 
   useEffect(() => {
     if (fields.length === 0) {
@@ -32,12 +38,28 @@ const ReciptStepForm: React.FC = () => {
     }
   }, [fields, append]);
 
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setValue(`steps.${index}.imageLink`, file);
+          setImageLink([...(imageLink || []), reader.result as string]);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <ScrollArea className="border rounded-lg shadow-sm h-96">
         {fields.map((field, index) => {
           const mediaURL = watch(`steps.${index}.mediaURL`);
-          let imageLink: string;
 
           const isVideo = (url: string | undefined) => {
             if (!url) return false;
@@ -45,30 +67,11 @@ const ReciptStepForm: React.FC = () => {
             return videoExtensions.some((ext) => url?.endsWith(ext));
           };
 
-          const handleFileChange = async (
-            event: React.ChangeEvent<HTMLInputElement>
-          ) => {
-            const file = event.target.files?.[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                if (reader.result) {
-                  setValue(`steps.${index}.imageLink`, file);
-                  imageLink = reader.result as string;
-                } else {
-                  imageLink = watch(`steps.${index}.imageLink`);
-                }
-              };
-              reader.readAsDataURL(file);
-            }
-          };
-
           return (
             <Card
               key={field.id}
               className="px-6 py-4 mt-4 space-y-4 transition-all duration-200 ease-in-out transform hover:shadow-lg"
             >
-              {/* Step Index and Remove button */}
               <div className="flex items-center justify-between">
                 <span className="text-xl font-semibold text-gray-700">
                   Step {index + 1}
@@ -83,9 +86,7 @@ const ReciptStepForm: React.FC = () => {
                 </Button>
               </div>
 
-              {/* Fields */}
               <div className="grid grid-cols-1 gap-6">
-                {/* Row 1: Step Name and Description */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="md:col-span-1">
                     <FormField
@@ -126,7 +127,6 @@ const ReciptStepForm: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Row 2: Media URL and Image Link */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="md:col-span-1">
                     <FormField
@@ -175,15 +175,14 @@ const ReciptStepForm: React.FC = () => {
                               type="file"
                               id={`steps.${index}.imageLink`}
                               placeholder="Image Link"
-                              {...register(`steps.${index}.imageLink`)}
-                              onChange={handleFileChange}
+                              onChange={(e) => handleFileChange(e, index)}
                               className="focus:ring-indigo-500 focus:border-indigo-500"
                             />
                           </FormControl>
-                          {imageLink && (
+                          {imageLink[index] && (
                             <div className="mt-2">
                               <img
-                                src={imageLink as string}
+                                src={imageLink[index]}
                                 alt={`Image Step ${index + 1}`}
                                 className="object-cover w-full h-48 rounded-md"
                               />

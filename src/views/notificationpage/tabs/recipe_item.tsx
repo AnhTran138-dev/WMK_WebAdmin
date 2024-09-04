@@ -9,17 +9,18 @@ import {
 } from "@/components/ui";
 import { formatFromISOString, FormatType } from "@/lib";
 import Show from "@/lib/show";
+import { RecipeList } from "@/models/responses";
 import { ProcessStatus } from "@/models/responses/weekly_plan_list";
 import {
-  CheckCircle,
-  Pencil,
-  XCircle,
   Calendar,
-  User,
+  CheckCircle,
   CircleDollarSign,
+  NotepadText,
+  Pencil,
+  User,
+  XCircle,
 } from "lucide-react";
 import React from "react";
-import { RecipeList } from "@/models/responses";
 
 interface RecipeItemProps {
   recipe: RecipeList;
@@ -41,11 +42,7 @@ const RecipeItem: React.FC<RecipeItemProps> = ({
   const renderStatus = (status: string) => {
     switch (status) {
       case ProcessStatus.Denied:
-        return (
-          <Badge className="text-3xl" variant="destructive">
-            {status}
-          </Badge>
-        );
+        return <Badge variant="destructive">{status}</Badge>;
       case ProcessStatus.Processing:
         return <Badge className="bg-blue-400">{status}</Badge>;
       default:
@@ -79,6 +76,14 @@ const RecipeItem: React.FC<RecipeItemProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4 pb-4">
+        <Show>
+          <Show.When isTrue={isStaff}>
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <NotepadText className="w-4 h-4 text-gray-500" />
+              <span>{recipe.description}</span>
+            </div>
+          </Show.When>
+        </Show>
         <div className="flex items-center space-x-2 text-sm text-gray-600">
           <User className="w-4 h-4 text-gray-500" />
           <span>{recipe.createdBy}</span>

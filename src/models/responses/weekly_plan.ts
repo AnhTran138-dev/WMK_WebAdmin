@@ -7,6 +7,7 @@ export interface WeeklyPlanList {
   createdBy: string;
   processStatus: string;
   recipePLans: RecipePLAN[];
+  notice: string;
   baseStatus: string;
 }
 
