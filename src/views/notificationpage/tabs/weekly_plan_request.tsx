@@ -106,7 +106,11 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
   });
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   return (

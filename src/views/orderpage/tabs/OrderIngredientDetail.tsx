@@ -29,7 +29,7 @@ const OrderIngredientDetail: React.FC<OrderIngredientDetailProps> = ({
                     value={ingredient.id}
                     className="mb-4 border border-gray-200 rounded-lg"
                   >
-                    <AccordionTrigger className="items-start transition-colors duration-300 hover:bg-gray-100">
+                    <AccordionTrigger className="items-start transition-colors duration-300 hover:bg-gray-100 hover:no-underline">
                       <div className="flex items-start justify-start h-full px-4">
                         <img
                           src={ingredient.ingredient.img}
@@ -46,7 +46,6 @@ const OrderIngredientDetail: React.FC<OrderIngredientDetailProps> = ({
                                 currency: "VND",
                               }
                             )}{" "}
-                            / {ingredient.ingredient.unit}
                           </h3>
                           <p className="mt-1 text-sm text-muted-foreground">
                             {formatFromISOString(

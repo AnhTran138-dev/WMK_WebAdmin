@@ -56,56 +56,23 @@ const WeeklyPlanColumn = (
       );
     },
   },
-  // {
-  //   accessorKey: "beginDate",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Begin Date
-  //         <ArrowUpDown className="w-4 h-4 ml-2" />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     if (
-  //       row.original.beginDate ||
-  //       typeof row.original.beginDate === "string"
-  //     ) {
-  //       return formatFromISOString(row.original.beginDate, FormatType.DATETIME);
-  //     }
-  //     return null;
-  //   },
-  // },
-  // {
-  //   accessorKey: "endDate",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         End Date
-  //         <ArrowUpDown className="w-4 h-4 ml-2" />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     if (row.original.endDate || typeof row.original.endDate === "string") {
-  //       return formatFromISOString(row.original.endDate, FormatType.DATETIME);
-  //     }
-  //     return null;
-  //   },
-  // },
   {
     accessorKey: "createdBy",
     header: "Create By",
   },
   {
     accessorKey: "createAt",
-    header: "Create At",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Create At
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       if (row.original.createAt) {
         return formatFromISOString(row.original.createAt, FormatType.DATETIME);
@@ -161,7 +128,8 @@ const WeeklyPlanColumn = (
         <Badge variant="success">{status}</Badge>
       ) : (
         <Badge variant="destructive">{status}</Badge>
-      );``
+      );
+      ``;
     },
   },
   {

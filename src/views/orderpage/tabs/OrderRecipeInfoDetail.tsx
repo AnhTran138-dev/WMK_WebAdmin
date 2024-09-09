@@ -25,7 +25,7 @@ const OrderRecipeInfoDetail: React.FC<OrderRecipeInfoDetailProps> = ({
             value={orderDetail.id}
             className="mb-4 border border-gray-200 rounded-lg"
           >
-            <AccordionTrigger className="items-start transition-colors duration-300 hover:bg-gray-100">
+            <AccordionTrigger className="items-start transition-colors duration-300 hover:bg-gray-100 hover:no-underline">
               <div className="flex items-start justify-start h-full px-4">
                 <img
                   src={orderDetail.recipe.img}

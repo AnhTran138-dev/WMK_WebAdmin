@@ -78,10 +78,12 @@ const RecipeItem: React.FC<RecipeItemProps> = ({
       <CardContent className="px-4 pb-4">
         <Show>
           <Show.When isTrue={isStaff}>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <NotepadText className="w-4 h-4 text-gray-500" />
-              <span>{recipe.description}</span>
-            </div>
+            {recipe.notice !== null && (
+              <div className="flex items-center space-x-2 text-sm text-gray-600 underline">
+                <NotepadText className="w-4 h-4 text-gray-500" />
+                <span>{recipe.notice}</span>
+              </div>
+            )}
           </Show.When>
         </Show>
         <div className="flex items-center space-x-2 text-sm text-gray-600">

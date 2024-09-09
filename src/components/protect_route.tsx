@@ -17,8 +17,6 @@ const ProtectRoute = ({ children, roles = [] }: PrivateRouteProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Decode the token to get the user's role and other info
-
   const tokenRewrite: TokenResponse = useMemo(
     () => (token ? jwtDecode(token) : ({} as TokenResponse)),
     [token]
