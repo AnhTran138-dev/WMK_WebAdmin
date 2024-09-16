@@ -204,7 +204,7 @@ const RecipeColumn = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Show on
+          Status
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       );

@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui";
 import { TokenResponse } from "@/models/responses";
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -28,7 +29,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { jwtDecode } from "jwt-decode";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, TimerReset } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
@@ -52,6 +53,7 @@ export function DataTable<TData, TValue>({
   sortUser,
   selectedRoles = [],
 }: DataTableProps<TData, TValue>) {
+  const [setUp, setSetUp] = useState<boolean>(false);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -107,6 +109,10 @@ export function DataTable<TData, TValue>({
     ));
   };
 
+  const onClickSetUp = (setup: boolean) => {
+    setSetUp(setup);
+  };
+
   return (
     <div>
       <div className="flex items-center py-4">
@@ -123,6 +129,12 @@ export function DataTable<TData, TValue>({
           />
         )}
         <div className="ml-auto space-x-3">
+          <Button
+            variant={setUp ? "ghost" : "default"}
+            onClick={(prev) => onClickSetUp(!prev)}
+          >
+            <TimerReset />
+          </Button>
           {handleReset && <Button onClick={handleReset}>Reset</Button>}
           {handleCluster && <Button onClick={handleCluster}>Cluster</Button>}
           {handleCreate && <Button onClick={handleCreate}>Create New</Button>}

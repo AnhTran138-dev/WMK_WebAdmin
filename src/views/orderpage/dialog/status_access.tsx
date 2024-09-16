@@ -3,6 +3,7 @@ import {
   AlertDialogCancel,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogTitle,
   Button,
 } from "../../../components/ui";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
@@ -10,7 +11,7 @@ import { OrderApi } from "../../../features";
 import { OrderStatus } from "../../../models/requests";
 
 interface StatusAccessProps {
-  editStatus: { id: string; status: number };
+  editStatus?: { id: string; status: number };
   handleCloseDialog: () => void;
   refetch: () => void;
   onToast: (success: boolean, description: string) => void;
@@ -47,8 +48,8 @@ const StatusAccess: React.FC<StatusAccessProps> = ({
 }) => {
   const handleSubmit = async () => {
     const respone = await OrderApi.changeOrderStatus(
-      editStatus.id,
-      editStatus.status
+      editStatus!.id,
+      editStatus!.status
     );
 
     if (respone.statusCode === 200) {
@@ -69,11 +70,13 @@ const StatusAccess: React.FC<StatusAccessProps> = ({
   return (
     <div>
       <AlertDialogHeader>
-        <h1 className="text-lg font-bold">Change status</h1>
+        <AlertDialogTitle>Confirm change action</AlertDialogTitle>
       </AlertDialogHeader>
       <AlertDialogDescription>
-        Are you sure you want to change the status to{" "}
-        <strong>{statusLabel(editStatus.status)}</strong>?
+        <div>
+          Are you sure you want to change the status to{" "}
+          <strong>{statusLabel(editStatus!.status)}</strong>?
+        </div>
       </AlertDialogDescription>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>

@@ -1,13 +1,13 @@
 import { DataTable } from "@/components/common/data_table";
+import DialogCustom from "@/components/common/dialog";
 import { useToast } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
+import Show from "@/lib/show";
 import { OrderGroupList, OrderList, Response } from "@/models/responses";
 import { useState } from "react";
-import OrderColum from "./order_column";
-import DialogCustom from "../../components/common/dialog";
-import StatusAccess from "./dialog/status_access";
-import Show from "../../lib/show";
 import OrderDetail from "./dialog/order_detail";
+import StatusAccess from "./dialog/status_access";
+import OrderColum from "./order_column";
 
 const OrderPage = () => {
   const { toast } = useToast();
