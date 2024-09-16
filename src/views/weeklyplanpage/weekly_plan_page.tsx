@@ -68,10 +68,6 @@ const WeeklyPlanPage = () => {
     navigation(`/weekly-plan/${id}`);
   };
 
-  const handleOrder = () => {
-    console.log("order");
-  };
-
   return (
     <div>
       {/* <DataRender className="my-4 h-fit" isLoading={loading} error={error}> */}
@@ -85,7 +81,6 @@ const WeeklyPlanPage = () => {
         data={weeklyplans?.data ?? []}
         searchColumn="title"
         handleCreate={handleCreate}
-        handleOrder={handleOrder}
       />
       {/* </DataRender> */}
       <DialogCustom
