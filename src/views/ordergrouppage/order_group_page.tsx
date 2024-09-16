@@ -93,7 +93,7 @@ const OrderGroupPage = () => {
         data={orderGroup?.data || []}
         handleCreate={handleCreate}
         handleCluster={handleCluster}
-        searchColumn="shipperUserName"
+        searchColumn="name"
       />
       <DialogCustom
         className="flex-grow flex-shrink max-w-5xl p-6 "

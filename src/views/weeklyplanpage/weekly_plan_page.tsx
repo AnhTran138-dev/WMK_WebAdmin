@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { DataTable } from "../../components/common/data_table";
-import DialogCustom from "../../components/common/dialog";
-import useFetch from "../../hooks/useFetch";
-import { Response } from "../../models/responses";
-import { WeeklyPlanList } from "../../models/responses/weekly_plan";
-import WeeklyPlanColumn from "./weekly_plan_column";
-import WeeklyPlanForm from "./dialog/weekly_plan_form";
-import { useToast } from "../../components/ui";
-import { WeeklyPlanRequest } from "../../models/requests";
-import Show from "../../lib/show";
-import DeleteWeeklyPlan from "./dialog/delete_weekly_plan";
+import { DataTable } from "@/components/common/data_table";
+import DialogCustom from "@/components/common/dialog";
+import { useToast } from "@/components/ui";
+import useFetch from "@/hooks/useFetch";
+import Show from "@/lib/show";
+import { WeeklyPlanRequest } from "@/models/requests";
+import { Response } from "@/models/responses";
+import { WeeklyPlanList } from "@/models/responses/weekly_plan";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DeleteWeeklyPlan from "./dialog/delete_weekly_plan";
+import WeeklyPlanForm from "./dialog/weekly_plan_form";
+import WeeklyPlanColumn from "./weekly_plan_column";
 
 const WeeklyPlanPage = () => {
   const { toast } = useToast();
@@ -67,6 +67,13 @@ const WeeklyPlanPage = () => {
   const handleDetail = (id: string) => {
     navigation(`/weekly-plan/${id}`);
   };
+
+  useEffect(() => {
+    const newValue = weeklyplans?.data?.every(
+      (weeklyphan) => weeklyphan.baseStatus === "Approved"
+    );
+    console.log(newValue);
+  }, [weeklyplans]);
 
   return (
     <div>

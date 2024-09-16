@@ -39,6 +39,7 @@ interface DataTableProps<TData, TValue> {
   handleCreate?: () => void;
   handleCluster?: () => void;
   handleReset?: () => void;
+
   sortUser?: (role: string, selected: boolean) => void;
   selectedRoles?: string[];
 }
@@ -53,7 +54,6 @@ export function DataTable<TData, TValue>({
   sortUser,
   selectedRoles = [],
 }: DataTableProps<TData, TValue>) {
-  const [setUp, setSetUp] = useState<boolean>(false);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -109,10 +109,6 @@ export function DataTable<TData, TValue>({
     ));
   };
 
-  const onClickSetUp = (setup: boolean) => {
-    setSetUp(setup);
-  };
-
   return (
     <div>
       <div className="flex items-center py-4">
@@ -128,11 +124,8 @@ export function DataTable<TData, TValue>({
             className="max-w-sm"
           />
         )}
-        <div className="ml-auto space-x-3">
-          <Button
-            variant={setUp ? "ghost" : "default"}
-            onClick={(prev) => onClickSetUp(!prev)}
-          >
+        <div className="flex gap-2 ml-auto">
+          <Button>
             <TimerReset />
           </Button>
           {handleReset && <Button onClick={handleReset}>Reset</Button>}
