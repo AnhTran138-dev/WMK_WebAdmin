@@ -25,6 +25,7 @@ import { OrderGroupRequest } from "@/models/requests";
 import { Response } from "@/models/responses";
 import { UserList } from "@/models/responses/user_list";
 import { OrderGroupSchema } from "@/schemas/order_group";
+import { LatLngTuple } from "leaflet";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -76,23 +77,24 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
     defaultValues: {
       shipperId: orderGroup?.shipperId || "",
       location: orderGroup?.location || "",
-      longitude: orderGroup?.longitude || 10.762622,
-      latitude: orderGroup?.latitude || 106.660172,
+      longitude: orderGroup?.longitude || 0,
+      latitude: orderGroup?.latitude || 0,
     },
   });
 
-  useEffect(() => {
-    if (location.length > 0 && options.length > 0 && location === undefined) {
-      form.setValue("longitude", options[0].properties.lon);
-      form.setValue("latitude", options[0].properties.lat);
-    }
-  }, [location, options, form]);
+  // useEffect(() => {
+  //   if (location.length > 0 && options.length > 0 && location === undefined) {
+  //     console.log("options", options[0].properties.lon);
+
+  //     form.setValue("longitude", options[0].properties.lon);
+  //     form.setValue("latitude", options[0].properties.lat);
+  //   }
+  // }, [location, options, form]);
 
   const onSubmit = async (values: z.infer<typeof OrderGroupSchema>) => {
     const response: Response<null> = orderGroup
       ? await OrderGroupApi.updateOrderGroup(orderGroup.id ?? "", values)
       : await OrderGroupApi.createOrderGroup(values);
-
     if (response.statusCode === 200) {
       onToast(true, response.message);
       refetch();
@@ -107,6 +109,11 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
 
     setLocation(selectedLocation || "");
     form.setValue("location", location);
+  };
+
+  const getCenter = (center: LatLngTuple) => {
+    form.setValue("longitude", center[1]);
+    form.setValue("latitude", center[0]);
   };
 
   useEffect(() => {
@@ -196,6 +203,7 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
             <div className="z-0 mt-4 h-72">
               <Map
                 id={options.length === 0 ? "" : options[0].properties.place_id}
+                getCenter={getCenter}
               />
             </div>
           </div>

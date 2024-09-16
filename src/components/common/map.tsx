@@ -9,6 +9,7 @@ import { LatLngTuple, Icon } from "leaflet";
 
 interface MapProps {
   id?: string;
+  getCenter?: (center: LatLngTuple) => void;
 }
 
 const customIcon = new Icon({
@@ -25,12 +26,18 @@ const customIcon = new Icon({
   popupAnchor: [0, -32],
 });
 
-const Map: React.FC<MapProps> = ({ id }) => {
+const Map: React.FC<MapProps> = ({ id, getCenter }) => {
   const [placeDetail, setPlaceDetail] = useState<PlaceDetail | null>(null);
   const [center, setCenter] = useState<LatLngTuple>([10.8231, 106.6297]);
   const [geometry, setGeometry] = useState<GeoJsonObject | null>(null);
   const [zoom, setZoom] = useState<number>(10);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (getCenter) {
+      getCenter(center);
+    }
+  }, [center, getCenter]);
 
   useEffect(() => {
     if (!id) {
