@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteWeeklyPlan from "./dialog/delete_weekly_plan";
 import WeeklyPlanForm from "./dialog/weekly_plan_form";
 import WeeklyPlanColumn from "./weekly_plan_column";
+import ChangeOrderStatus from "@/views/weeklyplanpage/dialog/change_order_status";
 
 const WeeklyPlanPage = () => {
   const { toast } = useToast();
@@ -23,6 +24,9 @@ const WeeklyPlanPage = () => {
   const { data: weeklyplans, refetch } = useFetch<Response<WeeklyPlanList[]>>(
     "/api/weeklyplan/get-all-filter"
   );
+
+  const [baseStatus, setBaseStatus] = useState<boolean>(false);
+  const [disable, setDisable] = useState<boolean>(false);
 
   const handleCreate = () => {
     setType("edit");
@@ -68,12 +72,38 @@ const WeeklyPlanPage = () => {
     navigation(`/weekly-plan/${id}`);
   };
 
-  useEffect(() => {
-    const newValue = weeklyplans?.data?.every(
-      (weeklyphan) => weeklyphan.baseStatus === "Approved"
+  const checkStatus = (arr: WeeklyPlanList[]): boolean | null => {
+    const hasAvailable = arr.some(
+      (item) => item.baseStatus.toLowerCase() === "available"
     );
-    console.log(newValue);
+    const hasUnavailable = arr.some(
+      (item) => item.baseStatus.toLowerCase() === "unavailable"
+    );
+
+    if (hasAvailable && hasUnavailable) {
+      return null;
+    }
+
+    return hasAvailable;
+  };
+
+  useEffect(() => {
+    const isChecking = checkStatus(weeklyplans?.data ?? []);
+
+    if (isChecking === null) {
+      setBaseStatus(false);
+      setDisable(true);
+    } else {
+      setBaseStatus(isChecking);
+      setDisable(false);
+    }
   }, [weeklyplans]);
+
+  const handleChangeStatus = (status: boolean) => {
+    setBaseStatus(!status);
+    setIsDialogOpen(true);
+    setType("changeStatus");
+  };
 
   return (
     <div>
@@ -88,6 +118,9 @@ const WeeklyPlanPage = () => {
         data={weeklyplans?.data ?? []}
         searchColumn="title"
         handleCreate={handleCreate}
+        changeStatus={baseStatus}
+        handleChangeStatus={handleChangeStatus}
+        disable={disable}
       />
       {/* </DataRender> */}
       <DialogCustom
@@ -111,9 +144,14 @@ const WeeklyPlanPage = () => {
                 onToast={handleToast}
               />
             </Show.When>
-            {/* <Show.When isTrue={type === "detail"}>
-              <DetailWeeklyPlan id={id} />
-            </Show.When> */}
+            <Show.When isTrue={type === "changeStatus"}>
+              <ChangeOrderStatus
+                status={baseStatus}
+                onClose={handleCloseDialog}
+                onToast={handleToast}
+                refetch={refetch}
+              />
+            </Show.When>
           </Show>
         }
       />

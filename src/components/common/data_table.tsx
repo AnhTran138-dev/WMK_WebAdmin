@@ -29,7 +29,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { jwtDecode } from "jwt-decode";
-import { AlertCircle, TimerReset } from "lucide-react";
+import { AlertCircle, LockKeyhole, LockKeyholeOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
@@ -39,9 +39,11 @@ interface DataTableProps<TData, TValue> {
   handleCreate?: () => void;
   handleCluster?: () => void;
   handleReset?: () => void;
-
   sortUser?: (role: string, selected: boolean) => void;
   selectedRoles?: string[];
+  changeStatus?: boolean;
+  handleChangeStatus?: (status: boolean) => void;
+  disable?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -53,11 +55,15 @@ export function DataTable<TData, TValue>({
   handleReset,
   sortUser,
   selectedRoles = [],
+  changeStatus,
+  handleChangeStatus,
+  disable,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [role, setRole] = useState<string>("");
+  const [status, setStatus] = useState<boolean>(changeStatus!);
 
   const table = useReactTable({
     data,
@@ -75,6 +81,10 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
+
+  useEffect(() => {
+    setStatus(changeStatus!);
+  }, [changeStatus]);
 
   useEffect(() => {
     const token: TokenResponse = jwtDecode(
@@ -109,6 +119,11 @@ export function DataTable<TData, TValue>({
     ));
   };
 
+  const onClickChange = (status: boolean) => {
+    setStatus(status);
+    handleChangeStatus?.(status);
+  };
+
   return (
     <div>
       <div className="flex items-center py-4">
@@ -125,9 +140,21 @@ export function DataTable<TData, TValue>({
           />
         )}
         <div className="flex gap-2 ml-auto">
-          <Button>
-            <TimerReset />
-          </Button>
+          {handleChangeStatus && (
+            <Button onClick={() => onClickChange(status)} disabled={disable}>
+              {!status ? (
+                <div className="flex items-center gap-2">
+                  <LockKeyhole />
+                  <span>Close</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <LockKeyholeOpen />
+                  <span>Open</span>
+                </div>
+              )}
+            </Button>
+          )}
           {handleReset && <Button onClick={handleReset}>Reset</Button>}
           {handleCluster && <Button onClick={handleCluster}>Cluster</Button>}
           {handleCreate && <Button onClick={handleCreate}>Create New</Button>}

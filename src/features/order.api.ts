@@ -113,28 +113,4 @@ export const OrderApi = {
       }
     }
   },
-
-  changeOrder: async (): Promise<Response<null>> => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const response = await axiosInstance.put<Response<null>>(
-        `/api/order/change-order`
-      );
-      return response?.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return {
-          data: null,
-          message: error.response?.data.message || error.message,
-          statusCode: error.response?.data.statusCode,
-        };
-      } else {
-        return {
-          data: null,
-          message: "An unexpected error occurred.",
-          statusCode: 500,
-        };
-      }
-    }
-  },
 };
