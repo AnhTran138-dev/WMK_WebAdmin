@@ -62,7 +62,7 @@ export const weeklyPlanApi = {
     try {
       const response = await axiosInstance.put(
         `/api/weeklyplan/change-status/${id}`,
-        { processStatus, note }
+        { processStatus, notice: note }
       );
       return response.data;
     } catch (error) {

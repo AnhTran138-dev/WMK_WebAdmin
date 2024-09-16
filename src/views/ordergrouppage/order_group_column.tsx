@@ -13,6 +13,7 @@ import { OrderGroupRequest } from "@/models/requests";
 import { OrderGroupList } from "@/models/responses/order_group_list";
 import { ColumnDef } from "@tanstack/react-table";
 import {
+  CircleMinus,
   MoreHorizontal,
   PencilLine,
   ReceiptText,
@@ -88,6 +89,7 @@ const OrderGroupColumn = (
                 <DropdownMenuItem
                   onClick={() => changeStatus(order_group.id, 1)}
                 >
+                  <CircleMinus className="w-4 h-4 mr-2" />
                   Unvailable
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
