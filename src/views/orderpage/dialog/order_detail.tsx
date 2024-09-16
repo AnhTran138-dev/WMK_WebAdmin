@@ -25,12 +25,13 @@ interface OrderDetailProps {
   refetch: () => void;
 }
 
-const OrderDetail: React.FC<OrderDetailProps> = ({ id, onClose, refetch }) => {
+const OrderDetail: React.FC<OrderDetailProps> = ({ id, onClose }) => {
   const [activeTab, setActiveTab] = useState<string>("general");
   const {
     data: order,
     loading,
     error,
+    refetch: refetchOrder,
   } = useFetch<Response<OrderDetailDialog>>(`/api/order/get-order/${id}`);
 
   if (!order?.data) {
@@ -82,7 +83,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ id, onClose, refetch }) => {
                 transactions={order.data.transaction}
                 onClose={onClose}
                 orderId={order.data.id}
-                refetch={refetch}
+                refetch={refetchOrder}
               />
             </TabsContent>
           </AlertDialogDescription>

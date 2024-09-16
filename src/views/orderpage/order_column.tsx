@@ -199,7 +199,7 @@ const OrderColum = (
         return <Badge variant="success">Shipped</Badge>;
       }
       if (status === "delivered") {
-        return <Badge variant="destructive">Delivered</Badge>;
+        return <Badge className="bg-blue-200">Delivered</Badge>;
       }
       if (status === "confirm") {
         return <Badge variant="success">Confirm</Badge>;
