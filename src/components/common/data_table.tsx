@@ -13,6 +13,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui";
 import { TokenResponse } from "@/models/responses";
 
@@ -141,19 +145,32 @@ export function DataTable<TData, TValue>({
         )}
         <div className="flex gap-2 ml-auto">
           {handleChangeStatus && (
-            <Button onClick={() => onClickChange(status)} disabled={disable}>
-              {!status ? (
-                <div className="flex items-center gap-2">
-                  <LockKeyhole />
-                  <span>Close</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <LockKeyholeOpen />
-                  <span>Open</span>
-                </div>
-              )}
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => onClickChange(status)}
+                    disabled={disable}
+                  >
+                    {!status ? (
+                      <div className="flex items-center gap-2">
+                        <LockKeyhole />
+                        <span>Close</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <LockKeyholeOpen />
+                        <span>Open</span>
+                      </div>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Make show the status of the order is uniformity in the weekly
+                  plan!
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           {handleReset && <Button onClick={handleReset}>Reset</Button>}
           {handleCluster && <Button onClick={handleCluster}>Cluster</Button>}

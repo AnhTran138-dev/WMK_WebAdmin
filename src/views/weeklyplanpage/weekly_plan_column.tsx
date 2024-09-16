@@ -20,6 +20,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { ProcessStatus } from "../../models/responses/weekly_plan_list";
+import Show from "@/lib/show";
 
 const WeeklyPlanColumn = (
   onEdit: (weeklyplan: WeeklyPlanRequest) => void,
@@ -156,36 +157,44 @@ const WeeklyPlanColumn = (
               <ReceiptText className="w-4 h-4 mr-2" />
               Detail
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                onEdit({
-                  id: weeklyplan.id,
-                  title: weeklyplan.title,
-                  description: weeklyplan.description,
-                  urlImage: weeklyplan.urlImage,
-                  recipeIds: weeklyplan.recipePLans.map((recipe) => {
-                    return {
-                      recipeId: recipe.recipeId,
-                      quantity: recipe.quantity,
-                      dayInWeek: recipe.dayInWeek,
-                      mealInDay: recipe.mealInDay,
-                    };
-                  }),
-                });
-              }}
-            >
-              <PencilLine className="w-4 h-4 mr-2" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                handleID(weeklyplan.id);
-                handleType("delete");
-              }}
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Detele
-            </DropdownMenuItem>
+            <Show>
+              <Show.When
+                isTrue={
+                  !(weeklyplan.processStatus.toLowerCase() === "customer")
+                }
+              >
+                <DropdownMenuItem
+                  onClick={() => {
+                    onEdit({
+                      id: weeklyplan.id,
+                      title: weeklyplan.title,
+                      description: weeklyplan.description,
+                      urlImage: weeklyplan.urlImage,
+                      recipeIds: weeklyplan.recipePLans.map((recipe) => {
+                        return {
+                          recipeId: recipe.recipeId,
+                          quantity: recipe.quantity,
+                          dayInWeek: recipe.dayInWeek,
+                          mealInDay: recipe.mealInDay,
+                        };
+                      }),
+                    });
+                  }}
+                >
+                  <PencilLine className="w-4 h-4 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    handleID(weeklyplan.id);
+                    handleType("delete");
+                  }}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Detele
+                </DropdownMenuItem>
+              </Show.When>
+            </Show>
           </DropdownMenuContent>
         </DropdownMenu>
       );
