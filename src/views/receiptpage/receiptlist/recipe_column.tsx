@@ -256,39 +256,45 @@ const RecipeColumn = (
               <NotebookTabs className="w-4 h-4 mr-2" />
               Detail
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={async () => {
-                const result: Response<null> =
-                  await recipeApi.changeBaseStatusRecipe(
-                    recipe.id,
-                    recipe.baseStatus.toLocaleLowerCase() === "unavailable"
-                      ? 0
-                      : 1
-                  );
+            <Show>
+              <Show.When
+                isTrue={!(recipe.processStatus.toLowerCase() === "processing")}
+              >
+                <DropdownMenuItem
+                  onClick={async () => {
+                    const result: Response<null> =
+                      await recipeApi.changeBaseStatusRecipe(
+                        recipe.id,
+                        recipe.baseStatus.toLocaleLowerCase() === "unavailable"
+                          ? 0
+                          : 1
+                      );
 
-                if (result.statusCode === 200) {
-                  handleToast(true, result.message);
-                  refetch();
-                } else {
-                  handleToast(false, result.message);
-                }
-              }}
-            >
-              <Show>
-                <Show.When
-                  isTrue={
-                    recipe.baseStatus.toLocaleLowerCase() === "unavailable"
-                  }
+                    if (result.statusCode === 200) {
+                      handleToast(true, result.message);
+                      refetch();
+                    } else {
+                      handleToast(false, result.message);
+                    }
+                  }}
                 >
-                  <ScanEye className="w-4 h-4 mr-2" />
-                  Available
-                </Show.When>
-                <Show.Else>
-                  <CircleMinus className="w-4 h-4 mr-2" />
-                  Unavailable
-                </Show.Else>
-              </Show>
-            </DropdownMenuItem>
+                  <Show>
+                    <Show.When
+                      isTrue={
+                        recipe.baseStatus.toLocaleLowerCase() === "unavailable"
+                      }
+                    >
+                      <ScanEye className="w-4 h-4 mr-2" />
+                      Available
+                    </Show.When>
+                    <Show.Else>
+                      <CircleMinus className="w-4 h-4 mr-2" />
+                      Unavailable
+                    </Show.Else>
+                  </Show>
+                </DropdownMenuItem>
+              </Show.When>
+            </Show>
 
             <DropdownMenuItem
               onClick={() => {
