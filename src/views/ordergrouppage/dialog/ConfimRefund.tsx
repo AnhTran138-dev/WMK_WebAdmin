@@ -15,6 +15,7 @@ interface ConfimRefundProps {
   transaction: TransactionRequest;
   onToast: (success: boolean, description: string) => void;
   refetch: () => void;
+  reftetchOrder: () => void;
 }
 
 const ConfimRefund: React.FC<ConfimRefundProps> = ({
@@ -22,6 +23,7 @@ const ConfimRefund: React.FC<ConfimRefundProps> = ({
   onToast,
   transaction,
   refetch,
+  reftetchOrder,
 }) => {
   const handleRefund = async () => {
     const response: Response<null> = await transactionApi.refundTransaction(
@@ -31,6 +33,7 @@ const ConfimRefund: React.FC<ConfimRefundProps> = ({
     if (response.statusCode === 200) {
       onToast(true, response.message);
       refetch();
+      reftetchOrder();
       onClose();
     } else {
       onToast(false, response.message);

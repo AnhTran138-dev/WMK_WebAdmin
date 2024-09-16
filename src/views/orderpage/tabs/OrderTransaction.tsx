@@ -20,12 +20,14 @@ interface OrderTransactionProps {
   orderId: string;
   onClose: () => void;
   refetch: () => void;
+  refetchOrder: () => void;
 }
 
 const OrderTransaction: React.FC<OrderTransactionProps> = ({
   transactions,
   orderId,
   refetch,
+  refetchOrder,
 }) => {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
@@ -132,6 +134,7 @@ const OrderTransaction: React.FC<OrderTransactionProps> = ({
             onClose={handleClose}
             onToast={handleToast}
             refetch={refetch}
+            reftetchOrder={refetchOrder}
           />
         }
       />
