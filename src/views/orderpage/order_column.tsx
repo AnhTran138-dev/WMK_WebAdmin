@@ -31,7 +31,7 @@ import {
   MoreHorizontal,
   ReceiptText,
   SquareCheck,
-  Truck,
+  // Truck,
 } from "lucide-react";
 import { OrderStatus } from "../../models/requests/order_request";
 
@@ -41,11 +41,11 @@ const statusList = [
     label: "Confirm",
     icon: <SquareCheck className="mr-4 size-4" />,
   },
-  {
-    value: OrderStatus.Shipping,
-    label: "Shipping",
-    icon: <Truck className="mr-4 size-4" />,
-  },
+  // {
+  //   value: OrderStatus.Shipping,
+  //   label: "Shipping",
+  //   icon: <Truck className="mr-4 size-4" />,
+  // },
   {
     value: OrderStatus.Canceled,
     label: "Canceled",
@@ -264,7 +264,7 @@ const OrderColum = (
                       <CommandInput placeholder="Group Name" />
                       <CommandList>
                         <CommandEmpty>No group</CommandEmpty>
-                        <CommandGroup>
+                        <CommandGroup heading="Suggestions">
                           {orderGroup?.map((group) => (
                             <Show key={group.id}>
                               <Show.When

@@ -18,7 +18,6 @@ export const OrderApi = {
     Status: number
   ): Promise<Response<null>> => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await axiosInstance.put<Response<null>>(
         `/api/order/change-status/${Id}?status=${Status}`
       );
