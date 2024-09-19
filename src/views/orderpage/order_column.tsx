@@ -227,24 +227,34 @@ const OrderColum = (
               Detail
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {statusList.map((status) => (
-              <Show key={status.value}>
-                <Show.When
-                  isTrue={
-                    status.label.toLowerCase() !== order.status.toLowerCase()
-                  }
-                >
-                  <DropdownMenuItem
-                    onClick={() => {
-                      handleDialog(order.id, status.value);
-                    }}
-                  >
-                    {status.icon}
-                    {status.label}
-                  </DropdownMenuItem>
-                </Show.When>
-              </Show>
-            ))}
+            <Show>
+              <Show.When
+                isTrue={
+                  order.status.toLowerCase() === "processing" ||
+                  order.status.toLowerCase() === "unshipped"
+                }
+              >
+                {statusList.map((status) => (
+                  <Show key={status.value}>
+                    <Show.When
+                      isTrue={
+                        status.label.toLowerCase() !==
+                        order.status.toLowerCase()
+                      }
+                    >
+                      <DropdownMenuItem
+                        onClick={() => {
+                          handleDialog(order.id, status.value);
+                        }}
+                      >
+                        {status.icon}
+                        {status.label}
+                      </DropdownMenuItem>
+                    </Show.When>
+                  </Show>
+                ))}
+              </Show.When>
+            </Show>
             <DropdownMenuSeparator />
             {/* <DropdownMenuGroup> */}
             <Show>

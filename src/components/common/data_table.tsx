@@ -7,6 +7,12 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
   Input,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
   Table,
   TableBody,
   TableCell,
@@ -19,6 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui";
 import { TokenResponse } from "@/models/responses";
+import { Select } from "@radix-ui/react-select";
 
 import {
   ColumnDef,
@@ -272,6 +279,30 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end py-4 space-x-2">
+        <Select
+          value={table.getState().pagination.pageSize.toString()}
+          onValueChange={(value) => {
+            table.setPageSize(Number(value));
+          }}
+        >
+          <SelectTrigger className="w-[100px]">
+            <SelectValue placeholder="Select a page" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Page</SelectLabel>
+              {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+                <SelectItem
+                  key={pageSize}
+                  value={pageSize.toString()}
+                  onSelect={() => table.setPageSize(pageSize)}
+                >
+                  {pageSize} rows
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <Button
           variant="outline"
           size="sm"
@@ -280,6 +311,10 @@ export function DataTable<TData, TValue>({
         >
           Previous
         </Button>
+        <span className="mx-2">
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </span>
         <Button
           variant="outline"
           size="sm"

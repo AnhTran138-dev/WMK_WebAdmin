@@ -17,6 +17,16 @@ export interface OrderDetailDialog {
   weeklyPlan: null;
   transaction: Transaction;
   orderDetails: OrderDetailElement[];
+  feedBacks: Feedback;
+}
+
+export interface Feedback {
+  id: string;
+  orderId: string;
+  rating: number;
+  description: string;
+  createdAt: Date;
+  createdBy: string;
 }
 
 export interface OrderDetailElement {

@@ -1,4 +1,19 @@
+import { Card, CardContent, CardHeader, Label } from "@/components/ui";
+import { Feedback } from "@/models/responses";
 import React from "react";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import {
+  UserIcon,
+  PhoneIcon,
+  StickyNoteIcon,
+  MapPinIcon,
+  CalendarIcon,
+  DollarSignIcon,
+  FileTextIcon,
+  PackageIcon,
+  Truck,
+} from "lucide-react";
+import Show from "@/lib/show";
 
 interface GeneralInfoDetailProps {
   data: {
@@ -12,65 +27,140 @@ interface GeneralInfoDetailProps {
     totalPrice: number;
     status: string;
     weeklyPlan: string | null;
+    feedBacks?: Feedback;
   };
 }
 
 const GeneralInfoDetail: React.FC<GeneralInfoDetailProps> = ({ data }) => {
+  // Helper to render stars
+  const renderRatingStars = (rating: number) => {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      stars.push(
+        i < rating ? (
+          <AiFillStar key={i} className="text-yellow-500" />
+        ) : (
+          <AiOutlineStar key={i} className="text-yellow-500" />
+        )
+      );
+    }
+    return stars;
+  };
+
   return (
-    <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-8 p-8 rounded-lg md:grid-cols-2">
       {/* Image Section */}
       <div className="flex items-center justify-center">
         <img
           src={data.img}
           alt="Order Image"
-          className="object-cover w-full h-auto rounded-lg shadow-md"
+          className="object-cover w-full h-auto transition-transform duration-300 ease-in-out transform rounded-lg shadow-md hover:scale-105"
         />
       </div>
 
       {/* Details Section */}
-      <div className="flex flex-col space-y-4">
-        <div className="text-lg font-bold">Order Details</div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="font-semibold">Receive Name:</div>
-          <div className="font-normal">{data.receiveName}</div>
-
-          <div className="font-semibold">Receive Phone:</div>
-          <div className="font-normal">{data.receivePhone}</div>
-
-          <div className="font-semibold">Note:</div>
-          <div className="font-normal">{data.note}</div>
-
-          <div className="font-semibold">Address:</div>
-          <div className="font-normal">{data.address}</div>
-
-          <div className="font-semibold">Ship Date:</div>
-          <div className="font-normal">
-            {new Date(data.shipDate).toLocaleDateString()}
+      <div className="flex flex-col space-y-6">
+        <div className="text-2xl font-bold text-gray-800">Details</div>
+        <div className="grid grid-cols-2 grid-rows-5 gap-4">
+          <div className="flex items-center space-x-2">
+            <UserIcon className="w-5 h-5 text-gray-700" />
+            <div className="font-normal text-gray-600">{data.receiveName}</div>
           </div>
 
-          <div className="font-semibold">Order Date:</div>
-          <div className="font-normal">
-            {new Date(data.orderDate).toLocaleDateString()}
+          <div className="flex items-center space-x-2">
+            <PhoneIcon className="w-5 h-5 text-gray-700" />
+            <div className="font-normal text-gray-600">{data.receivePhone}</div>
           </div>
 
-          <div className="font-semibold">Total Price:</div>
-          <div className="font-normal">
-            {data.totalPrice.toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })}
+          <Show>
+            <Show.When isTrue={data.note.length !== 0}>
+              <div className="flex items-center col-span-2 row-start-5 space-x-2">
+                <StickyNoteIcon className="w-5 h-5 text-gray-700" />
+                <div className="font-normal text-gray-600">{data.note}</div>
+              </div>
+            </Show.When>
+          </Show>
+          <div className="flex items-center col-span-2 row-start-4 space-x-2">
+            <MapPinIcon className="w-5 h-5 text-gray-700" />
+            <div className="font-normal text-gray-600">{data.address}</div>
           </div>
 
-          <div className="font-semibold">Status:</div>
-          <div className="font-normal">{data.status}</div>
+          <div className="flex items-center space-x-2">
+            <Truck className="w-5 h-5 text-gray-700" />
+            <div className="font-normal text-gray-600">
+              {new Date(data.shipDate).toLocaleDateString()}
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <CalendarIcon className="w-5 h-5 text-gray-700" />
+            <div className="font-normal text-gray-600">
+              {new Date(data.orderDate).toLocaleDateString()}
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <DollarSignIcon className="w-5 h-5 text-gray-700" />
+            <div className="font-normal text-gray-600">
+              {data.totalPrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <PackageIcon className="w-5 h-5 text-gray-700" />
+            <div className="font-normal text-gray-600">{data.status}</div>
+          </div>
 
           {data.weeklyPlan && (
-            <>
-              <div className="font-semibold">Weekly Plan:</div>
-              <div className="font-normal">{data.weeklyPlan}</div>
-            </>
+            <div className="flex items-center space-x-2">
+              <FileTextIcon className="w-5 h-5 text-gray-700" />
+              <div className="font-normal text-gray-600">{data.weeklyPlan}</div>
+            </div>
           )}
         </div>
+      </div>
+
+      {/* Feedback Section */}
+      <div className="w-full">
+        <Label className="text-2xl font-bold text-gray-800">Feedback</Label>
+        {data.feedBacks ? (
+          <Card className="mt-6 transition-shadow duration-300 rounded-lg shadow-lg hover:shadow-xl">
+            <CardHeader>
+              <div className="text-xl font-semibold text-gray-800">
+                {data.feedBacks.createdBy}
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <div className="font-semibold text-gray-700">Rating:</div>
+                <div className="flex">
+                  {renderRatingStars(data.feedBacks.rating)}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="font-semibold text-gray-700">Comment:</div>
+                <div className="italic font-normal text-gray-600">
+                  "{data.feedBacks.description}"
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <div className="font-semibold text-gray-700">Date:</div>
+                <div className="font-normal text-gray-600">
+                  {new Date(data.feedBacks.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="mt-4 italic font-normal text-gray-600">
+            No feedback available
+          </div>
+        )}
       </div>
     </div>
   );

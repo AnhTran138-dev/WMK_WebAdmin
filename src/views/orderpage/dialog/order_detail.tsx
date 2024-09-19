@@ -53,6 +53,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ id, onClose, refetch }) => {
     totalPrice: order.data.totalPrice,
     status: order.data.status,
     weeklyPlan: order.data.weeklyPlan,
+    feedBacks: order.data.feedBacks,
   };
 
   return (
@@ -60,7 +61,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ id, onClose, refetch }) => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <AlertDialogHeader>
           <div className="flex flex-row items-center justify-between w-full">
-            <AlertDialogTitle>Code - {order.data.orderCode}</AlertDialogTitle>
+            <AlertDialogTitle>Order - {order.data.orderCode}</AlertDialogTitle>
             <TabsList>
               <TabsTrigger value="general">General Info</TabsTrigger>
               <TabsTrigger value="recipe">Recipe Info</TabsTrigger>
@@ -91,7 +92,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ id, onClose, refetch }) => {
         </AlertDialogHeader>
         <AlertDialogFooter className="mt-3 space-x-2">
           <AlertDialogCancel>Close</AlertDialogCancel>
-          {/* <Button>Refund</Button> */}
         </AlertDialogFooter>
       </Tabs>
     </DataRender>
