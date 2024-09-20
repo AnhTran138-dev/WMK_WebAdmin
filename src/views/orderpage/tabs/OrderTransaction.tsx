@@ -80,7 +80,8 @@ const OrderTransaction: React.FC<OrderTransactionProps> = ({
                 isTrue={
                   transactions.status === "RefundPending" ||
                   transactions.status.toLowerCase() === "paid" ||
-                  statusOrder.toLowerCase() === "shipped"
+                  statusOrder.toLowerCase() === "shipped" ||
+                  statusOrder.toLowerCase() === "canceled"
                 }
               >
                 <Button

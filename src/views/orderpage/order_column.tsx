@@ -20,20 +20,20 @@ import {
 import { OrderApi } from "@/features";
 import { formatFromISOString, FormatType } from "@/lib";
 import Show from "@/lib/show";
+import { OrderStatus } from "@/models/requests/order_request";
 import { OrderGroupList, Response } from "@/models/responses";
 import { OrderList } from "@/models/responses/order_list";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
   CircleAlert,
+  CircleDollarSign,
   CircleX,
   Group,
   MoreHorizontal,
   ReceiptText,
   SquareCheck,
-  // Truck,
 } from "lucide-react";
-import { OrderStatus } from "../../models/requests/order_request";
 
 const statusList = [
   {
@@ -255,6 +255,25 @@ const OrderColum = (
                 ))}
               </Show.When>
             </Show>
+            <Show>
+              <Show.When
+                isTrue={
+                  order.status.toLowerCase() === "canceled" &&
+                  order.transactions?.type?.toLowerCase() === "cod" &&
+                  order.transactions?.status?.toLowerCase() === "pendingrefund"
+                }
+              >
+                <DropdownMenuItem
+                  onClick={() => {
+                    handleDialog(order.id, 6);
+                  }}
+                >
+                  <CircleDollarSign className="w-4 h-4 mr-4" />
+                  Refund
+                </DropdownMenuItem>
+              </Show.When>
+            </Show>
+
             <DropdownMenuSeparator />
             {/* <DropdownMenuGroup> */}
             <Show>
@@ -317,27 +336,7 @@ const OrderColum = (
                 </DropdownMenuItem>
               </Show.Else>
             </Show>
-            {/* </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem
-              onClick={async () => {
-                const response: Response<null> = await OrderApi.deleteOrder(
-                  order.id
-                );
-
-                if (response.statusCode === 200) {
-                  handleToast(true, response.message);
-                  refetch();
-                }
-
-                if (response.statusCode !== 200) {
-                  handleToast(false, response.message);
-                }
-              }}
-            >
-              <Trash2 className="w-4 h-4 mr-4" />
-              Delete
-            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

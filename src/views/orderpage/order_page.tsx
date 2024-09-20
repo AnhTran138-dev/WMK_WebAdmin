@@ -45,7 +45,7 @@ const OrderPage = () => {
     }
   };
 
-  const handleDialog = (id: string, status: number) => {
+  const handleDialog = async (id: string, status: number) => {
     setType("change");
     setEditStatus({ id, status });
     setIsDialogOpen(true);
@@ -89,7 +89,7 @@ const OrderPage = () => {
               />
             </Show.When>
             <Show.When isTrue={type === "detail"}>
-              <OrderDetail
+            <OrderDetail
                 id={id}
                 onClose={handleCloseDialog}
                 refetch={refetch}

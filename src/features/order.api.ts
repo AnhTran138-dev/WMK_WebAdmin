@@ -1,11 +1,32 @@
 import axios from "axios";
 import { axiosInstance } from "../configs";
-import { Response } from "../models/responses";
+import { OrderList, Response } from "../models/responses";
 
 export const OrderApi = {
   getOrderList: () => axiosInstance.get("/api/order/get-all"),
 
-  getOrderById: (Id: string) => axiosInstance.get(`/api/order/get-order/${Id}`),
+  getOrderById: async (Id: string): Promise<Response<OrderList>> => {
+    try {
+      const response = await axiosInstance.get<Response<OrderList>>(
+        `/api/order/get-order/${Id}`
+      );
+      return response?.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          data: null,
+          message: error.response?.data.message || error.message,
+          statusCode: error.response?.data.statusCode,
+        };
+      } else {
+        return {
+          data: null,
+          message: "An unexpected error occurred.",
+          statusCode: 500,
+        };
+      }
+    }
+  },
 
   // createOrder: (data: OrderRequest) =>
   //   axiosInstance.post("/api/order/create-new", data),

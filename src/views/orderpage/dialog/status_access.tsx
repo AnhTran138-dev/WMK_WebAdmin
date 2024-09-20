@@ -4,11 +4,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogDescription,
   Button,
-} from "../../../components/ui";
-import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
-import { OrderApi } from "../../../features";
-import { OrderStatus } from "../../../models/requests";
+} from "@/components/ui";
+import { OrderApi } from "@/features";
+import { OrderStatus } from "@/models/requests";
 
 interface StatusAccessProps {
   editStatus?: { id: string; status: number };

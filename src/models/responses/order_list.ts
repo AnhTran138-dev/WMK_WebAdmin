@@ -16,7 +16,7 @@ export interface OrderList {
   img: string;
   totalPrice: number;
   status: string;
-  transactions: Transaction[];
+  transactions: Transaction;
   orderDetails: OrderDetail[];
 }
 

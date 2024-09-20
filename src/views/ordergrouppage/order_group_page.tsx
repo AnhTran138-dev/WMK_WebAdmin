@@ -1,5 +1,4 @@
 import { DataTable } from "@/components/common/data_table";
-// import DataRender from "@/components/data_render";
 import { useToast } from "@/components/ui";
 import useFetch from "@/hooks/useFetch";
 import { Response } from "@/models/responses";
@@ -14,7 +13,6 @@ import ClusterForm from "./dialog/ClusterForm";
 import DeleteOrderGroup from "./dialog/DeleteOrderGroup";
 import { OrderGroupRequest } from "../../models/requests";
 import ChangeStatus from "./dialog/ChangeStatus";
-// import ResetAllGroup from "./dialog/ResetAllGroup";
 
 const OrderGroupPage = () => {
   const { toast } = useToast();
@@ -110,6 +108,7 @@ const OrderGroupPage = () => {
                 onClose={handleCloseDialog}
                 refetch={refetch}
                 orderGroup={editOrderGroup}
+                orderGroupList={orderGroup?.data || []}
               />
             </Show.When>
             <Show.When isTrue={type === "cluster"}>

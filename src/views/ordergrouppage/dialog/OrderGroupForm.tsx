@@ -20,13 +20,12 @@ import {
 import { OrderGroupApi } from "@/features/order_group";
 import useFetch from "@/hooks/useFetch";
 import useFetchAddress from "@/hooks/useFetchAddress";
-import Show from "@/lib/show";
 import { OrderGroupRequest } from "@/models/requests";
 import { Response } from "@/models/responses";
 import { UserList } from "@/models/responses/user_list";
 import { OrderGroupSchema } from "@/schemas/order_group";
 import { LatLngTuple } from "leaflet";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -60,6 +59,7 @@ interface OrderGroupFormProps {
   refetch: () => void;
   onToast: (success: boolean, description: string) => void;
   orderGroup: OrderGroupRequest | null;
+  orderGroupList: OrderGroupRequest[];
 }
 
 const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
@@ -67,6 +67,7 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
   onClose,
   refetch,
   onToast,
+  orderGroupList,
 }) => {
   const [location, setLocation] = useState<string>("");
 
@@ -116,6 +117,31 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
     }
   }, [orderGroup]);
 
+  const filteredUsers = useMemo(() => {
+    const uniqueUser: UserList[] = [];
+
+    const shipperId = form.getValues("shipperId");
+
+    const currentUser = users?.data?.find((user) => user.id === shipperId);
+
+    const filterUser = users?.data?.filter(
+      (user) =>
+        user.role.toLowerCase() === "shipper" &&
+        user.status === "Available" &&
+        orderGroupList.every((orderGroup) => orderGroup.shipperId !== user.id)
+    );
+
+    if (currentUser) {
+      uniqueUser.push(currentUser);
+    }
+
+    if (filterUser) {
+      uniqueUser.push(...filterUser);
+    }
+
+    return uniqueUser;
+  }, [users, form, orderGroupList]);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -142,19 +168,10 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
                           <SelectValue placeholder="Select shipper" />
                         </SelectTrigger>
                         <SelectContent>
-                          {users?.data.map((user) => (
-                            <Show key={user.id}>
-                              <Show.When
-                                isTrue={
-                                  user.role.toLowerCase() === "shipper" &&
-                                  user.status === "Available"
-                                }
-                              >
-                                <SelectItem value={user.id}>
-                                  {user.userName}
-                                </SelectItem>
-                              </Show.When>
-                            </Show>
+                          {filteredUsers.map((user) => (
+                            <SelectItem key={user.id} value={user.id}>
+                              {user.userName}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
