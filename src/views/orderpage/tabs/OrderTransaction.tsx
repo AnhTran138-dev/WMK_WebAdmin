@@ -21,6 +21,7 @@ interface OrderTransactionProps {
   onClose: () => void;
   refetch: () => void;
   refetchOrder: () => void;
+  statusOrder: string;
 }
 
 const OrderTransaction: React.FC<OrderTransactionProps> = ({
@@ -28,6 +29,7 @@ const OrderTransaction: React.FC<OrderTransactionProps> = ({
   orderId,
   refetch,
   refetchOrder,
+  statusOrder,
 }) => {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
@@ -73,7 +75,14 @@ const OrderTransaction: React.FC<OrderTransactionProps> = ({
               Transaction Details
             </CardTitle>
             <Show>
-              <Show.When isTrue={transactions.status === "RefundPending"}>
+              z
+              <Show.When
+                isTrue={
+                  transactions.status === "RefundPending" ||
+                  transactions.status.toLowerCase() === "paid" ||
+                  statusOrder.toLowerCase() === "shipped"
+                }
+              >
                 <Button
                   onClick={() =>
                     handleRefund({

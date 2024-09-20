@@ -81,6 +81,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ id, onClose, refetch }) => {
             </TabsContent>
             <TabsContent value="transactions">
               <OrderTransaction
+                statusOrder={order.data.status}
                 transactions={order.data.transaction}
                 onClose={onClose}
                 orderId={order.data.id}

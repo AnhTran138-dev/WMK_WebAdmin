@@ -82,15 +82,6 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
     },
   });
 
-  // useEffect(() => {
-  //   if (location.length > 0 && options.length > 0 && location === undefined) {
-  //     console.log("options", options[0].properties.lon);
-
-  //     form.setValue("longitude", options[0].properties.lon);
-  //     form.setValue("latitude", options[0].properties.lat);
-  //   }
-  // }, [location, options, form]);
-
   const onSubmit = async (values: z.infer<typeof OrderGroupSchema>) => {
     const response: Response<null> = orderGroup
       ? await OrderGroupApi.updateOrderGroup(orderGroup.id ?? "", values)
@@ -112,8 +103,6 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
   };
 
   const getCenter = (center: LatLngTuple) => {
-    console.log("center", center);
-
     form.setValue("longitude", center[1]);
     form.setValue("latitude", center[0]);
   };
