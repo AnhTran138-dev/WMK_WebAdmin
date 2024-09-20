@@ -19,10 +19,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
 } from "@/components/ui";
 import { TokenResponse } from "@/models/responses";
 import { Select } from "@radix-ui/react-select";
@@ -68,13 +64,12 @@ export function DataTable<TData, TValue>({
   selectedRoles = [],
   changeStatus,
   handleChangeStatus,
-  disable,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [role, setRole] = useState<string>("");
-  const [status, setStatus] = useState<boolean>(changeStatus!);
+  const [status, setStatus] = useState<boolean>(false);
 
   const table = useReactTable({
     data,
@@ -94,8 +89,12 @@ export function DataTable<TData, TValue>({
   });
 
   useEffect(() => {
-    setStatus(changeStatus!);
+    if (changeStatus !== undefined) {
+      setStatus(changeStatus);
+    }
   }, [changeStatus]);
+
+  // console.log("Status", status);
 
   useEffect(() => {
     const token: TokenResponse = jwtDecode(
@@ -131,7 +130,6 @@ export function DataTable<TData, TValue>({
   };
 
   const onClickChange = (status: boolean) => {
-    setStatus(status);
     handleChangeStatus?.(status);
   };
 
@@ -152,32 +150,19 @@ export function DataTable<TData, TValue>({
         )}
         <div className="flex gap-2 ml-auto">
           {handleChangeStatus && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => onClickChange(status)}
-                    disabled={disable}
-                  >
-                    {!status ? (
-                      <div className="flex items-center gap-2">
-                        <LockKeyhole />
-                        <span>Close</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <LockKeyholeOpen />
-                        <span>Open</span>
-                      </div>
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  Make show the status of the order is uniformity in the weekly
-                  plan!
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Button onClick={() => onClickChange(!status)}>
+              {!status ? (
+                <div className="flex items-center gap-2">
+                  <LockKeyholeOpen />
+                  <span>Open</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <LockKeyhole />
+                  <span>Close</span>
+                </div>
+              )}
+            </Button>
           )}
           {handleReset && <Button onClick={handleReset}>Reset</Button>}
           {handleCluster && <Button onClick={handleCluster}>Cluster</Button>}

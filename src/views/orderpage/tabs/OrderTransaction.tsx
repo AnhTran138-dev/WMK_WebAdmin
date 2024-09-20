@@ -73,9 +73,7 @@ const OrderTransaction: React.FC<OrderTransactionProps> = ({
               Transaction Details
             </CardTitle>
             <Show>
-              <Show.When
-                isTrue={transactions.status === "RefundZaloPayPending"}
-              >
+              <Show.When isTrue={transactions.status === "RefundPending"}>
                 <Button
                   onClick={() =>
                     handleRefund({

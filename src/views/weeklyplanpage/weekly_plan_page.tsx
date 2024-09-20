@@ -6,7 +6,7 @@ import Show from "@/lib/show";
 import { WeeklyPlanRequest } from "@/models/requests";
 import { Response } from "@/models/responses";
 import { WeeklyPlanList } from "@/models/responses/weekly_plan";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteWeeklyPlan from "./dialog/delete_weekly_plan";
 import WeeklyPlanForm from "./dialog/weekly_plan_form";
@@ -25,8 +25,7 @@ const WeeklyPlanPage = () => {
     "/api/weeklyplan/get-all-filter"
   );
 
-  const [baseStatus, setBaseStatus] = useState<boolean>(false);
-  const [disable, setDisable] = useState<boolean>(false);
+  const [baseStatus, setBaseStatus] = useState<boolean>();
 
   const handleCreate = () => {
     setType("edit");
@@ -72,38 +71,31 @@ const WeeklyPlanPage = () => {
     navigation(`/weekly-plan/${id}`);
   };
 
-  const checkStatus = (arr: WeeklyPlanList[]): boolean | null => {
+  const checkStatus = (arr: WeeklyPlanList[]): boolean => {
     const hasAvailable = arr.some(
-      (item) => item.baseStatus.toLowerCase() === "available"
+      (item) =>
+        item.baseStatus.toLowerCase() === "available" &&
+        (item.processStatus.toLowerCase() === "customer" ||
+          item.processStatus.toLowerCase() === "approved")
     );
-    const hasUnavailable = arr.some(
-      (item) => item.baseStatus.toLowerCase() === "unavailable"
-    );
-
-    if (hasAvailable && hasUnavailable) {
-      return null;
-    }
 
     return hasAvailable;
   };
 
   useEffect(() => {
-    const isChecking = checkStatus(weeklyplans?.data ?? []);
+    if (weeklyplans?.data) {
+      const status = checkStatus(weeklyplans.data);
+      console.log("result", status);
 
-    if (isChecking === null) {
-      setBaseStatus(false);
-      setDisable(true);
-    } else {
-      setBaseStatus(isChecking);
-      setDisable(false);
+      setBaseStatus(status);
     }
   }, [weeklyplans]);
 
-  const handleChangeStatus = (status: boolean) => {
-    setBaseStatus(!status);
+  const handleChangeStatus = useCallback((status: boolean) => {
+    setBaseStatus(status);
     setIsDialogOpen(true);
     setType("changeStatus");
-  };
+  }, []);
 
   return (
     <div>
@@ -120,7 +112,6 @@ const WeeklyPlanPage = () => {
         handleCreate={handleCreate}
         changeStatus={baseStatus}
         handleChangeStatus={handleChangeStatus}
-        disable={disable}
       />
       {/* </DataRender> */}
       <DialogCustom
@@ -146,7 +137,7 @@ const WeeklyPlanPage = () => {
             </Show.When>
             <Show.When isTrue={type === "changeStatus"}>
               <ChangeOrderStatus
-                status={baseStatus}
+                status={baseStatus!}
                 onClose={handleCloseDialog}
                 onToast={handleToast}
                 refetch={refetch}

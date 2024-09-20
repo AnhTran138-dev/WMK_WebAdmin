@@ -22,11 +22,8 @@ const ChangeOrderStatus: React.FC<ChangeOrderStatusProps> = ({
   onToast,
   refetch,
 }) => {
-  console.log(status);
-
-  const handleChangeStatus = async () => {
-    const response = await weeklyPlanApi.changeOrder(status);
-
+  const handleChangeStatus = async (changeStatus: boolean) => {
+    const response = await weeklyPlanApi.changeOrder(changeStatus);
     if (response.statusCode === 200) {
       onToast(true, response.message);
       onClose();
@@ -53,7 +50,7 @@ const ChangeOrderStatus: React.FC<ChangeOrderStatusProps> = ({
       </AlertDialogDescription>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction onClick={handleChangeStatus}>
+        <AlertDialogAction onClick={() => handleChangeStatus(status)}>
           Confirm
         </AlertDialogAction>
       </AlertDialogFooter>
