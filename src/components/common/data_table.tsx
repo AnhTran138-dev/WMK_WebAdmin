@@ -94,8 +94,6 @@ export function DataTable<TData, TValue>({
     }
   }, [changeStatus]);
 
-  // console.log("Status", status);
-
   useEffect(() => {
     const token: TokenResponse = jwtDecode(
       localStorage.getItem("token") as string

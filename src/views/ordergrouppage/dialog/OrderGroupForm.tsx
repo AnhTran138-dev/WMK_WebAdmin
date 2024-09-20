@@ -112,8 +112,10 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
   };
 
   const getCenter = (center: LatLngTuple) => {
-    form.setValue("longitude", center[0]);
-    form.setValue("latitude", center[1]);
+    console.log("center", center);
+
+    form.setValue("longitude", center[1]);
+    form.setValue("latitude", center[0]);
   };
 
   useEffect(() => {
