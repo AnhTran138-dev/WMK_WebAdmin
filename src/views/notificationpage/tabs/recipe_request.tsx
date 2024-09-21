@@ -97,7 +97,7 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
     if (success) refetch();
   };
 
-  const recipeRequest = recipes?.data.filter((recipe) => {
+  const recipeRequest = recipes?.data!.filter((recipe) => {
     if (role === "Admin" || role === "Manager") {
       return recipe.processStatus.toLowerCase() === "processing";
     }
@@ -135,8 +135,8 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
         <Show>
           <Show.When isTrue={role === "Staff"}>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5">
-              {recipes?.data
-                .filter((recipe) => recipe.processStatus === "Denied")
+              {recipes
+                ?.data!.filter((recipe) => recipe.processStatus === "Denied")
                 .map((recipe) => (
                   <RecipeItem
                     key={recipe.id}
@@ -185,8 +185,10 @@ const RecipeRequest: React.FC<RecipeRequestProps> = ({
           </Show.When>
           <Show.Else>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5">
-              {recipes?.data
-                .filter((recipe) => recipe.processStatus === "Processing")
+              {recipes
+                ?.data!.filter(
+                  (recipe) => recipe.processStatus === "Processing"
+                )
                 .map((recipe) => (
                   <RecipeItem
                     key={recipe.id}

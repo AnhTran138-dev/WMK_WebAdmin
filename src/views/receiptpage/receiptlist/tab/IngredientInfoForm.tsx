@@ -92,7 +92,7 @@ const IngredientInfoForm: React.FC<IngredientInfoFormProps> = ({
       />
       <ScrollArea className="h-60">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-          {ingredients?.data.map((ingredient) => {
+          {ingredients?.data?.map((ingredient) => {
             const isChecked = recipeIngredientsList.some(
               (item) => item.ingredientId === ingredient.id
             );

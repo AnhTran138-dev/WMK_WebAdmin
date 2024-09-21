@@ -39,8 +39,8 @@ const DetailOrderForm: React.FC<DetailOrderFormProps> = ({ id, onToast }) => {
       <Show>
         <Show.When
           isTrue={
-            ordergroup?.data.orders.length === 0 ||
-            ordergroup?.data.orders === undefined
+            ordergroup?.data?.orders.length === 0 ||
+            ordergroup?.data?.orders === undefined
           }
         >
           <div className="flex items-center justify-center size-full">
@@ -55,14 +55,14 @@ const DetailOrderForm: React.FC<DetailOrderFormProps> = ({ id, onToast }) => {
           <ScrollArea className="h-96">
             <DataRender
               className={`w-full grid gap-4 ${
-                ordergroup?.data.orders.length === 1
+                ordergroup?.data?.orders.length === 1
                   ? "grid-cols-1"
                   : "grid-cols-1 md:grid-cols-2"
               }`}
               isLoading={loading}
               error={error}
             >
-              {ordergroup?.data.orders.map((order) => (
+              {ordergroup?.data?.orders.map((order) => (
                 <Card key={order.id}>
                   <CardHeader className="flex flex-row gap-5">
                     <CardTitle className="flex">

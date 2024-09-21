@@ -41,17 +41,18 @@ const IngredientDetail: React.FC<IngredientDetailProps> = ({ id }) => {
               <img
                 className="object-cover w-1/2 rounded-lg shadow-md"
                 src={
-                  ingredientDetail.data.img || "https://via.placeholder.com/250"
+                  ingredientDetail.data?.img ||
+                  "https://via.placeholder.com/250"
                 }
-                alt={ingredientDetail.data.name || "No image available"}
+                alt={ingredientDetail.data?.name || "No image available"}
               />
               <div className="w-1/2 space-y-4">
                 <AlertDialogHeader>
                   <AlertDialogTitle className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {ingredientDetail.data.name || "N/A"}
+                    {ingredientDetail.data?.name || "N/A"}
                   </AlertDialogTitle>
                   <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
-                    {ingredientDetail.data.preservationMethod || "N/A"}
+                    {ingredientDetail.data?.preservationMethod || "N/A"}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="space-y-2">
@@ -60,18 +61,18 @@ const IngredientDetail: React.FC<IngredientDetailProps> = ({ id }) => {
                     <span className="font-semibold">
                       Packaging Method:
                     </span>{" "}
-                    {ingredientDetail.data.packagingMethod || "N/A"}
+                    {ingredientDetail.data?.packagingMethod || "N/A"}
                   </div>
                   <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                     <Tag className="size-4" />
                     <span className="font-semibold">Category:</span>{" "}
-                    {ingredientDetail.data.ingredientCategory?.name || "N/A"}
+                    {ingredientDetail.data?.ingredientCategory?.name || "N/A"}
                   </div>
                   <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                     <DollarSign className="size-4" />
                     <span className="font-semibold">Price:</span>{" "}
-                    {ingredientDetail.data.price
-                      ? formatVND(ingredientDetail.data.price)
+                    {ingredientDetail.data?.price
+                      ? formatVND(ingredientDetail.data?.price)
                       : "0"}
                   </div>
                 </div>
@@ -79,9 +80,9 @@ const IngredientDetail: React.FC<IngredientDetailProps> = ({ id }) => {
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                     Nutritional Information
                   </h3>
-                  {ingredientDetail.data.ingredientNutrient ? (
+                  {ingredientDetail.data?.ingredientNutrient ? (
                     <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2 rounded-2xl bg-slate-100">
-                      {Object.entries(ingredientDetail.data.ingredientNutrient)
+                      {Object.entries(ingredientDetail.data?.ingredientNutrient)
                         .filter(
                           ([key]) => key !== "id" && key !== "ingredientID"
                         ) // Exclude IDs

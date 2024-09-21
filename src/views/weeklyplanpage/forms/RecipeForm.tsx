@@ -138,12 +138,12 @@ const RecipeForm = () => {
             <Tooltip>
               <TooltipTrigger className="flex items-center space-x-2">
                 <div className="overflow-hidden max-w-[120px] text-nowrap text-ellipsis font-semibold text-gray-800">
-                  {recipes?.data.find((r) => r.id === field.recipeId)?.name}
+                  {recipes?.data!.find((r) => r.id === field.recipeId)?.name}
                 </div>
                 <div className="text-gray-600">( x{field.quantity})</div>
               </TooltipTrigger>
               <TooltipContent>
-                {recipes?.data.find((r) => r.id === field.recipeId)?.name}
+                {recipes?.data!.find((r) => r.id === field.recipeId)?.name}
               </TooltipContent>
             </Tooltip>
             <CircleX
@@ -236,7 +236,7 @@ const RecipeForm = () => {
                               <SelectContent>
                                 <SelectGroup>
                                   <SelectLabel>Recipes</SelectLabel>
-                                  {recipes?.data.map((recipe) => (
+                                  {recipes?.data!.map((recipe) => (
                                     <Show key={recipe.id}>
                                       <Show.When
                                         isTrue={

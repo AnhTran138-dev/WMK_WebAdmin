@@ -97,7 +97,7 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
     setIsDialogOpen(true);
   };
 
-  const weeklyPlanRequest = weeklyplans?.data.filter((wps) => {
+  const weeklyPlanRequest = weeklyplans?.data!.filter((wps) => {
     if (role === "Staff") {
       return wps.processStatus.toLowerCase() === "denied";
     } else {
@@ -126,8 +126,8 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
         <Show>
           <Show.When isTrue={role !== "Staff"}>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5">
-              {weeklyplans?.data
-                .filter(
+              {weeklyplans
+                ?.data!.filter(
                   (plan) => plan.processStatus.toLowerCase() === "processing"
                 )
                 .map((plan) => (
@@ -152,8 +152,10 @@ const WeeklyPlanRequest: React.FC<WeeklyPlanRequestProps> = ({
           </Show.When>
           <Show.Else>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5">
-              {weeklyplans?.data
-                .filter((plan) => plan.processStatus.toLowerCase() === "denied")
+              {weeklyplans
+                ?.data!.filter(
+                  (plan) => plan.processStatus.toLowerCase() === "denied"
+                )
                 .map((plan) => (
                   <WeeklyPlanItem
                     key={plan.id}

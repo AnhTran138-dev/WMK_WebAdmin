@@ -75,7 +75,7 @@ const GeneralInfoForm: React.FC = () => {
                       <SelectValue placeholder="Select Category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories?.data.map((category) => (
+                      {categories?.data?.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}
                         </SelectItem>

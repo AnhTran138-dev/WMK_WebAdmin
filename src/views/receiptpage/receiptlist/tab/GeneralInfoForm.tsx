@@ -67,7 +67,7 @@ const GeneralInfoForm: React.FC = () => {
 
     const updatedCategories = currentCategories.filter(
       (item: string) =>
-        !categories?.data.some((cat) => cat.id === item && cat.type === type)
+        !categories?.data?.some((cat) => cat.id === item && cat.type === type)
     );
     setValue("categoryIds", [...updatedCategories, value]);
   };
@@ -103,7 +103,7 @@ const GeneralInfoForm: React.FC = () => {
                     <FormControl>
                       <Select
                         value={
-                          categories?.data.find((item) => {
+                          categories?.data?.find((item) => {
                             return (
                               item.type === category.type &&
                               recipeCategoryIDs.includes(item.id)
@@ -121,17 +121,18 @@ const GeneralInfoForm: React.FC = () => {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>{category.type}</SelectLabel>
-                            {categories?.data
-                              .filter(
-                                (item) =>
-                                  item.type === category.type &&
-                                  item.status === "Available"
-                              )
-                              .map((item) => (
-                                <SelectItem key={item.id} value={item.id}>
-                                  {item.name}
-                                </SelectItem>
-                              ))}
+                            {categories?.data &&
+                              categories.data
+                                .filter(
+                                  (item) =>
+                                    item.type === category.type &&
+                                    item.status === "Available"
+                                )
+                                .map((item) => (
+                                  <SelectItem key={item.id} value={item.id}>
+                                    {item.name}
+                                  </SelectItem>
+                                ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
