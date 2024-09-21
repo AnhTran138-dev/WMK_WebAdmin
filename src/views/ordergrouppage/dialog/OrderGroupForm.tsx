@@ -1,6 +1,5 @@
 import Map from "@/components/common/map";
 import {
-  AlertDialogCancel,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -29,7 +28,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const area = [
+interface AreaProps {
+  id: number;
+  name: string;
+  value: string;
+}
+
+const area: AreaProps[] = [
   { id: 1, name: "Quận 1", value: "Quận 1" },
   { id: 3, name: "Quận 3", value: "Quận 3" },
   { id: 4, name: "Quận 4", value: "Quận 4" },
@@ -142,6 +147,28 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
     return uniqueUser;
   }, [users, form, orderGroupList]);
 
+  const filteredLocation = useMemo(() => {
+    const uniqueLocation: AreaProps[] = [];
+
+    const selectedLocation = form.getValues("location");
+
+    const currentLocation = area.find((area) => area.name === selectedLocation);
+
+    const filterLocation = area.filter((area) =>
+      orderGroupList.every((orderGroup) => orderGroup.location !== area.value)
+    );
+
+    if (currentLocation) {
+      uniqueLocation.push(currentLocation);
+    }
+
+    if (filterLocation) {
+      uniqueLocation.push(...filterLocation);
+    }
+
+    return uniqueLocation;
+  }, [form, orderGroupList]);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -195,11 +222,16 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
                             <SelectValue placeholder="Select regional location" />
                           </SelectTrigger>
                           <SelectContent>
-                            {area.map((area) => (
+                            {filteredLocation.map((area) => (
                               <SelectItem key={area.id} value={area.name}>
                                 {area.name}
                               </SelectItem>
                             ))}
+                            {/* {area.map((area) => (
+                              <SelectItem key={area.id} value={area.name}>
+                                {area.name}
+                              </SelectItem>
+                            ))} */}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -216,8 +248,22 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
             </div>
           </div>
         </AlertDialogDescription>
-        <AlertDialogFooter className="flex justify-end gap-4 mt-6">
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogFooter className="flex justify-end gap-2 mt-6">
+          <Button
+            variant={"secondary"}
+            onClick={(e) => {
+              e.preventDefault();
+              onClose();
+              form.reset({
+                shipperId: "",
+                location: "",
+                longitude: 0,
+                latitude: 0,
+              });
+            }}
+          >
+            Cancel
+          </Button>
           <Button type="submit">{orderGroup ? "Update" : "Submit"}</Button>
         </AlertDialogFooter>
       </form>

@@ -70,6 +70,7 @@ const OrderGroupPage = () => {
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
+    setEditOrderGroup(null);
   };
 
   const changeStatus = (id: string, status: number) => {
