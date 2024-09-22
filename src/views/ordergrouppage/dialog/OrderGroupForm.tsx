@@ -227,11 +227,6 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
                                 {area.name}
                               </SelectItem>
                             ))}
-                            {/* {area.map((area) => (
-                              <SelectItem key={area.id} value={area.name}>
-                                {area.name}
-                              </SelectItem>
-                            ))} */}
                           </SelectContent>
                         </Select>
                       </FormControl>

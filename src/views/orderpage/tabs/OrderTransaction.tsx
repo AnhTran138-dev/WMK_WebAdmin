@@ -75,13 +75,12 @@ const OrderTransaction: React.FC<OrderTransactionProps> = ({
               Transaction Details
             </CardTitle>
             <Show>
-              z
               <Show.When
                 isTrue={
-                  transactions.status === "RefundPending" ||
-                  transactions.status.toLowerCase() === "paid" ||
-                  statusOrder.toLowerCase() === "shipped" ||
-                  statusOrder.toLowerCase() === "canceled"
+                  (transactions.status === "RefundPending" ||
+                    transactions.status.toLowerCase() === "paid") &&
+                  (statusOrder.toLowerCase() === "shipped" ||
+                    statusOrder.toLowerCase() === "canceled")
                 }
               >
                 <Button
@@ -127,7 +126,7 @@ const OrderTransaction: React.FC<OrderTransactionProps> = ({
               </div>
               <div className="flex justify-between">
                 <span className="font-semibold">Status:</span>
-                <span>{transactions.status}</span>
+                <span className="font-semibold">{transactions.status}</span>
               </div>
             </div>
           </CardContent>

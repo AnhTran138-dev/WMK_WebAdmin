@@ -54,7 +54,7 @@ const GeneralInfoDetail: React.FC<GeneralInfoDetailProps> = ({ data }) => {
         <img
           src={data.img}
           alt="Order Image"
-          className="object-cover w-full h-auto transition-transform duration-300 ease-in-out transform rounded-lg shadow-md hover:scale-105"
+          className="object-cover w-full transition-transform duration-300 ease-in-out transform rounded-lg shadow-md hover:scale-105 h-96"
         />
       </div>
 

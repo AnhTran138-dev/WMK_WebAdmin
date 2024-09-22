@@ -20,11 +20,7 @@ const PlanGeneral: React.FC<PlanGeneralProps> = ({ weeklyPlan }) => {
   const renderStatus = (status: string) => {
     switch (status) {
       case ProcessStatus.Approved:
-        return (
-          <Badge variant="success" className="text-green-800">
-            {status}
-          </Badge>
-        );
+        return <Badge variant="success">{status}</Badge>;
       case ProcessStatus.Processing:
         return <Badge className="text-blue-800 bg-blue-400">{status}</Badge>;
       case ProcessStatus.Denied:

@@ -79,11 +79,13 @@ const PlanTable: React.FC<PlanTableProps> = ({ weeklyPlan }) => {
                         className="flex items-center justify-between max-w-3xl p-2 mb-2 text-center border border-gray-300 rounded-md shadow-sm bg-slate-200 w-fit"
                       >
                         <Tooltip>
-                          <TooltipTrigger className="flex items-center space-x-2 text-sm w-fit">
+                          <TooltipTrigger className="flex items-center max-w-[6rem] space-x-2 text-sm text-ellipsis whitespace-nowrap overflow-hidden">
                             {item.recipe.name} (x{item.quantity})
                           </TooltipTrigger>
+
                           <TooltipContent>
                             <span>{item.recipe.name}</span>
+                            <span>(x{item.quantity})</span>
                           </TooltipContent>
                         </Tooltip>
                       </Badge>
