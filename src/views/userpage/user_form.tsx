@@ -25,7 +25,7 @@ import { UserRequest } from "@/models/requests/user_request";
 import { Response } from "@/models/responses";
 import { userSchema } from "@/schemas/user";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -51,6 +51,7 @@ const UserForm: React.FC<UserFormProps> = ({
   role,
 }) => {
   const { toast } = useToast();
+  const [gender, setGender] = useState<number>(0);
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
@@ -211,14 +212,21 @@ const UserForm: React.FC<UserFormProps> = ({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel className="mb-3">Gender</FormLabel>
-                  <FormControl>
-                    <Switch
-                      checked={field.value === 1}
-                      onCheckedChange={(checked) =>
-                        field.onChange(checked ? 1 : 0)
-                      }
-                    />
-                  </FormControl>
+                  <div className="flex items-center">
+                    <FormControl>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked ? 1 : 0);
+                          setGender(checked ? 1 : 0);
+                        }}
+                      />
+                    </FormControl>
+                    <span className="ml-3">
+                      {gender === 1 ? "Male" : "Female"}
+                    </span>
+                  </div>
+
                   <FormMessage />
                 </FormItem>
               )}

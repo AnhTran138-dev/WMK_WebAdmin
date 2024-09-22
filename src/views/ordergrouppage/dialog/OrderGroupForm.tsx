@@ -183,28 +183,30 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
               <FormField
                 control={form.control}
                 name="shipperId"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Shipper</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select shipper" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {filteredUsers.map((user) => (
-                            <SelectItem key={user.id} value={user.id}>
-                              {user.userName}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  return (
+                    <FormItem className="flex-1">
+                      <FormLabel>Shipper</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select shipper" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {filteredUsers.map((user) => (
+                              <SelectItem key={user.id} value={user.id}>
+                                {user.userName}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
               />
               <div className="relative z-10 flex-1 space-y-2">
                 <FormField
