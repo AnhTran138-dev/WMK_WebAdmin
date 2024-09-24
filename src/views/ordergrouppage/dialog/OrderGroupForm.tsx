@@ -52,11 +52,11 @@ const area: AreaProps[] = [
   { id: 17, name: "Quận Tân Bình", value: "tan binh district" },
   { id: 18, name: "Quận Tân Phú", value: "tan phu dis" },
   { id: 19, name: "Quận Thủ Đức", value: "Thủ Đức" },
-  { id: 20, name: "Huyện Bình Chánh", value: "Huyện Bình Chánh " },
+  { id: 20, name: "Huyện Bình Chánh", value: "Binh chanh dist " },
   { id: 21, name: "Huyện Cần Giờ", value: "Can Gio District, ho" },
-  { id: 22, name: "Huyện Củ Chi", value: "Huyện Củ Chi" },
-  { id: 23, name: "Huyện Hóc Môn", value: "Huyện Hóc Môn" },
-  { id: 24, name: "Huyện Nhà Bè", value: "Huyện Nhà Bè" },
+  { id: 22, name: "Huyện Củ Chi", value: "cu chi di" },
+  { id: 23, name: "Huyện Hóc Môn", value: "Hoc Mon District" },
+  { id: 24, name: "Huyện Nhà Bè", value: "Nha Be Di" },
 ];
 
 interface OrderGroupFormProps {
@@ -116,7 +116,7 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
   useEffect(() => {
     if (orderGroup) {
       const selectdLocation = area.find(
-        (area) => area.value === orderGroup.location
+        (area) => area.name === orderGroup.location
       )?.value;
       setLocation(selectdLocation || "");
     }
@@ -149,14 +149,14 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
 
   const filteredLocation = useMemo(() => {
     const uniqueLocation: AreaProps[] = [];
-
     const selectedLocation = form.getValues("location");
 
     const currentLocation = area.find((area) => area.name === selectedLocation);
-
     const filterLocation = area.filter((area) =>
-      orderGroupList.every((orderGroup) => orderGroup.location !== area.value)
+      orderGroupList.every((orderGroup) => orderGroup.location !== area.name)
     );
+
+    console.log("filteredLocation", filterLocation);
 
     if (currentLocation) {
       uniqueLocation.push(currentLocation);
@@ -165,6 +165,8 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
     if (filterLocation) {
       uniqueLocation.push(...filterLocation);
     }
+
+    console.log("uniqueLocation", uniqueLocation);
 
     return uniqueLocation;
   }, [form, orderGroupList]);
@@ -212,28 +214,30 @@ const OrderGroupForm: React.FC<OrderGroupFormProps> = ({
                 <FormField
                   control={form.control}
                   name="location"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Regional location</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={handleChangeLocation}
-                          value={field.value}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select regional location" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {filteredLocation.map((area) => (
-                              <SelectItem key={area.id} value={area.name}>
-                                {area.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                    </FormItem>
-                  )}
+                  render={({ field }) => {
+                    return (
+                      <FormItem className="flex-1">
+                        <FormLabel>Regional location</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={handleChangeLocation}
+                            value={field.value}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select regional location" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {filteredLocation.map((area) => (
+                                <SelectItem key={area.id} value={area.name}>
+                                  {area.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    );
+                  }}
                 />
               </div>
             </div>
