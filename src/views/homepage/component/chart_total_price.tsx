@@ -139,7 +139,11 @@ const ChartTotalPrice = () => {
             <p>
               <strong className="mr-4"> All Total Revenue:</strong>{" "}
               {ordersResponse?.data
-                ?.reduce((sum, order) => sum + order.totalPrice, 0)
+                ?.filter(
+                  (order) =>
+                    order.status === "Shipped" || order.status === "Delivered"
+                )
+                .reduce((sum, order) => sum + order.totalPrice, 0)
                 .toFixed(2)}
             </p>
             <p>
