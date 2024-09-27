@@ -85,7 +85,7 @@ const GeneralInfoDetail: React.FC<GeneralInfoDetailProps> = ({ data }) => {
 
           <Show>
             <Show.When isTrue={data.message.length !== 0}>
-              <div className="flex items-center col-span-2 row-start-5 space-x-2">
+              <div className="flex items-center col-span-2 row-start-6 space-x-2">
                 <MessageCircleMore className="w-5 h-5 text-gray-700" />
                 <div className="font-normal text-gray-600">{data.message}</div>
               </div>
