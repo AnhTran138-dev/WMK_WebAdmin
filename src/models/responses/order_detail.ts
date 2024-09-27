@@ -6,6 +6,7 @@ export interface OrderDetailDialog {
   receiveName: string;
   receivePhone: string;
   note: string;
+  message: string;
   address: string;
   longitude: number;
   latitude: number;

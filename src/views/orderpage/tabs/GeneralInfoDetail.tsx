@@ -12,6 +12,7 @@ import {
   FileTextIcon,
   PackageIcon,
   Truck,
+  MessageCircleMore,
 } from "lucide-react";
 import Show from "@/lib/show";
 
@@ -28,6 +29,7 @@ interface GeneralInfoDetailProps {
     status: string;
     weeklyPlan: string | null;
     feedBacks?: Feedback;
+    message: string;
   };
 }
 
@@ -61,7 +63,7 @@ const GeneralInfoDetail: React.FC<GeneralInfoDetailProps> = ({ data }) => {
       {/* Details Section */}
       <div className="flex flex-col space-y-6">
         <div className="text-2xl font-bold text-gray-800">Details</div>
-        <div className="grid grid-cols-2 grid-rows-5 gap-4">
+        <div className="grid grid-cols-2 grid-rows-6 gap-4">
           <div className="flex items-center space-x-2">
             <UserIcon className="w-5 h-5 text-gray-700" />
             <div className="font-normal text-gray-600">{data.receiveName}</div>
@@ -77,6 +79,15 @@ const GeneralInfoDetail: React.FC<GeneralInfoDetailProps> = ({ data }) => {
               <div className="flex items-center col-span-2 row-start-5 space-x-2">
                 <StickyNoteIcon className="w-5 h-5 text-gray-700" />
                 <div className="font-normal text-gray-600">{data.note}</div>
+              </div>
+            </Show.When>
+          </Show>
+
+          <Show>
+            <Show.When isTrue={data.message.length !== 0}>
+              <div className="flex items-center col-span-2 row-start-5 space-x-2">
+                <MessageCircleMore className="w-5 h-5 text-gray-700" />
+                <div className="font-normal text-gray-600">{data.message}</div>
               </div>
             </Show.When>
           </Show>

@@ -54,6 +54,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ id, onClose, refetch }) => {
     status: order.data.status,
     weeklyPlan: order.data.weeklyPlan,
     feedBacks: order.data.feedBacks,
+    message: order.data.message,
   };
 
   return (
