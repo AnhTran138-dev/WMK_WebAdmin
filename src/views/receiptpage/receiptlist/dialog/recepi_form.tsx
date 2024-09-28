@@ -105,6 +105,7 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
         values.img instanceof File
           ? await utilApi.uploadFile(values.img)
           : values.img;
+
       const stepFiles = await Promise.all(
         values.steps.map((step) =>
           step.imageLink instanceof File
@@ -112,6 +113,7 @@ const RecepiForm: React.FC<RecepiFormProps> = ({
             : step.imageLink
         )
       );
+
       const payload = {
         ...values,
         img: imgURL,

@@ -50,7 +50,10 @@ const ChartTotalPrice = () => {
       );
 
       const currentWeekStart = dayjs().startOf("week").add(1, "day"); // Thứ Hai
-      const currentWeekEnd = dayjs().endOf("week").subtract(1, "day"); // Chủ Nhật
+      const currentWeekEnd = dayjs()
+        .startOf("week")
+        .add(7, "day")
+        .subtract(1, "millisecond"); // Chủ Nhật
 
       const previousWeekStart = currentWeekStart.subtract(1, "week");
       const previousWeekEnd = currentWeekEnd.subtract(1, "week");

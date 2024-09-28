@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader, Label } from "@/components/ui";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  Label,
+} from "@/components/ui";
 import { Feedback } from "@/models/responses";
 import React from "react";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
@@ -139,11 +145,7 @@ const GeneralInfoDetail: React.FC<GeneralInfoDetailProps> = ({ data }) => {
         <Label className="text-2xl font-bold text-gray-800">Feedback</Label>
         {data.feedBacks ? (
           <Card className="mt-6 transition-shadow duration-300 rounded-lg shadow-lg hover:shadow-xl">
-            <CardHeader>
-              <div className="text-xl font-semibold text-gray-800">
-                {data.feedBacks.createdBy}
-              </div>
-            </CardHeader>
+            <CardHeader>{/*  */}</CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-2">
                 <div className="font-semibold text-gray-700">Rating:</div>
@@ -166,6 +168,7 @@ const GeneralInfoDetail: React.FC<GeneralInfoDetailProps> = ({ data }) => {
                 </div>
               </div>
             </CardContent>
+            <CardFooter></CardFooter>
           </Card>
         ) : (
           <div className="mt-4 italic font-normal text-gray-600">
