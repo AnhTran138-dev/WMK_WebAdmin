@@ -71,7 +71,7 @@ const ChartTotalPrice = () => {
         if (
           orderDate.isBetween(currentWeekStart, currentWeekEnd, "day", "[]")
         ) {
-          const dayIndex = orderDate.day() - 1;
+          const dayIndex = orderDate.day();
           totalPerDay[dayIndex] += order.totalPrice;
           currentWeekTotalValue += order.totalPrice;
         }
@@ -79,7 +79,7 @@ const ChartTotalPrice = () => {
         if (
           orderDate.isBetween(previousWeekStart, previousWeekEnd, "day", "[]")
         ) {
-          const dayIndex = orderDate.day() - 1;
+          const dayIndex = orderDate.day();
           totalPerDayPrevWeek[dayIndex] += order.totalPrice;
           previousWeekTotalValue += order.totalPrice;
         }
@@ -125,12 +125,6 @@ const ChartTotalPrice = () => {
       ? 100
       : ((currentWeekTotal - previousWeekTotal) / previousWeekTotal) * 100;
 
-  // const xAxisData = Array(7)
-  //   .fill(0)
-  //   .map((_, index) =>
-  //     dayjs().startOf("week").add(index, "day").format("ddd, MMM D")
-  //   );
-
   return (
     <div>
       <div className="container flex flex-col flex-wrap items-center p-4 mx-auto lg:flex-row">
@@ -140,22 +134,41 @@ const ChartTotalPrice = () => {
               Revenue Summary:
             </h2>
             <p>
-              <strong className="mr-4"> All Total Revenue:</strong>{" "}
-              {ordersResponse?.data
-                ?.filter(
-                  (order) =>
-                    order.status === "Shipped" || order.status === "Delivered"
-                )
-                .reduce((sum, order) => sum + order.totalPrice, 0)
-                .toFixed(2)}
+              <strong className="mr-4">All Total Revenue:</strong>{" "}
+              {new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }).format(
+                ordersResponse?.data
+                  ?.filter(
+                    (order) =>
+                      order.status === "Shipped" || order.status === "Delivered"
+                  )
+                  .reduce((sum, order) => sum + order.totalPrice, 0) || 0
+              )}
             </p>
             <p>
               <strong className="mr-4">Current Week Total:</strong>{" "}
-              {currentWeekTotal?.toFixed(2)}
+              {new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }).format(currentWeekTotal)}
             </p>
             <p>
+              <strong className="mr-4">Previous Week Total:</strong>{" "}
+              {new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }).format(previousWeekTotal)}
+            </p>
+
+            <p>
               <strong className="mr-4">Previous Week Total:</strong>
-              {previousWeekTotal.toFixed(2)}
+              {new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }).format(previousWeekTotal)}
+              {/* {previousWeekTotal.toFixed(2)} */}
               <Button
                 onClick={() => setIsAlertDialogOpen(true)}
                 className="ml-4"
@@ -185,14 +198,19 @@ const ChartTotalPrice = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="day"
-                tickFormatter={(tickItem) =>
-                  dayjs(tickItem).format("ddd, MMM D")
-                }
                 tick={{ fontSize: 11 }}
                 angle={-20}
                 textAnchor="end"
               />
-              <YAxis tick={{ fontSize: 11 }} />
+              <YAxis
+                tick={{ fontSize: 11 }}
+                tickFormatter={(value) =>
+                  new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(value)
+                }
+              />
               <Tooltip />
               <Legend />
               <Line type="monotone" dataKey="value" stroke="#8884d8" />
