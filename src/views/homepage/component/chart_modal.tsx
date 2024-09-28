@@ -18,7 +18,6 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import dayjs from "dayjs";
 
 interface ChartAlertDialogProps {
   open: boolean;
@@ -49,12 +48,19 @@ const ChartAlertDialog: React.FC<ChartAlertDialogProps> = ({
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="day"
-              tickFormatter={(tickItem) => dayjs(tickItem).format("ddd, MMM D")}
               tick={{ fontSize: 11 }}
               angle={-20}
               textAnchor="end"
             />
-            <YAxis tick={{ fontSize: 11 }} />
+            <YAxis
+              tick={{ fontSize: 11 }}
+              tickFormatter={(value) =>
+                new Intl.NumberFormat("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(value)
+              }
+            />
             <Tooltip />
             <Legend />
             <Line type="monotone" dataKey="value" stroke="#8884d8" />
