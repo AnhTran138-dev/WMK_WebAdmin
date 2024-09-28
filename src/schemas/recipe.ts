@@ -15,7 +15,7 @@ export const stepSchema = z.object({
 
 export const ingredentsSchema = z.object({
   ingredientId: z.string().uuid(),
-  amount: z.number(),
+  amount: z.number().nonnegative(),
 });
 
 export const recipeSchema = z.object({
