@@ -18,12 +18,15 @@ import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 const unitList = [
-  { value: "kg", label: "Kilogram" },
-  { value: "g", label: "Gram" },
-  { value: "l", label: "Liter" },
-  { value: "ml", label: "Mililiter" },
-  { value: "tuber", label: "Tuber" },
-  { value: "fruit", label: "Fruit" },
+  { value: "kg", label: "kg" },
+  { value: "g", label: "g" },
+  { value: "l", label: "l" },
+  { value: "ml", label: "ml" },
+  { value: "vỉ", label: "vỉ" },
+  { value: "chai", label: "chai" },
+  { value: "quả", label: "quả" },
+  { value: "hộp", label: "hộp" },
+  { value: "muỗng", label: "muỗng" },
 ];
 
 const GeneralInfoForm: React.FC = () => {
