@@ -112,7 +112,7 @@ export function DataTable<TData, TValue>({
         ? ["Shipper", "Customer"]
         : role === "Manager"
         ? ["Staff", "Shipper", "Customer"]
-        : ["Shipper", "Customer", "Staff"];
+        : ["Shipper", "Customer", "Staff", "Manager"];
 
     return availableRoles.map((role) => (
       <DropdownMenuCheckboxItem

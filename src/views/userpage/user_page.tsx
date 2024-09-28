@@ -24,7 +24,7 @@ const UserPage = () => {
 
   useEffect(() => {
     if (user?.data) {
-      const allRoles = ["Shipper", "Customer", "Staff"];
+      const allRoles = ["Shipper", "Customer", "Staff", "Manager"];
       setSelectedRoles(allRoles);
       setUserList(
         allRoles.length === 0
